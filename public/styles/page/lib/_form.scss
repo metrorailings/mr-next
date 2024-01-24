@@ -1,0 +1,434 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@use 'sass:color';
+
+@import 'public/styles/foundation/fonts';
+@import 'public/styles/foundation/colors';
+@import 'public/styles/foundation/animations';
+
+/* ----------------------- MIX-INS ----------------------------- */
+
+/**
+ * A mix-in designed to style the placeholder. This mix-in is designed to allow us to apply generic
+ * styling to placeholder text across different browsers
+ *
+ * @author kinsho
+ */
+@mixin stylePlaceholder()
+{
+	&::-moz-placeholder
+	{
+		@content;
+	}
+
+	&:-ms-input-placeholder
+	{
+		@content;
+	}
+
+	&::-webkit-input-placeholder
+	{
+		@content;
+	}
+}
+
+/**
+ * A mix-in designed to style most buttons across the application
+ *
+ * @author kinsho
+ */
+@mixin primaryButton($bgColor: steelBlueTheme, $width: 100%, $isSquare: false)
+{
+	@include transitionSettings($property: all, $duration: 0.25s);
+	@include basicFontSettings($size: section, $family: Roboto Mono);
+
+	border:
+	{
+		width: 1px;
+		style: solid;
+		color: map-get($COLORS, darkGrayTheme);
+	}
+
+	@if ($isSquare)
+	{
+		border-radius: 0px;
+	}
+	@else
+	{
+		border-radius: 15px;
+	}
+
+	width: $width;
+	padding: 10px;
+	display: inline-block;
+	background-color: map-get($COLORS, $bgColor);
+	color: map-get($COLORS, whiteTheme);
+	box-shadow: 0px 5px 10px map-get($COLORS, blackTheme);
+	cursor: pointer;
+
+	&:disabled
+	{
+		cursor: default;
+		opacity: 0.4;
+	}
+}
+
+/**
+ * A mix-in designed to style square buttons in the application
+ *
+ * @author kinsho
+ */
+@mixin smallButton($bgColor: indianRedTheme, $width: 100%)
+{
+	@include transitionSettings($property: all, $duration: 0.25s);
+	@include basicFontSettings($family: Roboto Mono);
+
+	border:
+	{
+		width: 1px;
+		style: solid;
+		color: map-get($COLORS, darkGrayTheme);
+	}
+
+	width: $width;
+	padding: 4.5px;
+	display: inline-block;
+	background-color: map-get($COLORS, $bgColor);
+	box-shadow: 0px 3px 4px map-get($COLORS, blackTheme);
+	cursor: pointer;
+
+	&:disabled
+	{
+		cursor: default;
+		opacity: 0.4;
+	}
+}
+
+/**
+ * A mix-in designed to style buttons that cover the bottom of a host container in banner fashion
+ *
+ * @author kinsho
+ */
+@mixin bannerButton($bgColor: slateGrayTheme)
+{
+	@include transitionSettings($property: all, $duration: 0.25s);
+	@include basicFontSettings($size: default, $family: Avenir Heavy)
+	{
+		letter-spacing: 1.5px;
+		color: map-get($COLORS, whiteTheme);
+	}
+
+	border:
+	{
+		width: 0px;
+	}
+
+	margin:
+	{
+		top: 25px;
+	}
+
+	width: 100%;
+	padding: 10px;
+	background-color: color.scale(map-get($COLORS, $bgColor), $lightness: 5%);
+	cursor: pointer;
+
+	&:disabled
+	{
+		cursor: default;
+		opacity: 0.3;
+	}
+}
+
+/* ----------------------- STYLES ----------------------------- */
+
+.label
+{
+	@include basicFontSettings($size: secondary, $family: Avenir Heavy)
+	{
+		letter-spacing: 0.3px;
+		color: map-get($COLORS, lowBlackTheme);
+	}
+
+	margin:
+	{
+		top: 5px;
+		bottom: 5px;
+	}
+
+	align-self: flex-start;
+}
+
+.secondary_label
+{
+	@include basicFontSettings($size: secondary, $family: Avenir Heavy)
+	{
+		letter-spacing: 0.1px;
+		color: map-get($COLORS, slateGrayTheme);
+	}
+}
+
+.input_control
+{
+	@include basicFontSettings($size: secondary, $family: Poppins);
+	@include stylePlaceholder()
+	{
+		font-style: italic;
+	}
+	@include stylePlaceholder()
+	{
+		opacity: 0.4;
+	}
+
+	height: 2em;
+	color: map-get($COLORS, slateGrayTheme);
+	box-sizing: border-box;
+
+	&:textarea
+	{
+		box-shadow: 2px 2px 4px -1px map-get($COLORS, grayTheme);
+	}
+
+	&.optional_field
+	{
+		background-color: map-get($COLORS, lightBlueTheme);
+	}
+
+	&:disabled
+	{
+		opacity: 0.4;
+	}
+
+	&.error
+	{
+		background-color: map-get($COLORS, negativeRedTheme);
+	}
+}
+
+.small_input_control
+{
+	@extend .input_control;
+
+	@include tabletUp()
+	{
+		min-width: 100px;
+		max-width: 150px;
+	}
+	@include phoneOnly()
+	{
+		min-width: 80px;
+		max-width: 120px;
+	}
+}
+
+.medium_input_control
+{
+	@extend .input_control;
+
+	@include tabletUp()
+	{
+		min-width: 250px;
+		max-width: 350px;
+	}
+	@include phoneOnly()
+	{
+		min-width: 200px;
+		max-width: 275px;
+	}
+}
+
+.large_input_control
+{
+	@extend .input_control;
+
+	@include tabletUp()
+	{
+		min-width: 400px;
+		max-width: 550px;
+	}
+	@include phoneOnly()
+	{
+		min-width: 300px;
+		max-width: 420px;
+	}
+}
+
+// Use this class to hide certain inputs like the file input from view, as the browser's native file input control 
+// looks ugly and should be replaced
+.no_input_display
+{
+	display: none;
+}
+
+.input_checkbox
+{
+	// Hide the browser's native checkbox as it's quite ugly 
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+
+	background-color: map-get($COLORS, whiteTheme);
+
+	& + label
+	{
+		cursor: pointer;
+
+		&::before
+		{
+			content: '\2713 ';
+
+			border:
+			{
+				width: 1px;
+				radius: 5px;
+				style: solid;
+				color: map-get($COLORS, slateGrayTheme);
+			}
+
+			margin:
+			{
+				right: 10px;
+			}
+
+			background-color: map-get($COLORS, smokeWhiteTheme);
+			color: map-get($COLORS, smokeWhiteTheme);
+
+			display: inline-block;
+			box-shadow: inset 0 1px 3px rgba(0,0,0,.3);
+
+			@include tabletUp()
+			{
+				width: 20px;
+				height: 20px;
+				font-size: 20px;
+				line-height: 20px;
+			}
+
+			@include phoneOnly()
+			{
+				width: 12px;
+				height: 12px;
+				font-size: 12px;
+				line-height: 12px;
+			}
+		}
+	}
+
+	&:checked + label::before
+	{
+		color: map-get($COLORS, greenSuccessTheme);
+	}
+}
+
+// Specialized input container meant to stow icons besides form fields
+.input_grouping
+{
+	margin:
+	{
+		top: 5px;
+		bottom: 15px;
+	}
+
+	border:
+	{
+		width: 1px;
+		radius: 5px;
+		style: solid;
+		color: map-get($COLORS, grayTheme);
+	}
+
+	display: inline-flex;
+	position: relative;
+	align-items: center;
+	width: 500px;
+
+	& > .input_grouping_icon
+	{
+		color: map-get($COLORS, slateGrayTheme);
+		width: 50px;
+		height: 2em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&:first-child
+		{
+			border-right:
+			{
+				width: 0.5px;
+				color: map-get($COLORS, grayTheme);
+				style: solid;
+			}
+		}
+
+		&:last-child
+		{
+			border-left:
+			{
+				width: 0.5px;
+				color: map-get($COLORS, grayTheme);
+				style: solid;
+			}
+
+			cursor: pointer;
+		}
+	}
+
+	& > input
+	{
+		margin:
+		{
+			left: 5px;
+			right: 5px;
+		}
+
+		border: none;
+		box-shadow: none;
+
+		flex: 1;
+	}
+}
+
+
+// Styling for customized button sets
+.buttonset
+{
+	& > label
+	{
+		@include transitionSettings($property: all, $duration: 0.5s);
+
+		border:
+		{
+			width: 1px;
+			style: solid;
+			color: map-get($COLORS, blackTheme);
+		}
+		padding: 10px;
+
+		cursor: pointer;
+		background-color: map-get($COLORS, silverTheme);
+		color: map-get($COLORS, blackTheme);
+
+		&:first-of-type
+		{
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+		}
+
+		&:last-of-type
+		{
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+		}
+	}
+
+	& > input
+	{
+		display: none;
+	}
+
+	&.disabled
+	{
+		opacity: 0.4;
+	}
+}

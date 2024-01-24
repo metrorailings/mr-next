@@ -1,0 +1,81 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@import 'public/styles/foundation/colors';
+@import 'public/styles/foundation/fonts';
+@import 'public/styles/foundation/responsive';
+
+/* ----------------------- STYLES ----------------------------- */
+
+$error_color: map-get($COLORS, negativeRedTheme);
+$white_color: map-get($COLORS, whiteTheme);
+$toast_font: "Poppins";
+
+.custom_error_toast
+{
+	@include basicFontSettings($size: secondary, $family: $toast_font)
+	{
+		color: $white_color;
+	};
+
+	padding: 10px;
+	border-radius: 20px;
+	background-color: $error_color;
+
+	@include tabletUp()
+	{
+		min-width: 250px;
+		max-wdith: 500px;
+	}
+
+	@include phoneOnly()
+	{
+		width: 175px;
+		max-width: 300px;
+	}
+
+	.close_icon
+	{
+		padding-right: 40px;
+		width: 12px;
+		height: 12px;
+		width: 100%;
+		text-align: right;
+		cursor: pointer;
+	}
+
+	.error_icon
+	{
+		width: 100%;
+		text-align: center;
+
+		svg
+		{
+			width: 48px;
+			height: 48px;
+		}
+	}
+
+	.custom_error_body
+	{
+		padding: 10px;
+		width: 100%;
+		text-align: left;
+	}
+}
+
+.validation_error_list
+{
+	text-align: left;
+
+	& > li
+	{
+		text-align: left;
+	}
+}
+
+:export
+{
+	errorColor: $error_color;
+	whiteColor: $white_color;
+	toastFont: $toast_font;
+}

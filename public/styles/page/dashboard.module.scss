@@ -1,0 +1,154 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@import 'public/styles/foundation/fonts';
+@import 'public/styles/foundation/common';
+@import 'public/styles/foundation/animations';
+
+/* ----------------------- STYLES ----------------------------- */
+
+#page_container
+{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: column;
+}
+
+.page_header
+{
+	@extend %page_header;
+}
+
+.page_divider
+{
+	@extend %page_divider;
+}
+
+#dashboard_bubbles_container
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.dashboard_bubble
+{
+	@include basicFontSettings();
+
+	border:
+	{
+		width: 0.5px;
+		color: map-get($COLORS, grayTheme);
+		style: solid;
+
+		top-left-radius: 10px;
+		top-right-radius: 10px;
+	}
+	margin:
+	{
+		top: 20px;
+		bottom: 20px;
+		left: 1.75%;
+		right: 1.75%;
+	}
+
+	width: 20%;
+	position: relative;
+	box-shadow: 1px 1px 7px map-get($COLORS, lowBlackTheme);
+	text-align: center;
+	background-color: map-get($COLORS, whiteTheme);
+}
+
+.dashboard_bubble_body
+{
+	min-height: 50px;
+}
+
+.dashboard_bubble_customer_name
+{
+	@include basicFontSettings($family: "Avenir Heavy");
+
+	padding: 10px;
+	background-color: map-get($COLORS, silverTheme);
+}
+
+.dashboard_bubble_company_text
+{
+	font-style: italic;
+}
+
+.dashboard_bubble_info
+{
+	border-top:
+	{
+		width: 0.5px;
+		style: solid;
+	}
+
+	& > div
+	{
+		margin:
+		{
+			top: 5px;
+			bottom: 5px;
+		}
+	}
+}
+
+.dashboard_bubble_task
+{
+	@include basicFontSettings($size: secondary);
+
+	padding: 5px;
+	background-color: map-get($COLORS, silverTheme);
+}
+
+.dashboard_bubble_navigator
+{
+	border:
+	{
+		radius: 50%;
+		width: 2px;
+		style: solid;
+	}
+	padding: 8px;
+
+	position: absolute;
+	transform: translate(-50%, -50%);
+	background-color: map-get($COLORS, steelBlueTheme);
+	color: map-get($COLORS, whiteTheme);
+	width: 35px;
+	top: 5px;
+	left: 95%;
+	cursor: pointer;
+}
+
+.dashboard_bubble_due_date
+{
+	@include basicFontSettings($size: secondary);
+
+	transform:translate(-50%, -50%);
+
+	border:
+	{
+		radius: 50%;
+		width: 2px;
+		style: solid;
+		color: map-get($COLORS, blackTheme);
+	}
+
+	padding: 12px;
+	width: 35px;
+	background-color: map-get($COLORS, whiteTheme);
+	color: map-get($COLORS, blackTheme);
+
+	position: absolute;
+	top: 0px;
+	left: 95%;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}

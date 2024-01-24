@@ -1,0 +1,94 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@import 'public/styles/foundation/foundation';
+
+/* ----------------------- STYLES ----------------------------- */
+
+// Multitext element
+.multitext_container
+{
+	border:
+	{
+		style: inset;
+		width: 1px;
+		radius: 1px;
+		color: map-get($COLORS, blackTheme);
+	}
+
+	padding: 8px;
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	box-shadow: 2px 2px 4px -1px map-get($COLORS, grayTheme);
+
+	@include phoneOnly()
+	{
+		flex-direction: column;
+	}
+}
+
+.multitext_existing_values
+{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.multitext_set_value
+{
+	margin:
+	{
+		top: 5px;
+		bottom: 5px;
+		left: 3px;
+		right: 3px;
+	}
+
+	border-radius: 6px;
+	padding: 5px;
+	text-align: center;
+	background-color: map-get($COLORS, slateGrayTheme);
+	color: map-get($COLORS, whiteTheme);
+	display: flex;
+	align-items: center;
+}
+
+.multitext_new_value
+{
+	@include basicFontSettings($size: secondary, $family: Poppins);
+
+	border: none;
+	box-shadow: none;
+	resize: none;
+	width: 100%;
+	height: 2em;
+
+	@include tabletUp()
+	{
+		min-width: 400px;
+	}
+
+	@include phoneOnly()
+	{
+		min-width: 225px;
+	}
+
+	&:focus
+	{
+		outline: none;
+	}
+}
+
+.multitext_remove_mark
+{
+	margin:
+	{
+		left: 4px;
+		right: 4px;
+	}
+
+	cursor: pointer;
+}

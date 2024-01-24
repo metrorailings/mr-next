@@ -1,0 +1,99 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@import 'public/styles/foundation/colors';
+@inport 'public/styles/foundation/fonts';
+@import 'public/styles/foundation/common';
+
+@import 'public/styles/page/lib/form';
+
+/* ----------------------- STYLES ----------------------------- */
+
+#page_container
+{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: column;
+}
+
+.logo_header_container
+{
+	margin:
+	{
+		top: 50px;
+		bottom: 25px;
+	}
+
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	background-color: map-get($COLORS, logoBlueTheme);
+}
+
+.logo_header
+{
+	width: 180px;
+	height: 135px;
+}
+
+.c_suite_header
+{
+	@extend %page_header;
+}
+
+#login_box
+{
+	margin:
+	{
+		left: auto;
+		right: auto;
+	}
+
+	border:
+	{
+		width: 0px;
+		radius: 20px;
+		style: solid;
+	}
+
+	background-color: map-get($COLORS, whiteTheme);
+	box-shadow: 3px 3px 10px map-get($COLORS, lowBlackTheme);
+}
+
+#login_box_body
+{
+	padding:
+	{
+		top: 15px;
+		bottom: 15px;
+		left: 30px;
+		right: 30px;
+	}
+
+	& > label
+	{
+		display: block;
+	}
+}
+
+#remember_me
+{
+	margin:
+	{
+		top: 10px;
+		bottom: 10px;
+	}
+
+	text-align: left;
+}
+
+.button_primary
+{
+	@include bannerButton();
+
+	border:
+	{
+		bottom-left-radius: 20px;
+		bottom-right-radius: 20px;
+	}
+}

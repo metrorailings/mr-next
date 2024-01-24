@@ -1,0 +1,77 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@use 'sass:color';
+
+/* ----------------------- LOCAL CONSTANTS ----------------------------- */
+
+$COLORS: 
+(
+	indianRedTheme: #CD5C5C,
+	paleVioletRedTheme: #DB7093,
+	negativeRedTheme: #DB5192,
+	
+	amberTheme: #A8B633,
+	lightYellowTheme: #EEF3C2,
+
+	greenSuccessTheme: #21693A,
+
+	lavenderTheme: #E6E6FA,
+	cadetBlueTheme: #5F9EA0,
+	steelBlueTheme: #4682B4,
+	logoBlueTheme: #174C5B,
+
+	faintSilverTheme: #EDEAE9,
+	silverTheme: #C0C0C0,
+	grayTheme: #CDCDCD,
+	slateGrayTheme: #708090,
+
+	smokeWhiteTheme: #EEEFF1,
+	whiteTheme: #FFFFFF,
+
+	moccasinTheme: #FFFFE0,
+
+	blackTheme: #000000,
+	lowBlackTheme: #333333
+);
+
+/* ----------------------- MIX-INS ----------------------------- */
+
+/*
+ * Mix-in designed to render a gradient background on a particular element
+ * Works across all major browsers
+ *
+ * @param $initialColor - the color which will launch the gradient
+ * @param $endColor - the color which will mark the tail of the rendered gradient
+ * @param $direction - the direction in which the gradient will render across the background of the element
+ *
+ * @author kinsho
+ */
+@mixin setGradient($initialColor, $endColor, $direction: left)
+{
+	background-color: $initialColor; // In the rare event that the user is on a browser that does not support gradients, set a default color
+	background-image: -webkit-linear-gradient($direction, $initialColor, $endColor);
+	background-image: -moz-linear-gradient($direction, $initialColor, $endColor);
+	background-image: -ms-linear-gradient($direction, $initialColor, $endColor);
+	background-image: -o-linear-gradient($direction, $initialColor, $endColor);
+}
+
+/*
+ * Mix-in designed to lighten or darken a color from our defined colors
+ *
+ * @author kinsho
+ */
+@mixin adjustColor($selectedColor, $lighten: false, $darken: false)
+{
+	@if ($lighten) 
+	{
+		color: color.scale(map-get($COLORS, $selectedColor), $lightness: 20%);
+	} 
+	@else if ($darken)
+	{
+		color: color.scale(map-get($COLORS, $selectedColor), $lightness: -20%);
+	}
+	@else
+	{
+		color: map-get($COLORS, $selectedColor);
+	}
+}
