@@ -41,19 +41,19 @@ export async function POST(request) {
 			let expirationDate = new Date();
 			expirationDate.setMonth(expirationDate.getMonth() + 1);
 			cookies().set({
-				name: "user",
-				value: JSON.stringify({username: foundUser.username}),
+				name: 'user',
+				value: JSON.stringify({ username: foundUser.username }),
 				httpOnly: true,
 				path: '/',
 				expires: expirationDate
 			});
 			return NextResponse.json(foundUser.toJSON(), { status: 200 });
 		} else {
-			return NextResponse.json({ error: "Invalid password" }, { status: 400 });
+			return NextResponse.json({ error: 'Invalid password' }, { status: 400 });
 		}
 
 	} catch (error) {
 		console.error(error);
-		return NextResponse.json( { error: "Server issue" }, { status: 500 });
+		return NextResponse.json( { error: 'Server issue' }, { status: 500 });
 	}
 }

@@ -2,15 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import MRToaster, { toastValidationError } from "components/customToaster";
 import Image from "next/image";
-import { validateCredentials } from 'lib/validators/inputValidators';
+import MRToaster, { toastValidationError } from "components/customToaster";
 
 import styles from "public/styles/page/logIn.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEye, faEyeSlash, faKey } from '@fortawesome/free-solid-svg-icons'
 import logo from "assets/images/logos/white_logo_color_background.png";
 
+import { validateCredentials } from 'lib/validators/inputValidators';
+import { storeUserSession } from 'lib/userInfo';
 import { AUTH_API } from 'lib/http/apiEndpoints';
 import { httpRequest } from 'lib/http/clientHttpRequester';
 
@@ -55,6 +56,7 @@ const LoginPage = () => {
 		if (errors.length === 0) {
 			try {
 				const response = await httpRequest(AUTH_API.LOG_IN, 'POST', credentials);
+				storeUserSession(response);
 
 				// Move to the dashboard page
 				// @TODO - Include logic here to navigate to an admin page

@@ -150,7 +150,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 							/>
 							<span className={styles.input_grouping_icon}>
 								<FontAwesomeIcon
-									icon={faCircleXmark}
+									icon={ faCircleXmark }
 									onClick={() => { updateSearchFilter({ currentTarget: { value: '' }}); }}
 								/>
 							</span>
