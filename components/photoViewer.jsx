@@ -32,6 +32,10 @@ const PhotoViewer = () => {
 		}
 	};
 
+	const viewOriginalPhoto = (url) => {
+		window.open(url, '_blank');
+	}
+
 	useEffect(() => {
 		subscribe('open-viewer', openViewer);
 
@@ -41,7 +45,6 @@ const PhotoViewer = () => {
 	return isOpen ? (
 		<>
 			<div id={ styles.gallery_overlay }>
-
 				<div id={ styles.gallery_container }>
 
 					<div id={ styles.gallery_exit_row }>
@@ -59,6 +62,7 @@ const PhotoViewer = () => {
 								alt={ photos[photoIndex].title || 'Photo' }
 								width={500}
 								height={500}
+								onClick={() => { viewOriginalPhoto(photos[photoIndex].src) }}
 							/>
 						</div>
 					</Suspense>
@@ -81,7 +85,6 @@ const PhotoViewer = () => {
 					</div>
 
 				</div>
-
 			</div>
 		</>
 	) : null;

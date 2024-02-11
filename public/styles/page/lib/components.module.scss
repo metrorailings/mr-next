@@ -4,22 +4,61 @@
 @import 'public/styles/foundation/fonts';
 @import 'public/styles/foundation/responsive';
 
-/* ----------------------- STYLES ----------------------------- */
+/* ------------------ ANIMATIONS ----------------------- */
 
-$error_color: map-get($COLORS, negativeRedTheme);
-$white_color: map-get($COLORS, whiteTheme);
-$toast_font: "Poppins";
+@include keyframes($name: bouncingBalls)
+{
+	0%
+	{
+		@include scaleTransition($length: 0, $width: 0);
+	}
+
+	40%
+	{
+		@include scaleTransition($length: 1, $width: 1);
+	}
+
+	80%
+	{
+		@include scaleTransition($length: 0, $width: 0);
+	}
+
+	100%
+	{
+		@include scaleTransition($length: 0, $width: 0);
+	}
+}
+
+@include keyframes($name: fadeIntoView)
+{
+	0%
+	{
+		opacity: 0.0;
+	}
+
+	70%
+	{
+		opacity: 0.0;
+	}
+
+	100%
+	{
+		opacity: 1.0;
+	}
+}
+
+/* ----------------------- TOAST ----------------------------- */
 
 .custom_error_toast
 {
-	@include basicFontSettings($size: secondary, $family: $toast_font)
+	@include basicFontSettings($size: secondary, $family: "Poppins")
 	{
-		color: $white_color;
+		color: map-get($COLORS, whiteTheme);
 	};
 
 	padding: 10px;
 	border-radius: 20px;
-	background-color: $error_color;
+	background-color: map-get($COLORS, negativeRedTheme);
 
 	@include tabletUp()
 	{
@@ -73,9 +112,129 @@ $toast_font: "Poppins";
 	}
 }
 
-:export
+/* ----------------------- LOADERS ----------------------------- */
+
+#base_loader_overlay
 {
-	errorColor: $error_color;
-	whiteColor: $white_color;
-	toastFont: $toast_font;
+	@include transitionSettings($property: opacity, $duration: 0.3s);
+
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
+	background-color: map-get($COLORS, whiteTheme);
+	opacity: 0;
+	z-index: -9999;
+
+	& > div
+	{
+		margin:
+		{
+			top: 25px;
+			bottom: 25px;
+		}
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: row;
+	}
+}
+
+#loading_text
+{
+	@include basicFontSettings($weight: 700, $size: header, $family: Comfortaa);
+	@include animationSettings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: map-get($COLORS, cadetBlueTheme);
+}
+
+.section_loading_text
+{
+	@include basicFontSettings($weight: 700, $size: section, $family: Comfortaa);
+	@include animationSettings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: map-get($COLORS, cadetBlueTheme);
+}
+
+.uploading_indicators
+{
+	@include transitionSettings($property: opacity, $duration: 0.25s);
+
+	position: absolute;
+	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	opacity: 1.0;
+	z-index: -250;
+
+	& > .section_loading_text
+	{
+		color: map-get($COLORS, indianRedTheme);
+		text-transform: none;
+		width: 100%;
+	}
+
+	& > .loading_ball
+	{
+		background-color: map-get($COLORS, indianRedTheme);
+		width: 30px;
+		height: 20px;
+	}
+}
+
+.loading_ball
+{
+	@include animationSettings($keyframeSet: bouncingBalls, $duration: 1.5s, $timing: ease-in-out, $iterations: infinite);
+	animation-fill-mode: both;
+
+	margin:
+	{
+		left: 30px;
+		right: 30px;
+	}
+
+	width: 50px;
+	height: 50px;
+	background-color: map-get($COLORS, cadetBlueTheme);
+	border-radius: 100%;
+
+	&:nth-of-type(1)
+	{
+		animation-delay: 0s;
+		-webkit-animation-delay: 0s;
+		-moz-animation-delay: 0s;
+		-ms-animation-delay: 0s;
+		-o-animation-delay: 0s;
+	}
+
+	&:nth-of-type(2)
+	{
+		animation-delay: 0.15s;
+		-webkit-animation-delay: 0.15s;
+		-moz-animation-delay: 0.15s;
+		-ms-animation-delay: 0.15s;
+		-o-animation-delay: 0.15s;
+	}
+
+	&:nth-of-type(3)
+	{
+		animation-delay: 0.3s;
+		-webkit-animation-delay: 0.3s;
+		-moz-animation-delay: 0.3s;
+		-ms-animation-delay: 0.3s;
+		-o-animation-delay: 0.3s;
+	}
 }

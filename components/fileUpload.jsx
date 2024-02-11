@@ -1,24 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { upload } from '@vercel/blob/client';
+
+import styles from "public/styles/page/lib/file_upload.module.scss";
+
+import GalleryViewer from 'components/galleryViewer';
 
 import { getUserSession } from 'lib/userInfo';
+import { acceptableMediaExtensions } from 'lib/dictionary';
+import { ORDER_API } from 'lib/http/apiEndpoints';
 
-import styles from "public/styles/page/lib/file_module.module.scss";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 
-const FileUpload = ({ uploadUrl, orderId, existingFiles, lazyLoad, isShopUser }) => {
-
-	const [media, setMedia] = useState([]);
-	const [files, setFiles] = useState([]);
+	existingFiles = existingFiles || [];
+	const [media, setMedia] = useState(existingFiles.filter((file) => acceptableMediaExtensions[file.name.split('.').pop().toLowerCase()]));
+	const [nonMedia, setNonMedia] = useState(existingFiles.filter((file) => !(acceptableMediaExtensions[file.name.split('.').pop().toLowerCase()])));
 
 	const userProfile = getUserSession();
 
-	const uploadFiles = () => {
+	const uploadFiles = async (event) => {
+		event.preventDefault();
 
+		const filesToUpload = event.currentTarget.files;
+
+		for (let i = 0; i < filesToUpload.length; i += 1) {
+			const newBlob = await upload(filesToUpload[i].name, filesToUpload[i], {
+				access: 'public',
+				handleUploadUrl: ORDER_API.POST_UPLOAD_FILE,
+				clientPayload: orderId,
+				multipart: filesToUpload[i].size >= 5000000 // Break apart any files greater than 5 MBs in size  
+			});
+
+			if (acceptableMediaExtensions(newBlob.contentType)) {
+				setMedia([...media, newBlob]);
+			} else {
+				setNonMedia([...media, newBlob]);
+			}
+		}
 	};
 
-	for (let i = 0; i < existingFiles.length; i += 1) {
-	}
+	const uploadLink = useRef();
 
 	return (
 		<>
@@ -27,8 +47,15 @@ const FileUpload = ({ uploadUrl, orderId, existingFiles, lazyLoad, isShopUser })
 					<div className={ styles.file_upload_section }>
 						<div className={ styles.file_upload_form }>
 							<span className={ styles.label }>Upload a File?</span>
-							<button className={ styles._upload_file_type }>Upload Media/File</button>
-							<input type='file' className={ styles.file_upload_input } multiple />
+							<button className={ styles._upload_file_type } onClick={() => uploadLink.current.click() }>Upload Media/File</button>
+							<input
+								type='file'
+								ref={ uploadLink }
+								className={ styles.file_upload_input }
+								multiple
+								accept='.pdf,.jpeg,.jpg,.mp4,.png'
+								onChange={ uploadFiles }
+							/>
 						</div>
 
 						<div className={ styles.file_uploading_indicators }>
@@ -42,80 +69,44 @@ const FileUpload = ({ uploadUrl, orderId, existingFiles, lazyLoad, isShopUser })
 			) : null }
 
 			<div className={ styles.files_listing }>
-				<div className={ styles.pictures_container }>
-					<div className={ styles.upload_container_header }>
-						{ translateToSpanish ? "Fotos" : "Pictures" }
+
+				{ media.length ? (
+					<div className={ styles.files_container }>
+						<div className={ styles.upload_container_header }>
+							{ userProfile.role === "shop" ? "Fotos" : "Pictures" }
+						</div>
+						{ !!(lazyLoad) === false ? (
+							<GalleryViewer
+								files={ media }
+								imgWidth={ 64 }
+								imgHeight={ 64 }
+								allowDelete={ userProfile.role === "admin" || userProfile.role === "office" }
+							/>
+						) : (
+							userProfile.role === "shop" ?  "Cargar Todas Las Fotos..." : "Load All Pictures..."
+						)}
 					</div>
-					{ !!(lazyLoad) === false ? (
-						existingFiles.map((file, index) => {
-							return (
-								<div key={index}>
-									
-								</div>
-							);
-						})) : (
-							translateToSpanish ? "Load All Pictures..." : "Cargar Todas Las Fotos..."
-						)
-					}
-				</div>
+				) : null }
+
+				{ nonMedia.length ? (
+					<div className={ styles.files_container }>
+						<div className={ styles.upload_container_header }>
+							{ userProfile.role === "shop" ? "Dibujos" : "Drawings" }
+						</div>
+						{ !!(lazyLoad) === false ? (
+							<GalleryViewer
+								files={ nonMedia }
+								imgWidth={ 64 }
+								imgHeight={ 64 }
+								allowDelete={ userProfile.role === "admin" || userProfile.role === "office" }
+							/>
+						) : (
+							userProfile.role === "shop" ?  "Cargar Todos Los Dibujos..." : "Load All Drawings..."
+						)}
+					</div>
+				) : null }
+
 			</div>
-
-					<div class='drawingsContainer  {{#unless order.drawings.length}} hide {{/unless}}'>
-					<div class='uploadContainerHeader'>
-				{{#unless translateToSpanish}}
-					Drawings
-				{{else}}
-					Dibujos
-				{{/unless}}
-					</div>
-				{{#unless doNotLoadOnInit}}
-				{{#each order.drawings}}
-				{{> fileThumbnail showDeleteIcon=true}}
-				{{/each}}
-				{{/unless}}
-
-				{{#if doNotLoadOnInit}}
-				{{#if order.drawings.length}}
-					<div class='loadDrawingsLink' data-order-id='{{ order._id }}'>
-				{{#unless translateToSpanish}}
-					Load All Drawings...
-				{{else}}
-					Cargar Todos Los Dibujos...
-				{{/unless}}
-					</div>
-				{{/if}}
-				{{/if}}
-					</div>
-
-					<div class='filesContainer  {{#unless order.files.length}} hide {{/unless}}'>
-					<div class='uploadContainerHeader'>
-				{{#unless translateToSpanish}}
-					Files
-				{{else}}
-					Archivos
-				{{/unless}}
-					</div>
-				{{#unless doNotLoadOnInit}}
-				{{#each order.files}}
-				{{> fileThumbnail showDeleteIcon=true}}
-				{{/each}}
-				{{/unless}}
-
-				{{#if doNotLoadOnInit}}
-				{{#if order.files.length}}
-					<div class='loadFilesLink' data-order-id='{{ order._id }}'>
-				{{#unless translateToSpanish}}
-					Load All Files...
-				{{else}}
-					Cargar Todos Los Archivos...
-				{{/unless}}
-					</div>
-				{{/if}}
-				{{/if}}
-					</div>
-
-					<a class='downloadLink' href='' download=''></a>
-					</div>
 		</>
 	);
 };
