@@ -3,6 +3,8 @@
 import { useSearchParams, usePathname } from 'next/navigation'
 import React, { useState, useMemo, useRef, useEffect } from "react";
 
+import FileUpload from 'components/fileUpload';
+
 import styles from 'public/styles/page/orderSearch.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark, faUserTag, faLocationDot, faSquareEnvelope, faSquarePhone } from '@fortawesome/free-solid-svg-icons'
@@ -140,10 +142,11 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 					</div>
 					<div className={styles.filter_row}>
 						<span className={styles.filter_label}>Search</span>
-						<span className={styles.filter_input_grouping}>
+						<span className={ styles.filter_input_grouping }>
 							<input
+								id='order_search_text_field'
 								type='text'
-								className={styles.large_input_control}
+								className={ styles.large_input_control }
 								onChange={ updateSearchFilter }
 								placeholder={ 'Search orders using customer information' }
 								value={ filters.search }
@@ -223,19 +226,19 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 												<div>{ order.dates.created + (order.users?.creator ? ' (' + order.users.creator + ')' : '')}</div>
 											</div>
 
-											<div className={styles.order_box_date_datum}>
+											<div className={ styles.order_box_date_datum }>
 												{ order.dates?.lastModified ? (
 													<>
-														<div className={styles.order_box_date_label}>Last Updated:</div>
+														<div className={ styles.order_box_date_label }>Last Updated:</div>
 														<div>{ order.dates.lastModified + (order.users?.lastModifier ? ' (' + order.users.lastModifier + ')' : '')}</div>
 													</>
 												) : null }
 											</div>
 
-											<div className={styles.order_box_date_datum}>
+											<div className={ styles.order_box_date_datum }>
 												{ order.dates?.due ? (
 													<>
-														<div className={styles.order_box_date_label}>Due Date:</div>
+														<div className={ styles.order_box_date_label }>Due Date:</div>
 														<div>{ order.dates.due }</div>
 													</>
 												) : null }
@@ -245,12 +248,19 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 									</span>
 								</div>
 
+								<div className={ styles.order_box_file_upload }>
+									<FileUpload 
+										orderId={ order._id }
+										existingFiles={ order.files }
+										lazyLoad={ true }
+									/>
+								</div>
 							</div>
 						);
-					}) }
+					})}
 				</div>
 
-				<hr className={styles.section_divider} ref={observerTarget}></hr>
+				<hr className={ styles.section_divider } ref={ observerTarget }></hr>
 			</div>
 
 		</>

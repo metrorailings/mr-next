@@ -1,73 +1,43 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
 @use 'sass:color';
-
-@import 'public/styles/foundation/fonts';
-@import 'public/styles/foundation/colors';
-@import 'public/styles/foundation/animations';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/colors';
+@use 'public/styles/foundation/responsive';
+@use 'public/styles/foundation/animations';
 
 /* ----------------------- MIX-INS ----------------------------- */
-
-/**
- * A mix-in designed to style the placeholder. This mix-in is designed to allow us to apply generic
- * styling to placeholder text across different browsers
- *
- * @author kinsho
- */
-@mixin stylePlaceholder()
-{
-	&::-moz-placeholder
-	{
-		@content;
-	}
-
-	&:-ms-input-placeholder
-	{
-		@content;
-	}
-
-	&::-webkit-input-placeholder
-	{
-		@content;
-	}
-}
 
 /**
  * A mix-in designed to style most buttons across the application
  *
  * @author kinsho
  */
-@mixin primaryButton($bgColor: steelBlueTheme, $width: 100%, $isSquare: false)
-{
-	@include transitionSettings($property: all, $duration: 0.25s);
-	@include basicFontSettings($size: section, $family: Roboto Mono);
+@mixin primary-button($bgColor: colors.$steel-blue, $width: 100%, $isSquare: false) {
+	@include animations.transitionSettings($property: all, $duration: 0.25s);
+	@include fonts.define-font($size: fonts.$section, $family: Roboto Mono);
 
-	border:
-	{
+	border: {
 		width: 1px;
 		style: solid;
-		color: map-get($COLORS, darkGrayTheme);
+		color: colors.$slateGray
 	}
 
-	@if ($isSquare)
-	{
-		border-radius: 0px;
-	}
-	@else
-	{
+	@if $isSquare {
+		border-radius: 0;
+	} @else {
 		border-radius: 15px;
 	}
 
 	width: $width;
 	padding: 10px;
 	display: inline-block;
-	background-color: map-get($COLORS, $bgColor);
-	color: map-get($COLORS, whiteTheme);
-	box-shadow: 0px 5px 10px map-get($COLORS, blackTheme);
+	background-color: $bgColor;
+	color: colors.$white;
+	box-shadow: colors.$black;
 	cursor: pointer;
 
-	&:disabled
-	{
+	&:disabled {
 		cursor: default;
 		opacity: 0.4;
 	}
@@ -78,27 +48,24 @@
  *
  * @author kinsho
  */
-@mixin smallButton($bgColor: indianRedTheme, $width: 100%)
-{
-	@include transitionSettings($property: all, $duration: 0.25s);
-	@include basicFontSettings($family: Roboto Mono);
+@mixin small-button($bgColor: colors.$indian-red, $width: 100%) {
+	@include animations.transition-settings($property: all, $duration: 0.25s);
+	@include fonts.define-font($family: Roboto Mono);
 
-	border:
-	{
+	border: {
 		width: 1px;
 		style: solid;
-		color: map-get($COLORS, darkGrayTheme);
+		color: colors.$slate-gray;
 	}
 
 	width: $width;
 	padding: 4.5px;
 	display: inline-block;
-	background-color: map-get($COLORS, $bgColor);
-	box-shadow: 0px 3px 4px map-get($COLORS, blackTheme);
+	background-color: $bgColor;
+	box-shadow: colors.$black;
 	cursor: pointer;
 
-	&:disabled
-	{
+	&:disabled {
 		cursor: default;
 		opacity: 0.4;
 	}
@@ -109,49 +76,67 @@
  *
  * @author kinsho
  */
-@mixin bannerButton($bgColor: slateGrayTheme)
-{
-	@include transitionSettings($property: all, $duration: 0.25s);
-	@include basicFontSettings($size: default, $family: Avenir Heavy)
-	{
+@mixin banner-button($bgColor: colors.$slate-gray) {
+	@include animations.transition-settings($property: all, $duration: 0.25s);
+	@include fonts.define-font($family: Avenir Heavy) {
 		letter-spacing: 1.5px;
-		color: map-get($COLORS, whiteTheme);
+		color: colors.$white;
 	}
 
-	border:
-	{
-		width: 0px;
+	border: {
+		width: 0;
 	}
-
-	margin:
-	{
+	margin: {
 		top: 25px;
 	}
 
 	width: 100%;
 	padding: 10px;
-	background-color: color.scale(map-get($COLORS, $bgColor), $lightness: 5%);
+	background-color: color.scale($bgColor, $lightness: 5%);
 	cursor: pointer;
 
-	&:disabled
-	{
+	&:disabled {
 		cursor: default;
 		opacity: 0.3;
 	}
 }
 
-/* ----------------------- STYLES ----------------------------- */
+/* ----------------------- PLACEHOLDERS ----------------------------- */
 
-.label
-{
-	@include basicFontSettings($size: secondary, $family: Avenir Heavy)
-	{
-		letter-spacing: 0.3px;
-		color: map-get($COLORS, lowBlackTheme);
+%input-control {
+	@include fonts.define-font($size: fonts.$secondary, $family: Poppins);
+
+	height: 2em;
+	color: colors.$slate-gray;
+	box-sizing: border-box;
+
+	&::placeholder {
+		font-style: italic;
+		opacity: 0.4;
 	}
 
-	margin:
-	{
+	&.optional-field {
+		background-color: colors.$lavender;
+	}
+
+	&:disabled {
+		opacity: 0.4;
+	}
+
+	&.error {
+		background-color: colors.$negative-red;
+	}
+}
+
+/* ----------------------- STYLES ----------------------------- */
+
+.label {
+	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
+		letter-spacing: 0.3px;
+		color: colors.$low-black;
+	}
+
+	margin: {
 		top: 5px;
 		bottom: 5px;
 	}
@@ -159,153 +144,94 @@
 	align-self: flex-start;
 }
 
-.secondary_label
-{
-	@include basicFontSettings($size: secondary, $family: Avenir Heavy)
-	{
+.secondary-label {
+	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
 		letter-spacing: 0.1px;
-		color: map-get($COLORS, slateGrayTheme);
+		color: colors.$slate-gray;
 	}
 }
 
-.input_control
-{
-	@include basicFontSettings($size: secondary, $family: Poppins);
-	@include stylePlaceholder()
-	{
-		font-style: italic;
-	}
-	@include stylePlaceholder()
-	{
-		opacity: 0.4;
-	}
+textarea.input-control {
+	@extend %input-control;
 
-	height: 2em;
-	color: map-get($COLORS, slateGrayTheme);
-	box-sizing: border-box;
-
-	&:textarea
-	{
-		box-shadow: 2px 2px 4px -1px map-get($COLORS, grayTheme);
-	}
-
-	&.optional_field
-	{
-		background-color: map-get($COLORS, lightBlueTheme);
-	}
-
-	&:disabled
-	{
-		opacity: 0.4;
-	}
-
-	&.error
-	{
-		background-color: map-get($COLORS, negativeRedTheme);
-	}
+	box-shadow: 2px 2px 4px -1px colors.$gray;
 }
 
-.small_input_control
-{
-	@extend .input_control;
+.small-input-control {
+	@extend %input-control;
 
-	@include tabletUp()
-	{
+	@include responsive.tablet-up() {
 		min-width: 100px;
 		max-width: 150px;
 	}
-	@include phoneOnly()
-	{
+	@include responsive.phone-only() {
 		min-width: 80px;
 		max-width: 120px;
 	}
 }
 
-.medium_input_control
-{
-	@extend .input_control;
+.medium-input-control {
+	@extend %input_control;
 
-	@include tabletUp()
-	{
+	@include responsive.tablet-up() {
 		min-width: 250px;
 		max-width: 350px;
 	}
-	@include phoneOnly()
-	{
+	@include responsive.phone-only() {
 		min-width: 200px;
 		max-width: 275px;
 	}
 }
 
-.large_input_control
-{
-	@extend .input_control;
+.large-input-control {
+	@extend %input_control;
 
-	@include tabletUp()
-	{
+	@include responsive.tablet-up() {
 		min-width: 400px;
 		max-width: 550px;
 	}
-	@include phoneOnly()
-	{
+	@include responsive.phone-only() {
 		min-width: 300px;
 		max-width: 420px;
 	}
 }
 
-// Use this class to hide certain inputs like the file input from view, as the browser's native file input control 
-// looks ugly and should be replaced
-.no_input_display
-{
-	display: none;
-}
-
-.input_checkbox
-{
+.input-checkbox {
 	// Hide the browser's native checkbox as it's quite ugly 
-	-webkit-appearance: none;
 	appearance: none;
 	margin: 0;
+	background-color: colors.$white;
 
-	background-color: map-get($COLORS, whiteTheme);
-
-	& + label
-	{
+	& + label {
 		cursor: pointer;
 
-		&::before
-		{
+		&::before {
 			content: '\2713 ';
 
-			border:
-			{
+			border: {
 				width: 1px;
 				radius: 5px;
 				style: solid;
-				color: map-get($COLORS, slateGrayTheme);
+				color: colors.$slate-gray;
 			}
 
-			margin:
-			{
+			margin: {
 				right: 10px;
 			}
 
-			background-color: map-get($COLORS, smokeWhiteTheme);
-			color: map-get($COLORS, smokeWhiteTheme);
-
+			background-color: colors.$smoke-white;
+			color: colors.$smoke-white;
 			display: inline-block;
-			box-shadow: inset 0 1px 3px rgba(0,0,0,.3);
+			box-shadow: inset 0 1px 3px rgb(0 0 0 / 20%);
 
-			@include tabletUp()
-			{
+			@include responsive.tablet-up() {
 				width: 20px;
 				height: 20px;
 				font-size: 20px;
 				line-height: 20px;
 			}
 
-			@include phoneOnly()
-			{
+			@include responsive.phone-only() {
 				width: 12px;
 				height: 12px;
 				font-size: 12px;
@@ -314,27 +240,23 @@
 		}
 	}
 
-	&:checked + label::before
-	{
-		color: map-get($COLORS, greenSuccessTheme);
+	&:checked + label::before {
+		color: colors.$success;
 	}
 }
 
 // Specialized input container meant to stow icons besides form fields
-.input_grouping
-{
-	margin:
-	{
+.input-grouping {
+	margin: {
 		top: 5px;
 		bottom: 15px;
 	}
 
-	border:
-	{
+	border: {
 		width: 1px;
 		radius: 5px;
 		style: solid;
-		color: map-get($COLORS, grayTheme);
+		color: colors.$gray;
 	}
 
 	display: inline-flex;
@@ -342,31 +264,26 @@
 	align-items: center;
 	width: 500px;
 
-	& > .input_grouping_icon
-	{
-		color: map-get($COLORS, slateGrayTheme);
+	& > .input-grouping-icon {
+		color: colors.$slate-gray;
 		width: 50px;
 		height: 2em;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 
-		&:first-child
-		{
-			border-right:
-			{
+		&:first-child {
+			border-right: {
 				width: 0.5px;
-				color: map-get($COLORS, grayTheme);
+				color: colors.$gray;
 				style: solid;
 			}
 		}
 
-		&:last-child
-		{
-			border-left:
-			{
+		&:last-child {
+			border-left: {
 				width: 0.5px;
-				color: map-get($COLORS, grayTheme);
+				color: colors.$gray;
 				style: solid;
 			}
 
@@ -374,61 +291,51 @@
 		}
 	}
 
-	& > input
-	{
-		margin:
-		{
+	& > input {
+		margin: {
 			left: 5px;
 			right: 5px;
 		}
 
 		border: none;
 		box-shadow: none;
-
 		flex: 1;
 	}
 }
 
 
 // Styling for customized button sets
-.buttonset
-{
-	& > label
-	{
-		@include transitionSettings($property: all, $duration: 0.5s);
+.buttonset {
+	& > label {
+		@include animations.transition-settings($property: all, $duration: 0.5s);
 
-		border:
-		{
+		border: {
 			width: 1px;
 			style: solid;
-			color: map-get($COLORS, blackTheme);
+			color: colors.$black;
 		}
+
 		padding: 10px;
-
 		cursor: pointer;
-		background-color: map-get($COLORS, silverTheme);
-		color: map-get($COLORS, blackTheme);
+		background-color: colors.$silver;
+		color: colors.$black;
 
-		&:first-of-type
-		{
+		&:first-of-type {
 			border-top-left-radius: 10px;
 			border-bottom-left-radius: 10px;
 		}
 
-		&:last-of-type
-		{
+		&:last-of-type {
 			border-top-right-radius: 10px;
 			border-bottom-right-radius: 10px;
 		}
 	}
 
-	& > input
-	{
+	& > input {
 		display: none;
 	}
 
-	&.disabled
-	{
+	&.disabled {
 		opacity: 0.4;
 	}
 }

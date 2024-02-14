@@ -1,8 +1,8 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
 @use 'sass:math';
-@import 'public/styles/foundation/colors';
-@import 'public/styles/foundation/responsive';
+@use 'public/styles/foundation/colors';
+@use 'public/styles/foundation/responsive';
 
 /*
  * The custom font-families that the site will use are:
@@ -14,30 +14,27 @@
  * Avenir 85 Heavy (for general text)
  * Avenir 35 Light (for general text)
  */
-@import url(https://fonts.googleapis.com/css?family=Comfortaa|Roboto+Mono:100,400|Poppins:300,400,700);
-@import url(https://fast.fonts.net/lt/1.css?apiType=css&c=642cdd41-a82c-417e-ac0d-92e63496c95e&fontids=1475544);
-@font-face
-{
+@import url('https://fonts.googleapis.com/css?family=Comfortaa|Roboto+Mono:100,400|Poppins:300,400,700');
+@import url('https://fast.fonts.net/lt/1.css?apiType=css&c=642cdd41-a82c-417e-ac0d-92e63496c95e&fontids=1475544');
+
+@font-face {
 	font-family: 'Avenir Heavy';
-	src:url(fonts/d513e15e-8f35-4129-ad05-481815e52625.woff2) format('woff2'), url(fonts/61bd362e-7162-46bd-b67e-28f366c4afbe.woff) format('woff');
+	src: url('fonts/d513e15e-8f35-4129-ad05-481815e52625.woff2') format('woff2'), url('fonts/61bd362e-7162-46bd-b67e-28f366c4afbe.woff') format('woff');
 }
-@font-face
-{
+
+@font-face {
 	font-family: 'Avenir Light';
-	src:url(fonts/0078f486-8e52-42c0-ad81-3c8d3d43f48e.woff2) format('woff2'), url(fonts/908c4810-64db-4b46-bb8e-823eb41f68c0.woff) format('woff');
+	src:url('fonts/avenirLight.ttf') format('ttf')
 }
 
-/* ----------------------- LOCAL CONSTANTS ----------------------------- */
+/* ----------------------- PUBLIC CONSTANTS ----------------------------- */
 
-$FONT_SIZES:
-(
-	header: 48px,
-	section: 26px,
-	subsection: 20px,
-	default: 16px,
-	secondary: 14px,
-	special: 12px
-);
+$header: 48px;
+$section: 26px;
+$subsection: 20px;
+$default: 16px;
+$secondary: 14px;
+$special: 12px;
 
 /* ----------------------- MIX-INS ----------------------------- */
 
@@ -52,19 +49,16 @@ $FONT_SIZES:
  *
  * @author kinsho
  */
-@mixin basicFontSettings($weight: 400, $size: default, $family: 'Avenir Light')
-{
-	font:
-	{
+@mixin define-font($weight: 400, $size: $default, $family: 'Avenir Light') {
+	font: {
 		weight: $weight;
-		size: map-get($FONT_SIZES, $size);
+		size: $size;
 		family: $family, sans-serif;
 	}
 
 	// For phones, make the font smaller. The general rule of thumb is to subtract more pixels as the font size increases.
-	@include phoneOnly()
-	{
-		font-size: math.div(map-get($FONT_SIZES, $size), 2) + 6px;
+	@include responsive.phone-only() {
+		font-size: math.div($size, 2) + 6px;
 	}
 
 	@content;

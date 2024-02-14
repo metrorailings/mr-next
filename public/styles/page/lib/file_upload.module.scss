@@ -1,0 +1,39 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@import 'public/styles/foundation/fonts';
+@import 'public/styles/foundation/colors';
+@import 'public/styles/page/lib/form';
+
+/* ----------------------- STYLES ----------------------------- */
+
+.file_upload_section
+{
+	margin:
+	{
+		top: 15px;
+		bottom: 15px;
+		left: auto;
+		right: auto;
+	}
+}
+
+.upload_file_button
+{
+	@include smallButton($width: 450px);
+}
+
+.upload_file_input
+{
+	margin: 0px;
+	padding: 0px;
+	width: 1px;
+	opacity: 0;
+}
+
+.files_listing
+{
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	flex-direction: column;
+}

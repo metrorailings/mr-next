@@ -2,37 +2,34 @@
 
 @use 'sass:color';
 
-/* ----------------------- LOCAL CONSTANTS ----------------------------- */
+/* ----------------------- PUBLIC CONSTANTS ----------------------------- */
 
-$COLORS: 
-(
-	indianRedTheme: #CD5C5C,
-	paleVioletRedTheme: #DB7093,
-	negativeRedTheme: #DB5192,
-	
-	amberTheme: #A8B633,
-	lightYellowTheme: #EEF3C2,
+$indian-red: #CD5C5C;
+$pale-violet-red: #DB7093;
+$negative-red: #DB5192;
 
-	greenSuccessTheme: #21693A,
+$amber: #A8B633;
+$light-yellow: #EEF3C2;
 
-	lavenderTheme: #E6E6FA,
-	cadetBlueTheme: #5F9EA0,
-	steelBlueTheme: #4682B4,
-	logoBlueTheme: #174C5B,
+$success: #21693A;
 
-	faintSilverTheme: #EDEAE9,
-	silverTheme: #C0C0C0,
-	grayTheme: #CDCDCD,
-	slateGrayTheme: #708090,
+$lavender: #E6E6FA;
+$cadet-blue: #5F9EA0;
+$steel-blue: #4682B4;
+$logo-blue: #174C5B;
 
-	smokeWhiteTheme: #EEEFF1,
-	whiteTheme: #FFFFFF,
+$faint-silver: #EDEAE9;
+$silver: #C0C0C0;
+$gray: #CDCDCD;
+$slate-gray: #708090;
 
-	moccasinTheme: #FFFFE0,
+$smoke-white: #EEEFF1;
+$white: #FFF;
 
-	blackTheme: #000000,
-	lowBlackTheme: #333333
-);
+$moccasin: #FFFFE0;
+
+$black: #000;
+$low-black: #333;
 
 /* ----------------------- MIX-INS ----------------------------- */
 
@@ -46,13 +43,10 @@ $COLORS:
  *
  * @author kinsho
  */
-@mixin setGradient($initialColor, $endColor, $direction: left)
-{
-	background-color: $initialColor; // In the rare event that the user is on a browser that does not support gradients, set a default color
-	background-image: -webkit-linear-gradient($direction, $initialColor, $endColor);
-	background-image: -moz-linear-gradient($direction, $initialColor, $endColor);
-	background-image: -ms-linear-gradient($direction, $initialColor, $endColor);
-	background-image: -o-linear-gradient($direction, $initialColor, $endColor);
+@mixin set-gradient($initialColor, $endColor, $direction: left) {
+	/* stylelint-disable */
+	background: linear-gradient($direction, $initialColor, $endColor);
+	/* stylelint-enable */
 }
 
 /*
@@ -60,18 +54,12 @@ $COLORS:
  *
  * @author kinsho
  */
-@mixin adjustColor($selectedColor, $lighten: false, $darken: false)
-{
-	@if ($lighten) 
-	{
-		color: color.scale(map-get($COLORS, $selectedColor), $lightness: 20%);
-	} 
-	@else if ($darken)
-	{
-		color: color.scale(map-get($COLORS, $selectedColor), $lightness: -20%);
-	}
-	@else
-	{
-		color: map-get($COLORS, $selectedColor);
+@mixin adjust-color($selectedColor, $lighten: false, $darken: false) {
+	@if $lighten {
+		color: color.scale($selectedColor, $lightness: 20%);
+	} @else if $darken {
+		color: color.scale($selectedColor, $lightness: -20%);
+	} @else {
+		color: $selectedColor;
 	}
 }

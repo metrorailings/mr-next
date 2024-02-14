@@ -55,7 +55,7 @@ const LoginPage = () => {
 
 		if (errors.length === 0) {
 			try {
-				const response = await httpRequest(AUTH_API.LOG_IN, 'POST', credentials);
+				const response = await httpRequest(AUTH_API.POST_LOG_IN, 'POST', credentials);
 				storeUserSession(response);
 
 				// Move to the dashboard page

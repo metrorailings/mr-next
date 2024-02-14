@@ -1,46 +1,38 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/fonts';
-@import 'public/styles/foundation/colors';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/colors';
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
-%page_header
-{
-	@include basicFontSettings($size: header, $family: 'Comfortaa');
+%page-header {
+	@include fonts.define-font($size: fonts.$header, $family: 'Comfortaa');
 
-	margin:
-	{
+	margin: {
 		top: 20px;
-		bottom: 0px;
 	}
 
 	text-align: center;
 }
 
-%page_divider
-{
-	margin:
-	{
+%page-divider {
+	margin: {
 		top: 20px;
 		bottom: 20px;
 	}
 
 	width: 100%;
 	height: 1px;
-	background-color: map-get($COLORS, lowBlackTheme);
+	background-color: colors.$low-black;
 }
 
-%section_divider
-{
-	margin:
-	{
+%section-divider {
+	margin: {
 		top: 5px;
 		bottom: 5px;
 	}
 
 	width: 100%;
 	height: 0.5px;
-	background-color: map-get($COLORS, grayTheme);
-
+	background-color: colors.$gray;
 }

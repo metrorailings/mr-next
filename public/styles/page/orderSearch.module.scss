@@ -80,6 +80,7 @@
 
 	margin: 0px;
 	background-color: map-get($COLORS, whiteTheme);
+	box-shadow: 0.5px 0.5px 2px map-get($COLORS, blackTheme);
 }
 
 .filter_value_icon

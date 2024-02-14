@@ -3,6 +3,7 @@
 @import 'public/styles/foundation/colors';
 @import 'public/styles/foundation/fonts';
 @import 'public/styles/foundation/responsive';
+@import 'public/styles/foundation/animations';
 
 /* ------------------ ANIMATIONS ----------------------- */
 
@@ -10,22 +11,22 @@
 {
 	0%
 	{
-		@include scaleTransition($length: 0, $width: 0);
+		transform:scale(0, 0);
 	}
 
 	40%
 	{
-		@include scaleTransition($length: 1, $width: 1);
+		transform:scale(1, 1);
 	}
 
 	80%
 	{
-		@include scaleTransition($length: 0, $width: 0);
+		transform:scale(0, 0);
 	}
 
 	100%
 	{
-		@include scaleTransition($length: 0, $width: 0);
+		transform:scale(0, 0);
 	}
 }
 

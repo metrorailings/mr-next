@@ -10,8 +10,7 @@
  *
  * @author kinsho
  */
-@mixin transitionSettings($property, $timing: ease, $duration: 2s, $delay: 0s)
-{
+@mixin transition-settings($property, $timing: ease, $duration: 2s, $delay: 0s) {
 	transition-property: $property;
 	transition-timing-function: $timing;
 	transition-duration: $duration;
@@ -31,67 +30,32 @@
  *
  * @author kinsho
  */
-@mixin animationSettings($keyframeSet: false, $duration: false, $timing: false, $delay: false, $iterations: 1, $direction: normal, $persist: false)
-{
-	@if ($keyframeSet)
-	{
+@mixin animation-settings($keyframeSet: false, $duration: false, $timing: false, $delay: false, $iterations: 1, $direction: normal, $persist: false) {
+	@if $keyframeSet {
 		animation-name: $keyframeSet;
-		-webkit-animation-name: $keyframeSet;
-		-moz-animation-name: $keyframeSet;
-		-ms-animation-name: $keyframeSet;
-		-o-animation-name: $keyframeSet;
 	}
 
-	@if ($duration)
-	{
+	@if $duration {
 		animation-duration: $duration;
-		-webkit-animation-duration: $duration;
-		-moz-animation-duration: $duration;
-		-ms-animation-duration: $duration;
-		-o-animation-duration: $duration;
 	}
 
-	@if ($timing)
-	{
+	@if $timing {
 		animation-timing-function: $timing;
-		-webkit-animation-timing-function: $timing;
-		-moz-animation-timing-function: $timing;
-		-ms-animation-timing-function: $timing;
-		-o-animation-timing-function: $timing;
 	}
 
-	@if ($delay)
-	{
+	@if $delay {
 		animation-delay: $delay;
-		-webkit-animation-delay: $delay;
-		-moz-animation-delay: $delay;
-		-ms-animation-delay: $delay;
-		-o-animation-delay: $delay;
 	}
 
-	@if ($direction)
-	{
+	@if $direction {
 		animation-direction: $direction;
-		-webkit-animation-direction: $direction;
-		-moz-animation-direction: $direction;
-		-ms-animation-direction: $direction;
-		-o-animation-direction: $direction;
 	}
 
-	@if ($persist)
-	{
+	@if $persist {
 		animation-fill-mode: forwards;
-		-webkit-animation-fill-mode: forwards;
-		-moz-animation-fill-mode: forwards;
-		-ms-animation-fill-mode: forwards;
-		-o-animation-fill-mode: forwards;
 	}
 
 	animation-iteration-count: $iterations;
-	-webkit-animation-iteration-count: $iterations;
-	-moz-animation-iteration-count: $iterations;
-	-ms-animation-iteration-count: $iterations;
-	-o-animation-iteration-count: $iterations;
 }
 
 /*
@@ -103,30 +67,8 @@
  *
  * @author kinsho
  */
-@mixin keyframes($name)
-{
-	@keyframes #{$name}
-	{
-		@content;
-	}
-
-	@-webkit-keyframes #{$name}
-	{
-		@content;
-	}
-
-	@-moz-keyframes #{$name}
-	{
-		@content;
-	}
-
-	@-ms-keyframes #{$name}
-	{
-		@content;
-	}
-
-	@-o-keyframes #{$name}
-	{
+@mixin keyframes($name) {
+	@keyframes #{$name} {
 		@content;
 	}
 }

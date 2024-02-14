@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faFile, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 import { publish } from 'lib/utils';
-import { SubLoader } from 'lib/loaderIcons';
 import { acceptableMediaExtensions } from 'lib/dictionary';
+import { SubLoader } from 'components/loaderIcons';
 
 const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
 

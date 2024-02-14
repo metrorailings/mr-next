@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { upload } from '@vercel/blob/client';
 
 import styles from "public/styles/page/lib/file_upload.module.scss";
@@ -14,8 +14,7 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 	existingFiles = existingFiles || [];
 	const [media, setMedia] = useState(existingFiles.filter((file) => acceptableMediaExtensions[file.name.split('.').pop().toLowerCase()]));
 	const [nonMedia, setNonMedia] = useState(existingFiles.filter((file) => !(acceptableMediaExtensions[file.name.split('.').pop().toLowerCase()])));
-
-	const userProfile = getUserSession();
+	const [user, setUser] = useState(null);
 
 	const uploadFiles = async (event) => {
 		event.preventDefault();
@@ -40,30 +39,25 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 
 	const uploadLink = useRef();
 
+	useEffect(() => {
+		setUser(getUserSession());
+	}, []);
+
 	return (
 		<>
-			{ userProfile?.permissions?.uploadFile ? (
+			{ user?.permissions?.uploadFile ? (
 				<>
 					<div className={ styles.file_upload_section }>
-						<div className={ styles.file_upload_form }>
-							<span className={ styles.label }>Upload a File?</span>
-							<button className={ styles._upload_file_type } onClick={() => uploadLink.current.click() }>Upload Media/File</button>
-							<input
-								type='file'
-								ref={ uploadLink }
-								className={ styles.file_upload_input }
-								multiple
-								accept='.pdf,.jpeg,.jpg,.mp4,.png'
-								onChange={ uploadFiles }
-							/>
-						</div>
-
-						<div className={ styles.file_uploading_indicators }>
-							<span className={ styles.uploading_text }>Processing</span>
-							<span className={ styles.loading_ball }></span>
-							<span className={ styles.loading_ball }></span>
-							<span className={ styles.loading_ball }></span>
-						</div>
+						<span className={ styles.label }>Upload a File?</span>
+						<button className={ styles.upload_file_button } onClick={() => uploadLink.current.click() }>Upload Media/File</button>
+						<input
+							type='file'
+							ref={ uploadLink }
+							className={ styles.file_upload_input }
+							multiple
+							accept='.pdf,.jpeg,.jpg,.mp4,.png'
+							onChange={ uploadFiles }
+						/>
 					</div>
 				</>
 			) : null }
@@ -73,17 +67,17 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 				{ media.length ? (
 					<div className={ styles.files_container }>
 						<div className={ styles.upload_container_header }>
-							{ userProfile.role === "shop" ? "Fotos" : "Pictures" }
+							{ user?.role === "shop" ? "Fotos" : "Pictures" }
 						</div>
 						{ !!(lazyLoad) === false ? (
 							<GalleryViewer
 								files={ media }
 								imgWidth={ 64 }
 								imgHeight={ 64 }
-								allowDelete={ userProfile.role === "admin" || userProfile.role === "office" }
+								allowDelete={ user?.role === "admin" || user?.role === "office" }
 							/>
 						) : (
-							userProfile.role === "shop" ?  "Cargar Todas Las Fotos..." : "Load All Pictures..."
+							user?.role === "shop" ?  "Cargar Todas Las Fotos..." : "Load All Pictures..."
 						)}
 					</div>
 				) : null }
@@ -91,17 +85,17 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 				{ nonMedia.length ? (
 					<div className={ styles.files_container }>
 						<div className={ styles.upload_container_header }>
-							{ userProfile.role === "shop" ? "Dibujos" : "Drawings" }
+							{ user?.role === "shop" ? "Dibujos" : "Drawings" }
 						</div>
 						{ !!(lazyLoad) === false ? (
 							<GalleryViewer
 								files={ nonMedia }
 								imgWidth={ 64 }
 								imgHeight={ 64 }
-								allowDelete={ userProfile.role === "admin" || userProfile.role === "office" }
+								allowDelete={ user?.role === "admin" || user?.role === "office" }
 							/>
 						) : (
-							userProfile.role === "shop" ?  "Cargar Todos Los Dibujos..." : "Load All Drawings..."
+							user?.role === "shop" ?  "Cargar Todos Los Dibujos..." : "Load All Drawings..."
 						)}
 					</div>
 				) : null }
