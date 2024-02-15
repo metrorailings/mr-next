@@ -128,6 +128,105 @@
 	}
 }
 
+// Specialized input container meant to stow icons besides form fields
+%input-grouping {
+	margin: {
+		top: 5px;
+		bottom: 15px;
+	}
+
+	border: {
+		width: 1px;
+		radius: 5px;
+		style: solid;
+		color: colors.$gray;
+	}
+
+	display: inline-flex;
+	position: relative;
+	align-items: center;
+	width: 500px;
+
+	& > .input-grouping-icon {
+		color: colors.$slate-gray;
+		width: 50px;
+		height: 2em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&:first-child {
+			border-right: {
+				width: 0.5px;
+				color: colors.$gray;
+				style: solid;
+			}
+		}
+
+		&:last-child {
+			border-left: {
+				width: 0.5px;
+				color: colors.$gray;
+				style: solid;
+			}
+
+			cursor: pointer;
+		}
+	}
+
+	& > input {
+		margin: {
+			left: 5px;
+			right: 5px;
+		}
+
+		border: none;
+		box-shadow: none;
+		flex: 1;
+	}
+}
+
+// Styling for customized button sets
+%buttonset {
+	& > label {
+		@include animations.transition-settings($property: all, $duration: 0.5s);
+
+		border: {
+			width: 1px;
+			style: solid;
+			color: colors.$black;
+		}
+
+		padding: 10px;
+		cursor: pointer;
+		background-color: colors.$silver;
+		color: colors.$black;
+
+		&:first-of-type {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+		}
+
+		&:last-of-type {
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+		}
+
+		&.selected {
+			background-color: colors.$gray;
+			color: colors.$white;
+		}
+	}
+
+	& > input {
+		display: none;
+	}
+
+	&.disabled {
+		opacity: 0.4;
+	}
+}
+
 /* ----------------------- STYLES ----------------------------- */
 
 .label {
@@ -242,100 +341,5 @@ textarea.input-control {
 
 	&:checked + label::before {
 		color: colors.$success;
-	}
-}
-
-// Specialized input container meant to stow icons besides form fields
-.input-grouping {
-	margin: {
-		top: 5px;
-		bottom: 15px;
-	}
-
-	border: {
-		width: 1px;
-		radius: 5px;
-		style: solid;
-		color: colors.$gray;
-	}
-
-	display: inline-flex;
-	position: relative;
-	align-items: center;
-	width: 500px;
-
-	& > .input-grouping-icon {
-		color: colors.$slate-gray;
-		width: 50px;
-		height: 2em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		&:first-child {
-			border-right: {
-				width: 0.5px;
-				color: colors.$gray;
-				style: solid;
-			}
-		}
-
-		&:last-child {
-			border-left: {
-				width: 0.5px;
-				color: colors.$gray;
-				style: solid;
-			}
-
-			cursor: pointer;
-		}
-	}
-
-	& > input {
-		margin: {
-			left: 5px;
-			right: 5px;
-		}
-
-		border: none;
-		box-shadow: none;
-		flex: 1;
-	}
-}
-
-
-// Styling for customized button sets
-.buttonset {
-	& > label {
-		@include animations.transition-settings($property: all, $duration: 0.5s);
-
-		border: {
-			width: 1px;
-			style: solid;
-			color: colors.$black;
-		}
-
-		padding: 10px;
-		cursor: pointer;
-		background-color: colors.$silver;
-		color: colors.$black;
-
-		&:first-of-type {
-			border-top-left-radius: 10px;
-			border-bottom-left-radius: 10px;
-		}
-
-		&:last-of-type {
-			border-top-right-radius: 10px;
-			border-bottom-right-radius: 10px;
-		}
-	}
-
-	& > input {
-		display: none;
-	}
-
-	&.disabled {
-		opacity: 0.4;
 	}
 }

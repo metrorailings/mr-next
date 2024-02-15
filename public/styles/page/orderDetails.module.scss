@@ -1,52 +1,13 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/common';
+@use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/form';
+@use 'public/styles/foundation/responsive';
 
-@import 'public/styles/page/lib/form';
+/* ----------------------- PLACEHOLDERS ----------------------------- */
 
-/* ----------------------- STYLES ----------------------------- */
-
-#page_container
-{
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	flex-direction: column;
-}
-
-.page_header
-{
-	@extend %page_header;
-}
-
-.page_divider
-{
-	@extend %page_divider;
-}
-
-.section_divider
-{
-	@extend %section_divider;
-}
-
-.order_form_section
-{
-	margin:
-	{
-		top: 10px;
-		bottom: 10px;
-		left: 20px;
-		right: auto;
-	}
-
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.input_group
-{
-	margin:
-	{
+%input-group {
+	margin: {
 		top: 5px;
 		left: 10px;
 		right: 10px;
@@ -57,48 +18,83 @@
 	flex-direction: column;
 }
 
-.small_input_group
-{
-	@extend .input_group;
+/* ----------------------- STYLES ----------------------------- */
+
+#page-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: column;
+}
+
+.page-header {
+	@extend %page_header;
+}
+
+.page-divider {
+	@extend %page_divider;
+}
+
+.section-divider {
+	@extend %section_divider;
+}
+
+.order-form-section {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+		left: 20px;
+		right: auto;
+	}
+
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.small-input-group {
+	@extend %input_group;
 
 	flex: 1;
 }
 
-.medium_input_group
-{
-	@extend .input_group;
+.medium-input-group {
+	@extend %input_group;
 
 	flex: 2;
 }
 
-.large_input_group
-{
-	@extend .input_group;
+.large-input-group {
+	@extend %input_group;
 
 	flex: 3;
 }
 
-.input_sub_group
-{
+.input-sub-group {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 }
 
-.design_input_group
-{
+.design-input-group {
 	display: flex;
 
-	& > textarea
-	{
-		@extend .medium_input_control;
+	& > textarea {
+		@extend %input_control;
 
-		margin:
-		{
+		margin: {
 			left: 7px;
 			right: 7px;
 		}
 
 		height: 6em;
+
+		@include responsive.tablet-up() {
+			min-width: 250px;
+			max-width: 350px;
+		}
+		@include responsive.phone-only() {
+			min-width: 200px;
+			max-width: 275px;
+		}
 	}
 }

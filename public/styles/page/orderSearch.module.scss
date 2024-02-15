@@ -1,47 +1,71 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/colors';
-@import 'public/styles/foundation/common';
+@use 'public/styles/foundation/colors';
+@use 'public/styles/foundation/common';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/animations';
+@use 'public/styles/page/lib/form';
 
-@import 'public/styles/page/lib/form';
+/* ----------------------- PLACEHOLDERS ----------------------------- */
+
+%column-header {
+	@include fonts.define-font($size: fonts.$section, $family: Comfortaa);
+}
+
+%order-box-column {
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	& > div {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+%order-box-section-header {
+	@include fonts.define-font($family: Avenir Heavy);
+
+	padding: {
+		top: 10px;
+		bottom: 10px;
+	}
+	border-bottom: {
+		width: 0.75px;
+		style: solid;
+		color: colors.$slate-gray;
+	}
+
+	background-color: colors.$lavender;
+}
 
 /* ----------------------- STYLES ----------------------------- */
 
-#page_container
-{
+#page-container {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;
 }
 
-.section_divider
-{
+.section-divider {
 	@extend %section_divider;
 }
 
-%column_header
-{
-	@include basicFontSettings($size: section, $family: 'Comfortaa');
-}
-
-#page_button_section
-{
+#page-button-section {
 	margin: 25px;
-
-	text-align: center;
 	width: 100%;
+	text-align: center;
 }
 
-#create_order_button
-{
-	@include primaryButton($width: 250px);
+#create-order-button {
+	@include form.primary-button($width: 250px);
 }
 
-#filter_section
-{
-	margin:
-	{
+#filter-section {
+	margin: {
 		top: 15px;
 		bottom: 15px;
 		left: 25px;
@@ -52,108 +76,65 @@
 	width: 100%;
 }
 
-.filter_row
-{
-	width: 90%;
-
+.filter-row {
 	display: flex;
+	width: 90%;
 	align-items: center;
 }
 
-.filter_label
-{
-	@include basicFontSettings($size: default, $family: 'Comfortaa');
+.filter-label {
+	@include fonts.define-font($family: Comfortaa);
 
 	margin: 20px;
 }
 
-.filter_values
-{
-	@include basicFontSettings($size: default, $family: 'Avenir Light');
+.filter-values {
+	@include fonts.define-font($family: Avenir Light);
 
 	flex-grow: 1;
 }
 
-.filter_input_grouping
-{
-	@extend .input_grouping;
+.filter-input-grouping {
+	@extend %input_grouping;
 
-	margin: 0px;
-	background-color: map-get($COLORS, whiteTheme);
-	box-shadow: 0.5px 0.5px 2px map-get($COLORS, blackTheme);
+	margin: 0;
+	background-color: colors.$white;
+	box-shadow: 0.5px 0.5px 2px colors.$black;
 }
 
-.filter_value_icon
-{
-	border:
-	{
+.filter-value-icon {
+	border: {
 		width: 0.5px;
-		color: map-get($COLORS, grayTheme);
+		color: colors.$gray;
 		style: solid;
-
 		left: none;
 	}
 
 	height: 2em;
 	width: 50px;
 	cursor: pointer;
-	color: map-get($COLORS, slateGrayTheme);
+	color: colors.$slate-gray;
 	display: inline-block;
 }
 
-.status_value
-{
-	@include transitionSettings($property: all, $duration: 0.5s);
-
-	border:
-	{
-		width: 1px;
-		style: solid;
-		color: map-get($COLORS, blackTheme);
-	}
-	padding: 10px;
-
-	cursor: pointer;
-	background-color: map-get($COLORS, faintSilverTheme);
-	color: map-get($COLORS, blackTheme);
-
-	&:first-of-type
-	{
-		border-top-left-radius: 10px;
-		border-bottom-left-radius: 10px;
-	}
-
-	&:last-of-type
-	{
-		border-top-right-radius: 10px;
-		border-bottom-right-radius: 10px;
-	}
-
-	&.selected
-	{
-		background-color: map-get($COLORS, grayTheme);
-		color: map-get($COLORS, whiteTheme);
-	}
+.status-values {
+	@extend %buttonset;
 }
 
-#orders_listing
-{
+#orders-listing {
 	width: 100%;
 }
 
-.order_box
-{
-	@include basicFontSettings();
+.order-box {
+	@include fonts.define-font();
 
-	border:
-	{
+	border: {
 		width: 2px;
 		style: solid;
-		color: map-get($COLORS, slateGrayTheme);
+		color: colors.$slate-gray;
 		radius: 15px;
 	}
-	margin:
-	{
+	margin: {
 		left: auto;
 		right: auto;
 		top: 40px;
@@ -167,35 +148,17 @@
 	flex-direction: column;
 }
 
-.order_box_info_row
-{
+.order-box-info-row {
 	width: 100%;
 	display: flex;
 	justify-content: flex-start;
 }
 
-.order_box_column
-{
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-
-	& > div
-	{
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-}
-
-.order_box_customer_info_sub_column
-{
-	outline:
-	{
+.order-box-customer-info-sub-column {
+	outline: {
 		width: 0.75px;
 		style: solid;
-		color: map-get($COLORS, slateGrayTheme);
+		color: colors.$slate-gray;
 	}
 
 	display: flex;
@@ -203,94 +166,83 @@
 	flex-direction: column;
 }
 
-.order_box_section_header
-{
-	@include basicFontSettings($family: 'Avenir 85 Heavy');
+.order-box-section-header {
+	@include fonts.define-font($family: Avenir Heavy);
 
-	padding:
-	{
+	padding: {
 		top: 10px;
 		bottom: 10px;
 	}
-	border-bottom:
-	{
+	border-bottom: {
 		width: 0.75px;
 		style: solid;
-		color: map-get($COLORS, slateGrayTheme);
+		color: colors.$slate-gray;
 	}
 
-	background-color: map-get($COLORS, lavenderTheme);
+	background-color: colors.$lavender;
 }
 
-.order_box_general_info_column
-{
-	@extend .order_box_column;
+.order-box-general-info-column {
+	@extend %order-box-column;
 
 	flex: 2;
 }
 
-.order_box_customer_info_column
-{
-	@extend .order_box_column;
+.order-box-customer-info-column {
+	@extend %order-box-column;
 
 	flex: 3;
 }
 
-.order_box_date_column
-{
-	@extend .order_box_column;
+.order-box-date-column {
+	@extend %order-box-column;
 
 	flex: 2;
 }
 
-.order_box_general_info_header
-{
-	@extend .order_box_section_header;
+.order-box-general-info-header {
+	@extend %order-box-section-header;
 }
 
-.order_box_dates_header
-{
-	@extend .order_box_section_header;
+.order-box-dates-header {
+	@extend %order-box-section-header;
 
-	border-top-right-radius: 15px;
+	border: {
+		top-right-radius: 15px;
+	}
 }
 
-.order_box_id
+.order-box-id
 {
-	@include basicFontSettings($size: section);
+	@include fonts.define-font($size: fonts.$section);
 
-	border:
-	{
+	border: {
 		top-left-radius: 15px;
 	}
 
-	background-color: map-get($COLORS, lavenderTheme);
+	background-color: colors.$lavender;
 	height: 50%;
 	letter-spacing: 2px;
 }
 
-.order_box_status
-{
-	@include basicFontSettings($size: section);
+.order-box-status {
+	@include fonts.define-font($size: fonts.$section);
 
-	border:
-	{
+	border: {
 		width: 0.75px;
 		style: solid;
-		color: map-get($COLORS, slateGrayTheme);
+		color: colors.$slate-gray;
 	}
 
-	color: map-get($COLORS, greenSuccessTheme);
+	color: colors.$success;
 	height: 50%;
 }
 
-.order_box_datum
-{
-	border:
-	{
+.order-box-datum {
+	border: {
 		width: 0.5px;
 		style: solid;
-		color: map-get($COLORS, grayTheme);
+		color: colors.$gray;
 
 		bottom: none;
 	}
@@ -300,29 +252,24 @@
 	justify-content: flex-start;
 	width: 100%;
 
-	& > span, & > a
-	{
-		padding:
-		{
+	& > span, & > a {
+		padding: {
 			top: 10px;
 			bottom: 10px;
 			left: 10px;
 			right: 5px;
 		}
 
-		border-left:
-		{
+		border-left: {
 			width: 0.5px;
 			style: solid;
-			color: map-get($COLORS, silverTheme);
+			color: colors.$silver;
 		}
 	}
 }
 
-.order_box_date_datum
-{
-	margin:
-	{
+.order-box-date-datum {
+	margin: {
 		top: 15px;
 		bottom: 15px;
 		left: 5px;
@@ -333,10 +280,8 @@
 	flex-direction: column;
 }
 
-.order_box_icon
-{
-	padding:
-	{
+.order-box-icon {
+	padding: {
 		top: 10px;
 		bottom: 10px;
 		left: 10px;
@@ -344,13 +289,11 @@
 	}
 
 	width: 25px;
-	color: map-get($COLORS, slateGrayTheme);
+	color: colors.$slate-gray;
 }
 
-.order_box_date_label
-{
-	margin:
-	{
+.order-box-date-label {
+	margin: {
 		bottom: 5px;
 	}
 

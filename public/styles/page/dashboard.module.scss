@@ -1,52 +1,47 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/fonts';
-@import 'public/styles/foundation/common';
-@import 'public/styles/foundation/animations';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/common';
+@use 'public/styles/foundation/animations';
+@use 'public/styles/foundation/colors';
 
 /* ----------------------- STYLES ----------------------------- */
 
-#page_container
-{
+#page-container {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;
 }
 
-.page_header
-{
-	@extend %page_header;
+.page-header {
+	@extend %page-header;
 }
 
-.page_divider
-{
+.page-divider {
 	@extend %page_divider;
 }
 
-#dashboard_bubbles_container
-{
+#dashboard-bubbles-container {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: flex-start;
 }
 
-.dashboard_bubble
-{
-	@include basicFontSettings();
+.dashboard-bubble {
+	@include fonts.define-font();
 
-	border:
-	{
+	border: {
 		width: 0.5px;
-		color: map-get($COLORS, grayTheme);
+		color: colors.$gray;
 		style: solid;
 
 		top-left-radius: 10px;
 		top-right-radius: 10px;
 	}
-	margin:
-	{
+
+	margin: {
 		top: 20px;
 		bottom: 20px;
 		left: 1.75%;
@@ -55,98 +50,83 @@
 
 	width: 20%;
 	position: relative;
-	box-shadow: 1px 1px 7px map-get($COLORS, lowBlackTheme);
+	box-shadow: 1px 1px 7px colors.$low-black;
 	text-align: center;
-	background-color: map-get($COLORS, whiteTheme);
+	background-color: colors.$white;
 }
 
-.dashboard_bubble_body
-{
+.dashboard-bubble-body {
 	min-height: 50px;
 }
 
-.dashboard_bubble_customer_name
-{
-	@include basicFontSettings($family: "Avenir Heavy");
+.dashboard-bubble-customer-name {
+	@include fonts.define-font($family: Avenir Heavy);
 
 	padding: 10px;
-	background-color: map-get($COLORS, silverTheme);
+	background-color: colors.$silver;
 }
 
-.dashboard_bubble_company_text
-{
+.dashboard-bubble-company-text {
 	font-style: italic;
 }
 
-.dashboard_bubble_info
-{
-	border-top:
-	{
+.dashboard-bubble-info {
+	border-top: {
 		width: 0.5px;
 		style: solid;
 	}
 
-	& > div
-	{
-		margin:
-		{
+	& > div {
+		margin: {
 			top: 5px;
 			bottom: 5px;
 		}
 	}
 }
 
-.dashboard_bubble_task
-{
-	@include basicFontSettings($size: secondary);
+.dashboard-bubble-task {
+	@include fonts.define-font($size: fonts.$secondary);
 
 	padding: 5px;
-	background-color: map-get($COLORS, silverTheme);
+	background-color: colors.$silver;
 }
 
-.dashboard_bubble_navigator
-{
-	border:
-	{
+.dashboard-bubble-navigator {
+	border: {
 		radius: 50%;
 		width: 2px;
 		style: solid;
 	}
-	padding: 8px;
 
+	padding: 8px;
 	position: absolute;
 	transform: translate(-50%, -50%);
-	background-color: map-get($COLORS, steelBlueTheme);
-	color: map-get($COLORS, whiteTheme);
+	background-color: colors.$steel-blue;
+	color: colors.$white;
 	width: 35px;
 	top: 5px;
 	left: 95%;
 	cursor: pointer;
 }
 
-.dashboard_bubble_due_date
-{
-	@include basicFontSettings($size: secondary);
+.dashboard-bubble-due-date {
+	@include fonts.define-font($size: fonts.$secondary);
 
-	transform:translate(-50%, -50%);
-
-	border:
-	{
+	border: {
 		radius: 50%;
 		width: 2px;
 		style: solid;
-		color: map-get($COLORS, blackTheme);
+		color: colors.$black;
 	}
 
 	padding: 12px;
+	transform:translate(-50%, -50%);
 	width: 35px;
-	background-color: map-get($COLORS, whiteTheme);
-	color: map-get($COLORS, blackTheme);
-
+	background-color: colors.$white;
+	color: colors.$black;
 	position: absolute;
-	top: 0px;
+	top: 0;
 	left: 95%;
-
 	display: flex;
 	align-items: center;
 	justify-content: center;

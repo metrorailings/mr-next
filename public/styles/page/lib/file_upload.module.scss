@@ -1,15 +1,13 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/fonts';
-@import 'public/styles/foundation/colors';
-@import 'public/styles/page/lib/form';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/colors';
+@use 'public/styles/page/lib/form';
 
 /* ----------------------- STYLES ----------------------------- */
 
-.file_upload_section
-{
-	margin:
-	{
+.file-upload-section {
+	margin: {
 		top: 15px;
 		bottom: 15px;
 		left: auto;
@@ -17,21 +15,18 @@
 	}
 }
 
-.upload_file_button
-{
-	@include smallButton($width: 450px);
+.upload-file-button {
+	@include form.small-button($width: 450px);
 }
 
-.upload_file_input
-{
-	margin: 0px;
-	padding: 0px;
-	width: 1px;
+.upload-file-input {
+	margin: 0;
+	padding: 0;
 	opacity: 0;
+	width: 1px;
 }
 
-.files_listing
-{
+.files-listing {
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;

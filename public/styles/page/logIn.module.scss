@@ -1,25 +1,21 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/colors';
-@inport 'public/styles/foundation/fonts';
-@import 'public/styles/foundation/common';
-
-@import 'public/styles/page/lib/form';
+@use 'public/styles/foundation/colors';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/form';
 
 /* ----------------------- STYLES ----------------------------- */
 
-#page_container
-{
+#page-container {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;
 }
 
-.logo_header_container
-{
-	margin:
-	{
+.logo-header-container {
+	margin: {
 		top: 50px;
 		bottom: 25px;
 	}
@@ -27,59 +23,49 @@
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	background-color: map-get($COLORS, logoBlueTheme);
+	background-color: colors.$logo-blue;
 }
 
-.logo_header
-{
+.logo-header {
 	width: 180px;
 	height: 135px;
 }
 
-.c_suite_header
-{
+.c-suite-header {
 	@extend %page_header;
 }
 
-#login_box
-{
-	margin:
-	{
+#login-box {
+	margin: {
 		left: auto;
 		right: auto;
 	}
 
-	border:
-	{
-		width: 0px;
+	border: {
+		width: 0;
 		radius: 20px;
 		style: solid;
 	}
 
-	background-color: map-get($COLORS, whiteTheme);
-	box-shadow: 3px 3px 10px map-get($COLORS, lowBlackTheme);
+	background-color: colors.$white;
+	box-shadow: 3px 3px 10px colors.$low-black;
 }
 
-#login_box_body
-{
-	padding:
-	{
+#login-box-body {
+	padding: {
 		top: 15px;
 		bottom: 15px;
 		left: 30px;
 		right: 30px;
 	}
 
-	& > label
-	{
+	& > label {
 		display: block;
 	}
 }
 
-#remember_me
-{
-	margin:
-	{
+#remember-me {
+	margin: {
 		top: 10px;
 		bottom: 10px;
 	}
@@ -87,12 +73,10 @@
 	text-align: left;
 }
 
-.button_primary
-{
-	@include bannerButton();
+.button-primary {
+	@include form.banner-button();
 
-	border:
-	{
+	border: {
 		bottom-left-radius: 20px;
 		bottom-right-radius: 20px;
 	}

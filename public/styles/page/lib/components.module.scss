@@ -1,123 +1,108 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@import 'public/styles/foundation/colors';
-@import 'public/styles/foundation/fonts';
-@import 'public/styles/foundation/responsive';
-@import 'public/styles/foundation/animations';
+@use 'public/styles/foundation/colors';
+@use 'public/styles/foundation/fonts';
+@use 'public/styles/foundation/responsive';
+@use 'public/styles/foundation/animations';
 
 /* ------------------ ANIMATIONS ----------------------- */
 
-@include keyframes($name: bouncingBalls)
-{
-	0%
-	{
+@include animations.keyframes($name: bouncingBalls) {
+	0% {
 		transform:scale(0, 0);
 	}
 
-	40%
-	{
+	40% {
 		transform:scale(1, 1);
 	}
 
-	80%
-	{
+	80% {
 		transform:scale(0, 0);
 	}
 
-	100%
-	{
+	100% {
 		transform:scale(0, 0);
 	}
 }
 
-@include keyframes($name: fadeIntoView)
-{
-	0%
-	{
+@include animations.keyframes($name: fadeIntoView) {
+	0% {
 		opacity: 0.0;
 	}
 
-	70%
-	{
+	70% {
 		opacity: 0.0;
 	}
 
-	100%
-	{
+	100% {
 		opacity: 1.0;
 	}
 }
 
 /* ----------------------- TOAST ----------------------------- */
 
-.custom_error_toast
-{
-	@include basicFontSettings($size: secondary, $family: "Poppins")
-	{
-		color: map-get($COLORS, whiteTheme);
+.custom-error-toast {
+	@include fonts.define-font($size: fonts.$secondary, $family: Poppins) {
+		color: colors.$white;
 	};
 
-	padding: 10px;
-	border-radius: 20px;
-	background-color: map-get($COLORS, negativeRedTheme);
-
-	@include tabletUp()
-	{
-		min-width: 250px;
-		max-wdith: 500px;
+	border: {
+		radius: 20px;
 	}
 
-	@include phoneOnly()
-	{
+	padding: 10px;
+	background-color: colors.$negative-red;
+
+	@include responsive.tablet-up() {
+		min-width: 250px;
+		max-width: 500px;
+	}
+
+	@include responsive.phone-only() {
 		width: 175px;
 		max-width: 300px;
 	}
 
-	.close_icon
-	{
-		padding-right: 40px;
+	.close-icon {
+		padding: {
+			right: 40px;
+		}
+
 		width: 12px;
 		height: 12px;
-		width: 100%;
 		text-align: right;
 		cursor: pointer;
 	}
 
-	.error_icon
-	{
+	.error-icon {
 		width: 100%;
 		text-align: center;
 
-		svg
-		{
+		svg {
 			width: 48px;
 			height: 48px;
 		}
 	}
 
-	.custom_error_body
-	{
+	.custom-error-body {
 		padding: 10px;
 		width: 100%;
 		text-align: left;
 	}
 }
 
-.validation_error_list
-{
+.validation-error-list {
 	text-align: left;
 
-	& > li
-	{
+	& > li {
 		text-align: left;
 	}
 }
 
 /* ----------------------- LOADERS ----------------------------- */
 
-#base_loader_overlay
-{
-	@include transitionSettings($property: opacity, $duration: 0.3s);
+#base-loader-overlay {
+	@include animations.transition-settings($property: opacity, $duration: 0.3s);
 
 	position: fixed;
 	height: 100%;
@@ -128,15 +113,12 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-
-	background-color: map-get($COLORS, whiteTheme);
+	background-color: colors.$white;
 	opacity: 0;
 	z-index: -9999;
 
-	& > div
-	{
-		margin:
-		{
+	& > div {
+		margin: {
 			top: 25px;
 			bottom: 25px;
 		}
@@ -148,29 +130,53 @@
 	}
 }
 
-#loading_text
-{
-	@include basicFontSettings($weight: 700, $size: header, $family: Comfortaa);
-	@include animationSettings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+#loading-text {
+	@include fonts.define-font($weight: 700, $size: fonts.$header, $family: Comfortaa);
+	@include animations.animation-settings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
-	color: map-get($COLORS, cadetBlueTheme);
+	color: colors.$cadet-blue;
 }
 
-.section_loading_text
-{
-	@include basicFontSettings($weight: 700, $size: section, $family: Comfortaa);
-	@include animationSettings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+.section-loading-text {
+	@include fonts.define-font($weight: 700, $size: fonts.$section, $family: Comfortaa);
+	@include animations.animation-settings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
-	color: map-get($COLORS, cadetBlueTheme);
+	color: colors.$cadet-blue;
 }
 
-.uploading_indicators
-{
-	@include transitionSettings($property: opacity, $duration: 0.25s);
+.loading-ball {
+	@include animations.animation-settings($keyframeSet: bouncingBalls, $duration: 1.5s, $timing: ease-in-out, $iterations: infinite);
+
+	margin: {
+		left: 30px;
+		right: 30px;
+	}
+
+	width: 50px;
+	height: 50px;
+	background-color: colors.$cadet-blue;
+	border-radius: 100%;
+	animation-fill-mode: both;
+
+	&:nth-of-type(1) {
+		animation-delay: 0s;
+	}
+
+	&:nth-of-type(2) {
+		animation-delay: 0.15s;
+	}
+
+	&:nth-of-type(3) {
+		animation-delay: 0.3s;
+	}
+}
+
+.uploading-indicators {
+	@include animations.transition-settings($property: opacity, $duration: 0.25s);
 
 	position: absolute;
 	top: 0;
@@ -181,61 +187,15 @@
 	opacity: 1.0;
 	z-index: -250;
 
-	& > .section_loading_text
-	{
-		color: map-get($COLORS, indianRedTheme);
+	& > .section-loading-text {
+		color: colors.$indian-red;
 		text-transform: none;
 		width: 100%;
 	}
 
-	& > .loading_ball
-	{
-		background-color: map-get($COLORS, indianRedTheme);
+	& > .loading-ball {
+		background-color: colors.$indian-red;
 		width: 30px;
 		height: 20px;
-	}
-}
-
-.loading_ball
-{
-	@include animationSettings($keyframeSet: bouncingBalls, $duration: 1.5s, $timing: ease-in-out, $iterations: infinite);
-	animation-fill-mode: both;
-
-	margin:
-	{
-		left: 30px;
-		right: 30px;
-	}
-
-	width: 50px;
-	height: 50px;
-	background-color: map-get($COLORS, cadetBlueTheme);
-	border-radius: 100%;
-
-	&:nth-of-type(1)
-	{
-		animation-delay: 0s;
-		-webkit-animation-delay: 0s;
-		-moz-animation-delay: 0s;
-		-ms-animation-delay: 0s;
-		-o-animation-delay: 0s;
-	}
-
-	&:nth-of-type(2)
-	{
-		animation-delay: 0.15s;
-		-webkit-animation-delay: 0.15s;
-		-moz-animation-delay: 0.15s;
-		-ms-animation-delay: 0.15s;
-		-o-animation-delay: 0.15s;
-	}
-
-	&:nth-of-type(3)
-	{
-		animation-delay: 0.3s;
-		-webkit-animation-delay: 0.3s;
-		-moz-animation-delay: 0.3s;
-		-ms-animation-delay: 0.3s;
-		-o-animation-delay: 0.3s;
 	}
 }

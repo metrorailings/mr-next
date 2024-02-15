@@ -1,5 +1,7 @@
-{ 
-  "extends": ["stylelint-config-standard-scss"],
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
   "rules": {
     "scss/dollar-variable-empty-line-before": false,
     "import-notation": "url",
