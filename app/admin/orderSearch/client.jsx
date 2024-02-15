@@ -117,41 +117,41 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 
 	return (
 		<>
-			<div id={styles.page_container}>
-				<div id={styles.page_button_section}>
-					<button id={styles.create_order_button}>Create Order</button>
+			<div id={ styles['page-container'] }>
+				<div id={ styles['page-button-section'] }>
+					<button id={ styles['create-order-button'] }>Create Order</button>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
-				<div id={styles.filter_section}>
-					<div className={styles.filter_row}>
-						<span className={styles.filter_label}>Status</span>
-						<span className={styles.filter_values}>
-							<a className={styles.status_value + (filters.status === '' ? ' ' + styles.selected : '')} data-status='' onClick={ updateStatusFilter }>All</a>
-							<a className={styles.status_value + (filters.status === 'open' ? ' ' + styles.selected : '')} data-status='open' onClick={ updateStatusFilter }>Open</a>
-							<a className={styles.status_value + (filters.status === 'prospect' ? ' ' + styles.selected : '')} data-status='prospect' onClick={ updateStatusFilter }>Prospect</a>
-							<a className={styles.status_value + (filters.status === 'pending' ? ' ' + styles.selected : '')} data-status='pending' onClick={ updateStatusFilter }>Pending Confirmation</a>
-							<a className={styles.status_value + (filters.status === 'material' ? ' ' + styles.selected : '')} data-status='material' onClick={ updateStatusFilter }>Material</a>
-							<a className={styles.status_value + (filters.status === 'shop' ? ' ' + styles.selected : '')} data-status='shop' onClick={ updateStatusFilter }>Production</a>
-							<a className={styles.status_value + (filters.status === 'install' ? ' ' + styles.selected : '')} data-status='install' onClick={ updateStatusFilter }>Install</a>
-							<a className={styles.status_value + (filters.status === 'closing' ? ' ' + styles.selected : '')} data-status='closing' onClick={ updateStatusFilter }>Closing</a>
-							<a className={styles.status_value + (filters.status === 'closed' ? ' ' + styles.selected : '')} data-status='closed' onClick={ updateStatusFilter }>Closed</a>
-							<a className={styles.status_value + (filters.status === 'cancelled' ? ' ' + styles.selected : '')} data-status='cancelled' onClick={ updateStatusFilter }>Cancelled</a>
+				<div id={ styles['filter-section'] }>
+					<div className={ styles.filterRow }>
+						<span className={ styles.filterLabel }>Status</span>
+						<span className={ styles.filterValues }>
+							<a className={ (filters.status === '' ? styles['selected'] : '') } data-status='' onClick={ updateStatusFilter }>All</a>
+							<a className={ (filters.status === 'open' ? styles['selected'] : '') } data-status='open' onClick={ updateStatusFilter }>Open</a>
+							<a className={ (filters.status === 'prospect' ? styles['selected'] : '') } data-status='prospect' onClick={ updateStatusFilter }>Prospect</a>
+							<a className={ (filters.status === 'pending' ? styles['selected'] : '') } data-status='pending' onClick={ updateStatusFilter }>Pending Confirmation</a>
+							<a className={ (filters.status === 'material' ? styles['selected'] : '') } data-status='material' onClick={ updateStatusFilter }>Material</a>
+							<a className={ (filters.status === 'shop' ? styles['selected'] : '') } data-status='shop' onClick={ updateStatusFilter }>Production</a>
+							<a className={ (filters.status === 'install' ? styles['selected'] : '') } data-status='install' onClick={ updateStatusFilter }>Install</a>
+							<a className={ (filters.status === 'closing' ? styles['selected'] : '') } data-status='closing' onClick={ updateStatusFilter }>Closing</a>
+							<a className={ (filters.status === 'closed' ? styles['selected'] : '') } data-status='closed' onClick={ updateStatusFilter }>Closed</a>
+							<a className={ (filters.status === 'cancelled' ? styles['selected'] : '') } data-status='cancelled' onClick={ updateStatusFilter }>Cancelled</a>
 						</span>
 					</div>
-					<div className={styles.filter_row}>
-						<span className={styles.filter_label}>Search</span>
-						<span className={ styles.filter_input_grouping }>
+					<div className={ styles.filterRow }>
+						<span className={ styles.filterLabel }>Search</span>
+						<span className={ styles.filterInputGrouping }>
 							<input
 								id='order_search_text_field'
 								type='text'
-								className={ styles.large_input_control }
+								className={ styles['large_input_control'] }
 								onChange={ updateSearchFilter }
 								placeholder={ 'Search orders using customer information' }
 								value={ filters.search }
 							/>
-							<span className={styles.input_grouping_icon}>
+							<span className={ styles['input-grouping-icon'] }>
 								<FontAwesomeIcon
 									icon={ faCircleXmark }
 									onClick={() => { updateSearchFilter({ currentTarget: { value: '' }}); }}
@@ -161,34 +161,34 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 					</div>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={styles.sectionDivider}></hr>
 
-				<div id={styles.orders_listing}>
+				<div id={ styles['orders-listing'] }>
 					{ filteredOrders.slice(0, filters.page * 10).map((order, index) => {
 						return (
-							<div id={'order_box_' + index} key={index} className={styles.order_box} >
-								<div className={styles.order_box_info_row}>
-									<span className={styles.order_box_general_info_column}>
-										<div className={styles.order_box_id}>{ order._id }</div>
-										<div className={styles.order_box_status}>{ order.status }</div>
+							<div id={'order_box_' + index} key={index} className={ styles.orderBox } >
+								<div className={ styles.orderBoxInfoRow }>
+									<span className={ styles.orderBoxGeneralInfoColumn }>
+										<div className={ styles.orderBoxId }>{ order._id }</div>
+										<div className={ styles.orderBoxStatus }>{ order.status }</div>
 									</span>
 
-									<span className={styles.order_box_customer_info_column}>
-										<div className={styles.order_box_general_info_header}>Customer Info</div>
-										<div className={styles.order_box_customer_info_sub_column}>
+									<span className={ styles.orderBoxCustomerInfoColumn }>
+										<div className={ styles.orderBoxGeneralInfoHeader }>Customer Info</div>
+										<div className={ styles.orderBoxCustomerInfoSubColumn }>
 
-											<div className={styles.order_box_datum}>
-												<FontAwesomeIcon className={styles.order_box_icon} icon={faUserTag} />
+											<div className={ styles.orderBoxDatum }>
+												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faUserTag } />
 												<span>
 													{ order.customer.company ? (
-														<div className={styles.italicized_text}>{ order.customer.company }</div>
+														<div className={ styles.italicized_text }>{ order.customer.company }</div>
 													) : null }
 													<div>{ order.customer.name }</div>
 												</span>
 											</div>
 
-											<div className={styles.order_box_datum}>
-												<FontAwesomeIcon className={styles.order_box_icon} icon={faLocationDot} />
+											<div className={ styles.orderBoxDatum }>
+												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faLocationDot } />
 												<a target='_blank' href={ generateGoogleLink(order.customer) }>
 													{ order.customer.address }
 													<br />
@@ -196,8 +196,8 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 												</a>
 											</div>
 
-											<div className={styles.order_box_datum}>
-												<FontAwesomeIcon className={styles.order_box_icon} icon={faSquareEnvelope} />
+											<div className={ styles.orderBoxDatum }>
+												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faSquareEnvelope } />
 												<span>
 													{ order.customer.email.split(',').map((email, index) => {
 														return (
@@ -207,8 +207,8 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 												</span>
 											</div>
 
-											<div className={styles.order_box_datum}>
-												<FontAwesomeIcon className={styles.order_box_icon} icon={faSquarePhone} />
+											<div className={ styles.orderBoxDatum }>
+												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faSquarePhone } />
 												<a href={ generatePhoneNumber(order.customer) }>
 													{ '(' + order.customer.areaCode + ') ' + order.customer.phoneOne + '-' + order.customer.phoneTwo }
 												</a>
@@ -217,28 +217,28 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 										</div>
 									</span>
 
-									<span className={styles.order_box_date_column}>
-										<div className={styles.order_box_dates_header}>Dates</div>
-										<div className={styles.order_box_customer_info_sub_column}>
+									<span className={ styles.orderBoxDateColumn }>
+										<div className={ styles.orderBoxDatesHeader }>Dates</div>
+										<div className={ styles.orderBoxCustomerInfoSubColumn }>
 
-											<div className={styles.order_box_date_datum}>
-												<div className={styles.order_box_date_label}>Created:</div>
+											<div className={ styles.orderBoxDateDatum }>
+												<div className={ styles.orderBoxDateLabel }>Created:</div>
 												<div>{ order.dates.created + (order.users?.creator ? ' (' + order.users.creator + ')' : '')}</div>
 											</div>
 
-											<div className={ styles.order_box_date_datum }>
+											<div className={ styles.orderBoxDateDatum }>
 												{ order.dates?.lastModified ? (
 													<>
-														<div className={ styles.order_box_date_label }>Last Updated:</div>
+														<div className={ styles.orderBoxDateLabel }>Last Updated:</div>
 														<div>{ order.dates.lastModified + (order.users?.lastModifier ? ' (' + order.users.lastModifier + ')' : '')}</div>
 													</>
 												) : null }
 											</div>
 
-											<div className={ styles.order_box_date_datum }>
+											<div className={ styles.orderBoxDateDatum }>
 												{ order.dates?.due ? (
 													<>
-														<div className={ styles.order_box_date_label }>Due Date:</div>
+														<div className={ styles.orderBoxDateLabel }>Due Date:</div>
 														<div>{ order.dates.due }</div>
 													</>
 												) : null }
@@ -260,7 +260,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 					})}
 				</div>
 
-				<hr className={ styles.section_divider } ref={ observerTarget }></hr>
+				<hr className={ styles.sectionDivider } ref={ observerTarget }></hr>
 			</div>
 
 		</>

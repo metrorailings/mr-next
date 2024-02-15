@@ -1,7 +1,7 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-import componentStyles from "public/styles/page/lib/components.module.scss";
+import componentStyles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons'
 

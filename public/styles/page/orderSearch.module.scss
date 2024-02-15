@@ -51,7 +51,7 @@
 }
 
 .section-divider {
-	@extend %section_divider;
+	@extend %section-divider;
 }
 
 #page-button-section {
@@ -90,12 +90,13 @@
 
 .filter-values {
 	@include fonts.define-font($family: Avenir Light);
+	@extend %buttonset;
 
 	flex-grow: 1;
 }
 
 .filter-input-grouping {
-	@extend %input_grouping;
+	@extend %input-grouping;
 
 	margin: 0;
 	background-color: colors.$white;
@@ -115,10 +116,6 @@
 	cursor: pointer;
 	color: colors.$slate-gray;
 	display: inline-block;
-}
-
-.status-values {
-	@extend %buttonset;
 }
 
 #orders-listing {

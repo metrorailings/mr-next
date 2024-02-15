@@ -1,4 +1,4 @@
-import styles from "public/styles/page/lib/components.module.scss";
+import styles from "public/styles/page/components.module.scss";
 
 export default function PageLoader() {
 	return (

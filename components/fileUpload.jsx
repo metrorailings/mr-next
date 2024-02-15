@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { upload } from '@vercel/blob/client';
 
-import styles from "public/styles/page/lib/file_upload.module.scss";
+import styles from "public/styles/page/file_upload.module.scss";
 
 import GalleryViewer from 'components/galleryViewer';
 

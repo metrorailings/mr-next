@@ -14,13 +14,13 @@
  * @author kinsho
  */
 @mixin primary-button($bgColor: colors.$steel-blue, $width: 100%, $isSquare: false) {
-	@include animations.transitionSettings($property: all, $duration: 0.25s);
+	@include animations.transition-settings($property: all, $duration: 0.25s);
 	@include fonts.define-font($size: fonts.$section, $family: Roboto Mono);
 
 	border: {
 		width: 1px;
 		style: solid;
-		color: colors.$slateGray
+		color: colors.$slate_gray
 	}
 
 	@if $isSquare {
@@ -188,7 +188,7 @@
 
 // Styling for customized button sets
 %buttonset {
-	& > label {
+	& > label, & > a {
 		@include animations.transition-settings($property: all, $duration: 0.5s);
 
 		border: {
@@ -213,7 +213,7 @@
 		}
 
 		&.selected {
-			background-color: colors.$gray;
+			background-color: colors.$slate-gray;
 			color: colors.$white;
 		}
 	}
@@ -227,75 +227,8 @@
 	}
 }
 
-/* ----------------------- STYLES ----------------------------- */
-
-.label {
-	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
-		letter-spacing: 0.3px;
-		color: colors.$low-black;
-	}
-
-	margin: {
-		top: 5px;
-		bottom: 5px;
-	}
-
-	align-self: flex-start;
-}
-
-.secondary-label {
-	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
-		letter-spacing: 0.1px;
-		color: colors.$slate-gray;
-	}
-}
-
-textarea.input-control {
-	@extend %input-control;
-
-	box-shadow: 2px 2px 4px -1px colors.$gray;
-}
-
-.small-input-control {
-	@extend %input-control;
-
-	@include responsive.tablet-up() {
-		min-width: 100px;
-		max-width: 150px;
-	}
-	@include responsive.phone-only() {
-		min-width: 80px;
-		max-width: 120px;
-	}
-}
-
-.medium-input-control {
-	@extend %input_control;
-
-	@include responsive.tablet-up() {
-		min-width: 250px;
-		max-width: 350px;
-	}
-	@include responsive.phone-only() {
-		min-width: 200px;
-		max-width: 275px;
-	}
-}
-
-.large-input-control {
-	@extend %input_control;
-
-	@include responsive.tablet-up() {
-		min-width: 400px;
-		max-width: 550px;
-	}
-	@include responsive.phone-only() {
-		min-width: 300px;
-		max-width: 420px;
-	}
-}
-
-.input-checkbox {
+// Custom checkbox
+%input-checkbox {
 	// Hide the browser's native checkbox as it's quite ugly 
 	appearance: none;
 	margin: 0;
@@ -341,5 +274,65 @@ textarea.input-control {
 
 	&:checked + label::before {
 		color: colors.$success;
+	}
+}
+
+%label {
+	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
+		letter-spacing: 0.3px;
+		color: colors.$low-black;
+	}
+
+	margin: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	align-self: flex-start;
+}
+
+%secondary-label {
+	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
+		letter-spacing: 0.1px;
+		color: colors.$slate-gray;
+	}
+}
+
+%small-input-control {
+	@extend %input-control;
+
+	@include responsive.tablet-up() {
+		min-width: 100px;
+		max-width: 150px;
+	}
+	@include responsive.phone-only() {
+		min-width: 80px;
+		max-width: 120px;
+	}
+}
+
+%medium-input-control {
+	@extend %input-control;
+
+	@include responsive.tablet-up() {
+		min-width: 250px;
+		max-width: 350px;
+	}
+	@include responsive.phone-only() {
+		min-width: 200px;
+		max-width: 275px;
+	}
+}
+
+%large-input-control {
+	@extend %input-control;
+
+	@include responsive.tablet-up() {
+		min-width: 400px;
+		max-width: 550px;
+	}
+	@include responsive.phone-only() {
+		min-width: 300px;
+		max-width: 420px;
 	}
 }

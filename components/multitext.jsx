@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import styles from "public/styles/page/lib/multitext.module.scss";
+import styles from "public/styles/page/multitext.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 

@@ -1,7 +1,7 @@
 import React, { Suspense, useRef } from 'react';
 import Image from "next/image";
 
-import styles from "public/styles/page/lib/components.module.scss";
+import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faFile, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
