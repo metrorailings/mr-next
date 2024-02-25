@@ -53,11 +53,11 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 
 	return (
 		<>
-			<span className={styles.input_group}>
-				<label className={styles.label}>{ data.technicalLabel }</label>
-				<span className={styles.design_input_group}>
+			<span className={ styles.inputGroup }>
+				<label className={ styles.orderFormLabel }>{ data.technicalLabel }</label>
+				<span className={ styles.designInputGroup }>
 					<select
-						className={styles.input_control}
+						className={ styles.inputControl }
 						onChange={ handleDesignUpdate }
 						value={ selectedOption }
 						disabled={ disabled }
@@ -65,14 +65,14 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 						<option value='' disabled>Select...</option>
 						{ data.options.map((each, index) => {
 							return (
-								<option key={index} value={each.id}>{ each.label }</option>
+								<option key={ index } value={ each.id }>{ each.label }</option>
 							)
 						})}
 					</select>
 					<textarea
 						value={ description }
 						onChange={ handleDescUpdate }
-						className={styles.medium_input_control}
+						className={ styles.mediumInputControl }
 						disabled={ disabled }
 					></textarea>
 				</span>

@@ -15,7 +15,6 @@
  * Avenir 35 Light (for general text)
  */
 @import url('https://fonts.googleapis.com/css?family=Comfortaa|Roboto+Mono:100,400|Poppins:300,400,700');
-@import url('https://fast.fonts.net/lt/1.css?apiType=css&c=642cdd41-a82c-417e-ac0d-92e63496c95e&fontids=1475544');
 
 @font-face {
 	font-family: 'Avenir Heavy';
@@ -30,6 +29,7 @@
 /* ----------------------- PUBLIC CONSTANTS ----------------------------- */
 
 $header: 48px;
+$subheader: 36px;
 $section: 26px;
 $subsection: 20px;
 $default: 16px;

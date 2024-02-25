@@ -4,6 +4,16 @@ module.exports = {
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'public/styles')],
 	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: '**.vercel-storage.com',
+				port: '',
+				pathname: '/**'
+			}
+		]
+	},
 	webpack: (config) => {
 		// Allow for async code in non-modular contexts
 		config.experiments = { ...config.experiments, topLevelAwait: true };

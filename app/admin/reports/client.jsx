@@ -1,14 +1,15 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
+import React, { } from "react";
 import dayjs from "dayjs";
 
 import { } from '@fortawesome/free-solid-svg-icons'
-import styles from 'public/styles/page/dashboard.module.scss';
+import styles from 'public/styles/page/reports.module.scss';
 
-const ReportsPage = ({ jsonOrders }) => {
+const ReportsPage = () => {
 
-	const orders = JSON.parse(jsonOrders);
+//	const orders = JSON.parse(jsonOrders);
+	const orders = [];
 
 	return (
 		<>

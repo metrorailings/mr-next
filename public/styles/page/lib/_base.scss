@@ -1,0 +1,36 @@
+@use 'public/styles/foundation/common';
+@use 'sass:map';
+
+/* ----------------------- PLACEHOLDERS ----------------------------- */
+
+%page-header {
+	@include common.fonts-define-font($size: common.$fonts-header, $family: 'Comfortaa');
+
+	margin: {
+		top: 20px;
+	}
+
+	text-align: center;
+}
+
+%page-divider {
+	margin: {
+		top: 20px;
+		bottom: 20px;
+	}
+
+	width: 100%;
+	height: 1px;
+	background-color: common.$colors-low-black;
+}
+
+%section-divider {
+	margin: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	width: 100%;
+	height: 0.5px;
+	background-color: common.$colors-gray;
+}

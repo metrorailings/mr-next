@@ -117,14 +117,14 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 
 	return (
 		<>
-			<div id={ styles['page-container'] }>
-				<div id={ styles['page-button-section'] }>
-					<button id={ styles['create-order-button'] }>Create Order</button>
+			<div className={ styles.pageContainer }>
+				<div className={ styles.pageButtonSection }>
+					<button className={ styles.createOrderButton }>Create Order</button>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				<div id={ styles['filter-section'] }>
+				<div className={ styles.filterSection }>
 					<div className={ styles.filterRow }>
 						<span className={ styles.filterLabel }>Status</span>
 						<span className={ styles.filterValues }>
@@ -146,12 +146,12 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 							<input
 								id='order_search_text_field'
 								type='text'
-								className={ styles['large_input_control'] }
+								className={ styles.orderSearchField }
 								onChange={ updateSearchFilter }
 								placeholder={ 'Search orders using customer information' }
 								value={ filters.search }
 							/>
-							<span className={ styles['input-grouping-icon'] }>
+							<span className={ styles.orderSearchFieldIcon }>
 								<FontAwesomeIcon
 									icon={ faCircleXmark }
 									onClick={() => { updateSearchFilter({ currentTarget: { value: '' }}); }}
@@ -161,12 +161,12 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 					</div>
 				</div>
 
-				<hr className={styles.sectionDivider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
-				<div id={ styles['orders-listing'] }>
+				<div className={ styles.ordersListing }>
 					{ filteredOrders.slice(0, filters.page * 10).map((order, index) => {
 						return (
-							<div id={'order_box_' + index} key={index} className={ styles.orderBox } >
+							<div id={'order_box_' + index} key={ index } className={ styles.orderBox } >
 								<div className={ styles.orderBoxInfoRow }>
 									<span className={ styles.orderBoxGeneralInfoColumn }>
 										<div className={ styles.orderBoxId }>{ order._id }</div>
@@ -181,7 +181,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faUserTag } />
 												<span>
 													{ order.customer.company ? (
-														<div className={ styles.italicized_text }>{ order.customer.company }</div>
+														<div className={ styles.orderBoxCompanyName }>{ order.customer.company }</div>
 													) : null }
 													<div>{ order.customer.name }</div>
 												</span>
@@ -248,8 +248,8 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 									</span>
 								</div>
 
-								<div className={ styles.order_box_file_upload }>
-									<FileUpload 
+								<div className={ styles.orderBoxFileUpload }>
+									<FileUpload
 										orderId={ order._id }
 										existingFiles={ order.files }
 										lazyLoad={ true }

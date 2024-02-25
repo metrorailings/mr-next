@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import styles from "public/styles/page/multitext.module.scss";
+import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
@@ -44,23 +44,23 @@ const Multitext = ({ values, placeholder, removeValue, addNewValue }) => {
 
 	return (
 		<>
-			<div className={styles.multitext_container}>
-				<div className={styles.multitext_existing_values}>
+			<div className={ styles.multitextContainer }>
+				<div className={ styles.multitextExistingValues }>
 					{ values.map((each, index) => {
 						return (
-							<span className={styles.multitext_set_value} data-value={each} key={index}>
+							<span className={ styles.multitextSetValue } data-value={ each } key={ index }>
 								{ each }
-								<FontAwesomeIcon icon={faTimes} className={styles.multitext_remove_mark} onClick={() => removeValue(each) } />
+								<FontAwesomeIcon icon={ faTimes } className={ styles.multitextRemoveMark } onClick={() => removeValue(each) } />
 							</span>
 						)
 					})}
 				</div>
 				<textarea
-					className={styles.multitext_new_value}
+					className={ styles.multitextNewValue }
 					placeholder={ placeholder || 'Separate entries here with a comma' }
-					onChange={detectComma}
-					onBlurCapture={recordValue}
-					value={textValue}
+					onChange={ detectComma }
+					onBlurCapture={ recordValue }
+					value={ textValue }
 				></textarea>
 			</div>
 		</>

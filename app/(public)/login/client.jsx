@@ -68,48 +68,47 @@ const LoginPage = () => {
 		}
 	};
 
-
 	return (
 		<>
-			<div id={styles.page_container}>
-				<div className={styles.logo_header_container}>
-					<Image src={logo} alt="Logo" className={styles.logo_header} priority></Image>
+			<div className={ styles.pageContainer }>
+				<div className={ styles.logoHeaderContainer }>
+					<Image src={ logo } alt="Logo" className={ styles.logoHeader } priority />
 				</div>
 
-				<h1 className={styles.c_suite_header}>C-Suite</h1>
+				<h1 className={ styles.cSuiteHeader }>C-Suite</h1>
 
-				<div id={styles.login_box}>
+				<div className={ styles.loginBox }>
 					<form>
-						<div id={styles.login_box_body}>
-							<label className={styles.label}>User Name</label>
-							<div className={styles.input_grouping}>
-								<span className={styles.input_grouping_icon}>
+						<div className={ styles.loginBoxBody }>
+							<label className={ styles.loginBoxLabel }>User Name</label>
+							<div className={ styles.loginInputGrouping }>
+								<span className={ styles.loginInputGroupingIcon }>
 									<FontAwesomeIcon icon={faUser} />
 								</span>
 								<input
 									type='text'
 									name='username'
-									className={styles.input_control}
+									className={ styles.loginInputField }
 									placeholder='Enter your user name or e-mail address...'
-									onChange={handleCredentialUpdate}
+									onChange={ handleCredentialUpdate }
 									autoComplete='username'
 								/>
 							</div>
 
-							<label className={styles.label}>Password</label>
-							<div className={styles.input_grouping}>
-								<span className={styles.input_grouping_icon}>
-									<FontAwesomeIcon icon={faKey} />
+							<label className={ styles.loginBoxLabel }>Password</label>
+							<div className={ styles.loginInputGrouping }>
+								<span className={ styles.loginInputGroupingIcon }>
+									<FontAwesomeIcon icon={ faKey } />
 								</span>
 								<input
 									type={showPasswordFlag ? 'text' : 'password'}
 									name='password'
-									className={styles.input_control}
+									className={ styles.loginInputField }
 									placeholder='Enter your password here...'
-									onChange={handleCredentialUpdate}
+									onChange={ handleCredentialUpdate }
 									autoComplete='current-password'
 								/>
-								<span className={styles.input_grouping_icon}>
+								<span className={ styles.loginInputGroupingIcon }>
 									<FontAwesomeIcon
 										icon={showPasswordFlag ? faEye : faEyeSlash}
 										onClick={() => { setShowPasswordFlag(!showPasswordFlag) }}
@@ -117,17 +116,17 @@ const LoginPage = () => {
 								</span>
 							</div>
 
-							<div id={styles.remember_me}>
+							<div className={ styles.rememberMe }>
 								<input
 									type='checkbox'
 									id='rememberMe'
-									className={styles.input_checkbox}
-									checked={rememberMeFlag}
+									className={ styles.loginCheckbox }
+									checked={ rememberMeFlag }
 									readOnly
 								/>
 								<label
 									htmlFor='rememberMe'
-									className={styles.secondary_label}
+									className={ styles.secondaryLabel }
 									onClick={() => { setRememberMeFlag(!rememberMeFlag) }}
 								>
 									Remember Me
@@ -137,7 +136,7 @@ const LoginPage = () => {
 						</div>
 
 						<div>
-							<button className={styles.button_primary} onClick={handleSubmit} type="button">
+							<button className={ styles.buttonPrimary } onClick={ handleSubmit } type='button'>
 								Submit
 							</button>
 						</div>

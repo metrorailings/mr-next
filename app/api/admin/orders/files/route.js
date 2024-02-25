@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-
 import { handleUpload } from '@vercel/blob/client';
-import randomStr from 'randomstring';
+
+import { attachFileMetadata } from 'app/api/admin/orders/DAO';
 
 /**
  * Class to upload media directly to Vercel from the client
@@ -11,37 +11,41 @@ import randomStr from 'randomstring';
  * @param payload
  * @returns {Promise<NextResponse>}
  */
-export default async function trackImageUpload(request, payload) {
-
+export async function POST(request) {
 	const userCookie = cookies().get('user');
+	const body = await request.json();
 
 	try {
+
+		// Note that the two functions being passed into handleUpload need to be explicitly async, regardless of the
+		// presence of the await keyword 
 		const jsonResponse = await handleUpload({
-			payload,
+			body,
 			request,
-			onBeforeGenerateToken: (pathname) => {
+			onBeforeGenerateToken: (pathname, clientPayload) => {
 
-				let token = '';
+				console.log('About to upload an image - ' + pathname);
+				console.log('Related metadata payload:');
+				console.log(clientPayload);
 
-				if (userCookie) {
-					token += JSON.parse(userCookie).username + ' - ';
-				}
 				return {
 					allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'video/mp4'],
 					tokenPayload: JSON.stringify({
-						path: pathname,
-						token: token + randomStr.generate({ length : 6 })
+						uploader: JSON.parse(userCookie.value).username,
+						orderId: clientPayload.orderId
 					}),
 				};
 			},
-			onUploadCompleted: ({ blob, tokenPayload }) => {
+			onUploadCompleted: async ({ blob, tokenPayload }) => {
 
 				console.log('Media has been uploaded -- ', blob, tokenPayload);
 
-				try {
-					return { blob, tokenPayload };
-				} catch (error) {
-					throw new Error('Could not update user');
+				// Update the blob to include metadata specific to our application
+				blob.orderId = tokenPayload.orderId;
+				blob.uploader = tokenPayload.uploader;
+
+				if (await attachFileMetadata(blob) === false) {
+					throw new Error('RED ALERT - Could not add file metadata to our database');
 				}
 			},
 		});
@@ -50,6 +54,6 @@ export default async function trackImageUpload(request, payload) {
 	} catch (error) {
 		// Do note that the webhook will retry 5 times waiting for a status 200;
 		console.error(error);
-		return NextResponse.json({ error: "Upload issue" },{ status: 400 });
+		return NextResponse.json({ error: "Upload issue" },{ status: 500 });
 	}
 }

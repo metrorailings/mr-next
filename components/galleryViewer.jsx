@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faFile, faFilePdf } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faFile, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 import { publish } from 'lib/utils';
 import { acceptableMediaExtensions } from 'lib/dictionary';
@@ -14,8 +14,8 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
 	const downloadLink = useRef();
 
 	// Function to open the image and any other images it's associated with in a whole-page gallery viewer
-	const viewImage = (event) => {
-		publish('open-viewer', { currentIndex : event.currentTarget.key, photos : files });
+	const viewImage = (index) => {
+		publish('open-viewer', {currentIndex: index, photos: files});
 	};
 
 	// Function used to download non-media files
@@ -26,39 +26,36 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
 	};
 
 	return (
-		<>
+		<div className={ styles.fileCarousel }>
 			{ files.map((file, index) => {
-				if (acceptableMediaExtensions[file.name.split('.').pop().toLowerCase()]) {
-					return (
-						<>
-							<div className={ styles.file_thumbnail_container }>
-								<Suspense fallback={ <SubLoader /> }>
+				return (
+					<div key={ index }>
+						{ acceptableMediaExtensions[file.contentType] ? (
+							<div className={ styles.fileThumbnailContainer }>
+								<Suspense fallback={ <SubLoader/> }>
 									<Image
-										src={ file.src }
+										src={ file.url }
 										width={ imgWidth }
 										height={ imgHeight }
-										alt={ file.title }
-										key={ index }
-										onClick={ viewImage }
+										alt={ file.pathname }
+										index={ index }
+										onClick={ () => viewImage(index) }
 									/>
+									<div className={ styles.thumbnailTitleBar }>{ file.pathname }</div>
 									{ allowDelete ? (
-										<FontAwesomeIcon icon={ faTimes } className={ styles.file_delete_icon }/>
+										<FontAwesomeIcon icon={ faCircleXmark } className={ styles.fileDeleteIcon }/>
 									) : null }
 								</Suspense>
 							</div>
-						</>
-					);
-				} else {
-					return (
-						<>
-							<div className={ styles.file_thumbnail_container }>
-								{ file.name.split('.').pop().toLowerCase() === 'pdf' ? (
+						) : (
+							<div className={ styles.fileThumbnailContainer }>
+								{ file.pathname.split('.').pop().toLowerCase() === 'pdf' ? (
 									<FontAwesomeIcon
 										icon={ faFilePdf }
 										width={ imgWidth }
 										height={ imgHeight }
-										key={ index }
-										onClick={ () => downloadFile(file.src, file.name) }
+										index={ index }
+										onClick={() => downloadFile(file.url, file.pathname)}
 									/>
 								) : (
 									<FontAwesomeIcon
@@ -66,17 +63,21 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
 										width={ imgWidth }
 										height={ imgHeight }
 										key={ index }
-										onClick={ () => downloadFile(file.src, file.name) }
+										onClick={() => downloadFile(file.url, file.pathname)}
 									/>
 								)}
+								<div className={ styles.thumbnailTitleBar }>{ file.pathname }</div>
+								{ allowDelete ? (
+									<FontAwesomeIcon icon={ faCircleXmark } className={ styles.fileDeleteIcon }/>
+								) : null }
 							</div>
-						</>
-					);
-				}
+						)}
+					</div>
+				);
 			})}
 			<a className={ styles.download_link } ref={ downloadLink } href='' download=''></a>
-		</>
+		</div>
 	);
-};
+}
 
 export default GalleryViewer;

@@ -1,8 +1,8 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
 @use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/base';
 @use 'public/styles/page/lib/form';
-@use 'public/styles/foundation/responsive';
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
@@ -20,7 +20,7 @@
 
 /* ----------------------- STYLES ----------------------------- */
 
-#page-container {
+.page-container {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -28,15 +28,19 @@
 }
 
 .page-header {
-	@extend %page_header;
+	@extend %page-header;
 }
 
 .page-divider {
-	@extend %page_divider;
+	@extend %page-divider;
 }
 
 .section-divider {
-	@extend %section_divider;
+	@extend %section-divider;
+}
+
+.order-form-label {
+	@extend %label;
 }
 
 .order-form-section {
@@ -51,22 +55,42 @@
 	flex-wrap: wrap;
 }
 
+.input-group {
+	@extend %input-group;
+}
+
+.input-control {
+	@extend %input-control;
+}
+
 .small-input-group {
-	@extend %input_group;
+	@extend %input-group;
 
 	flex: 1;
 }
 
+.small-input-control {
+	@extend %small-input-control;
+}
+
 .medium-input-group {
-	@extend %input_group;
+	@extend %input-group;
 
 	flex: 2;
 }
 
+.medium-input-control {
+	@extend %medium-input-control;
+}
+
 .large-input-group {
-	@extend %input_group;
+	@extend %input-group;
 
 	flex: 3;
+}
+
+.large-input-control {
+	@extend %large-input-control;
 }
 
 .input-sub-group {
@@ -79,7 +103,7 @@
 	display: flex;
 
 	& > textarea {
-		@extend %input_control;
+		@extend %input-control;
 
 		margin: {
 			left: 7px;
@@ -88,11 +112,11 @@
 
 		height: 6em;
 
-		@include responsive.tablet-up() {
+		@include common.responsive-tablet-up() {
 			min-width: 250px;
 			max-width: 350px;
 		}
-		@include responsive.phone-only() {
+		@include common.responsive-phone-only() {
 			min-width: 200px;
 			max-width: 275px;
 		}

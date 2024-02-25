@@ -1,15 +1,13 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@use 'public/styles/foundation/colors';
 @use 'public/styles/foundation/common';
-@use 'public/styles/foundation/fonts';
-@use 'public/styles/foundation/animations';
+@use 'public/styles/page/lib/base';
 @use 'public/styles/page/lib/form';
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
 %column-header {
-	@include fonts.define-font($size: fonts.$section, $family: Comfortaa);
+	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa);
 }
 
 %order-box-column {
@@ -26,7 +24,7 @@
 }
 
 %order-box-section-header {
-	@include fonts.define-font($family: Avenir Heavy);
+	@include common.fonts-define-font($family: Avenir Heavy);
 
 	padding: {
 		top: 10px;
@@ -35,15 +33,15 @@
 	border-bottom: {
 		width: 0.75px;
 		style: solid;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
 	}
 
-	background-color: colors.$lavender;
+	background-color: common.$colors-lavender;
 }
 
 /* ----------------------- STYLES ----------------------------- */
 
-#page-container {
+.page-container {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -54,17 +52,17 @@
 	@extend %section-divider;
 }
 
-#page-button-section {
+.page-button-section {
 	margin: 25px;
 	width: 100%;
 	text-align: center;
 }
 
-#create-order-button {
+.create-order-button {
 	@include form.primary-button($width: 250px);
 }
 
-#filter-section {
+.filter-section {
 	margin: {
 		top: 15px;
 		bottom: 15px;
@@ -83,13 +81,13 @@
 }
 
 .filter-label {
-	@include fonts.define-font($family: Comfortaa);
+	@include common.fonts-define-font($family: Comfortaa);
 
 	margin: 20px;
 }
 
 .filter-values {
-	@include fonts.define-font($family: Avenir Light);
+	@include common.fonts-define-font($family: Avenir Light);
 	@extend %buttonset;
 
 	flex-grow: 1;
@@ -99,14 +97,22 @@
 	@extend %input-grouping;
 
 	margin: 0;
-	background-color: colors.$white;
-	box-shadow: 0.5px 0.5px 2px colors.$black;
+	background-color: common.$colors-white;
+	box-shadow: 0.5px 0.5px 2px common.$colors-black;
+}
+
+.order-search-field {
+	@extend %large-input-control;	
+}
+
+.order-search-field-icon {
+	@extend %input-grouping-icon;
 }
 
 .filter-value-icon {
 	border: {
 		width: 0.5px;
-		color: colors.$gray;
+		color: common.$colors-gray;
 		style: solid;
 		left: none;
 	}
@@ -114,21 +120,21 @@
 	height: 2em;
 	width: 50px;
 	cursor: pointer;
-	color: colors.$slate-gray;
+	color: common.$colors-slate-gray;
 	display: inline-block;
 }
 
-#orders-listing {
+.orders-listing {
 	width: 100%;
 }
 
 .order-box {
-	@include fonts.define-font();
+	@include common.fonts-define-font();
 
 	border: {
 		width: 2px;
 		style: solid;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
 		radius: 15px;
 	}
 	margin: {
@@ -155,7 +161,7 @@
 	outline: {
 		width: 0.75px;
 		style: solid;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
 	}
 
 	display: flex;
@@ -164,7 +170,7 @@
 }
 
 .order-box-section-header {
-	@include fonts.define-font($family: Avenir Heavy);
+	@include common.fonts-define-font($family: Avenir Heavy);
 
 	padding: {
 		top: 10px;
@@ -173,10 +179,10 @@
 	border-bottom: {
 		width: 0.75px;
 		style: solid;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
 	}
 
-	background-color: colors.$lavender;
+	background-color: common.$colors-lavender;
 }
 
 .order-box-general-info-column {
@@ -209,38 +215,40 @@
 	}
 }
 
-.order-box-id
-{
-	@include fonts.define-font($size: fonts.$section);
+.order-box-id {
+	@include common.fonts-define-font($size: common.$fonts-section);
 
 	border: {
 		top-left-radius: 15px;
 	}
 
-	background-color: colors.$lavender;
+	background-color: common.$colors-lavender;
 	height: 50%;
 	letter-spacing: 2px;
 }
 
 .order-box-status {
-	@include fonts.define-font($size: fonts.$section);
+	@include common.fonts-define-font($size: common.$fonts-section);
 
 	border: {
 		width: 0.75px;
 		style: solid;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
 	}
 
-	color: colors.$success;
+	color: common.$colors-success;
 	height: 50%;
+}
+
+.order-box-company-name {
+	font-style: italic;	
 }
 
 .order-box-datum {
 	border: {
 		width: 0.5px;
 		style: solid;
-		color: colors.$gray;
-
+		color: common.$colors-gray;
 		bottom: none;
 	}
 
@@ -260,7 +268,7 @@
 		border-left: {
 			width: 0.5px;
 			style: solid;
-			color: colors.$silver;
+			color: common.$colors-silver;
 		}
 	}
 }
@@ -286,7 +294,7 @@
 	}
 
 	width: 25px;
-	color: colors.$slate-gray;
+	color: common.$colors-slate-gray;
 }
 
 .order-box-date-label {
@@ -296,4 +304,9 @@
 
 	text-decoration: underline;
 	font-weight: 700;
+}
+
+.order-box-file-upload {
+	display: block;
+	width: 100%
 }

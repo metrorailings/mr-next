@@ -1,9 +1,6 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@use 'public/styles/foundation/fonts';
 @use 'public/styles/foundation/common';
-@use 'public/styles/foundation/animations';
-@use 'public/styles/foundation/colors';
 
 /* ----------------------- STYLES ----------------------------- */
 
@@ -19,7 +16,7 @@
 }
 
 .page-divider {
-	@extend %page_divider;
+	@extend %page-divider;
 }
 
 #dashboard-bubbles-container {

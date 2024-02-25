@@ -1,12 +1,15 @@
+'use client'
+
 import React, { useState, useEffect, Suspense } from 'react';
 import Image from "next/image";
 
-import styles from "public/styles/components/lib/components.module.scss";
+import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle, faCircleArrowLeft, faCircleArrowRight } from '@fortawesome/free-solid-svg-icons'
 
 import { subscribe, unsubscribe } from 'lib/utils';
-import { SubLoader } from 'lib/loaderIcons';
+
+import { SubLoader } from 'components/loaderIcons';
 
 const PhotoViewer = () => {
 
@@ -16,8 +19,8 @@ const PhotoViewer = () => {
 
 	const openViewer = (event) => {
 		setIsOpen(true);
-		setPhotos(event.detail.data.photos);
-		setPhotoIndex(event.detail.data.currentIndex);
+		setPhotos(event.detail.photos);
+		setPhotoIndex(event.detail.currentIndex);
 	};
 
 	const closeViewer = () => {
@@ -26,59 +29,66 @@ const PhotoViewer = () => {
 		setPhotoIndex(0);
 	};
 
-	const changeCurrentPhoto = (newIndex) => {
+	const changeCurrentPhoto = (event, newIndex) => {
+		event.stopPropagation();
+
 		if (newIndex >= 0 && newIndex < photos.length) {
 			setPhotoIndex(newIndex);
 		}
 	};
 
-	const viewOriginalPhoto = (url) => {
+	const viewOriginalPhoto = (event, url) => {
+		event.stopPropagation();
+
 		window.open(url, '_blank');
 	}
 
 	useEffect(() => {
 		subscribe('open-viewer', openViewer);
 
-		return () => { unsubscribe('open-viewer', openViewer); } 
-	}, []);
+		return () => { 
+			unsubscribe('open-viewer', openViewer);
+		}
+	}, [isOpen]);
 
 	return isOpen ? (
 		<>
-			<div id={ styles.gallery_overlay }>
-				<div id={ styles.gallery_container }>
+			<div className={ styles.galleryOverlay } onClick={ closeViewer }>
+				<div className={ styles.galleryContainer }>
 
-					<div id={ styles.gallery_exit_row }>
+					<div className={ styles.galleryExitRow }>
 						<FontAwesomeIcon
 							icon={ faXmarkCircle }
 							onClick={ closeViewer }
+							className={ styles.galleryExitButton }
 						/>
 					</div>
 
 					<Suspense fallback={ <SubLoader /> }>
-						<div id={ styles.gallery_picture_viewer }>
+						<div className={ styles.galleryPictureViewer }>
 							<Image
-								id={ styles.gallery_picture }
-								src={ photos[photoIndex].src }
-								alt={ photos[photoIndex].title || 'Photo' }
-								width={500}
-								height={500}
-								onClick={() => { viewOriginalPhoto(photos[photoIndex].src) }}
+								className={ styles.galleryPicture }
+								src={ photos[photoIndex].url }
+								alt={ photos[photoIndex].pathname || 'Photo' }
+								width={ 500 }
+								height={ 500 }
+								onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].url) }}
 							/>
 						</div>
 					</Suspense>
 
-					<div id={ styles.gallery_controls }>
-						<span id={ styles.gallery_left_button }>
+					<div className={ styles.galleryControls }>
+						<span className={ styles.galleryLeftButton }>
 							<FontAwesomeIcon
 								icon={ faCircleArrowLeft }
-								onClick={ () => { changeCurrentPhoto(photoIndex - 1 ) }}
+								onClick={ (event) => { changeCurrentPhoto(event, photoIndex - 1 ) }}
 								disabled={ photoIndex === 0 }
 							/>
 						</span>
-						<span id={ styles.gallery_right_button }>
+						<span className={ styles.galleryRightButton }>
 							<FontAwesomeIcon
 								icon={ faCircleArrowRight }
-								onClick={ () => { changeCurrentPhoto(photoIndex + 1 ) }}
+								onClick={ (event) => { changeCurrentPhoto(event, photoIndex + 1 ) }}
 								disabled={ photoIndex + 1 === photos.length }
 							/>
 						</span>

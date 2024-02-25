@@ -145,107 +145,104 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		});
 	};
 
-	// console.log('ORDER DETAILS');
-	// console.log(orderDetails);
-
 	return (
 		<>
-			<div id={styles.page_container}>
-				<h3 className={styles.page_header}>CLIENT ORDER</h3>
+			<div className={ styles.pageContainer }>
+				<h3 className={ styles.pageHeader }>CLIENT ORDER</h3>
 				{ order._id ? (
-					<div id={styles.order_id_box}>
+					<div className={ styles.order_id_box }>
 						<div>ID</div>
 						<div>{ order._id }</div>
 					</div>
 				) : null }
-				<hr className={styles.page_divider}></hr>
+				<hr className={ styles.pageDivider }></hr>
 
 				{/* ---------- CUSTOMER SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>Customer Name</label>
+				<div className={ styles.orderFormSection }>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>Customer Name</label>
 						<input 
 							type='text'
 							name='customer.name'
-							className={styles.medium_input_control}
+							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
 						/>
 					</span>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>Company</label>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>Company</label>
 						<input
 							type='text'
 							name='customer.company'
-							className={styles.medium_input_control}
+							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
 						/>
 					</span>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>E-mail Addresses</label>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>E-mail Addresses</label>
 						<Multitext
 							values={ orderDetails.customer?.email ? orderDetails.customer.email.split(',') : [] }
-							removeValue={removeEmail}
-							addNewValue={addNewEmail}
+							removeValue={ removeEmail }
+							addNewValue={ addNewEmail }
 							placeholder={ 'Separate e-mail addresses with a comma' }
 						/>
 					</span>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>Phone Number</label>
-						<span className={styles.input_sub_group}>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>Phone Number</label>
+						<span className={ styles.inputSubGroup }>
 							<input
 								type='text'
 								name='customer.areaCode'
 								placeholder='Area Code'
-								className={styles.small_input_control}
+								className={ styles.smallInputControl }
 								onChange={ handleOrderUpdate }
 							/>
 							<input
 								type='text'
 								name='customer.phoneOne'
 								placeholder='###'
-								className={styles.small_input_control}
+								className={ styles.smallInputControl }
 								onChange={ handleOrderUpdate }
 							/>
 							<input
 								type='text'
 								name='customer.phoneTwo'
 								placeholder='####'
-								className={styles.small_input_control}
+								className={ styles.smallInputControl }
 								onChange={ handleOrderUpdate }
 							/>
 						</span>
 					</span>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- ADDRESS SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>Street Address</label>
+				<div className={ styles.orderFormSection }>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>Street Address</label>
 						<input
 							type='text'
 							name='customer.address'
-							className={styles.medium_input_control}
+							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
 						/>
 					</span>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>City</label>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>City</label>
 						<input
 							type='text'
 							name='customer.city'
-							className={styles.medium_input_control}
+							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
 						/>
 					</span>
-					<span className={styles.medium_input_group}>
-						<label className={styles.label}>State</label>
+					<span className={ styles.mediumInputGroup }>
+						<label className={ styles.orderFormLabel }>State</label>
 						<select
 							name='customer.state'
-							className={styles.medium_input_control}
+							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
 						>
 							<option value='' disabled>Select a state...</option>
@@ -257,11 +254,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					</span>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- DESIGN TYPE SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
+				<div className={ styles.orderFormSection }>
 					<DesignField
 						data={ types }
 						order={ orderDetails }
@@ -270,11 +267,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					></DesignField>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- BASE DESIGN SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
+				<div className={ styles.orderFormSection }>
 					<DesignField
 						data={ posts }
 						order={ orderDetails }
@@ -313,11 +310,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					></DesignField>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- PICKET SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
+				<div className={ styles.orderFormSection }>
 					<DesignField
 						data={ picketSizes }
 						order={ orderDetails }
@@ -332,11 +329,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					></DesignField>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- TRADITIONAL OPTIONS SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
+				<div className={ styles.orderFormSection }>
 					<DesignField
 						data={ centerDesigns }
 						order={ orderDetails }
@@ -363,11 +360,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					></DesignField>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- CABLE OPTIONS SECTION ---------- */}
 
-				<div className={styles.order_form_section}>
+				<div className={ styles.orderFormSection }>
 					<DesignField
 						data={ cableSizes }
 						order={ orderDetails }
@@ -376,10 +373,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					></DesignField>
 				</div>
 
-				<hr className={styles.section_divider}></hr>
+				<hr className={ styles.sectionDivider }></hr>
 
 				{/* ---------- GLASS OPTIONS SECTION ---------- */}
-				<div className={styles.order_form_section}>
+
+				<div className={ styles.orderFormSection }>
 					<DesignField
 						data={ glassTypes }
 						order={ orderDetails }

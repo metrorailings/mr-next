@@ -45,7 +45,9 @@ export async function POST(request) {
 				value: JSON.stringify({ username: foundUser.username }),
 				httpOnly: true,
 				path: '/',
-				expires: expirationDate
+				expires: expirationDate,
+				domain: process.env.DOMAIN,
+				sameSite: 'strict'
 			});
 			return NextResponse.json(foundUser.toJSON(), { status: 200 });
 		} else {

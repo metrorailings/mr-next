@@ -12,11 +12,11 @@ export function SubLoader() {
 export function UploadingLoader() {
 	return (
 		<>
-			<div className={ styles.uploading_indicators }>
-				<span className={ styles.section_loading_text }>Processing</span>
-				<span className={ styles.loading_ball }></span>
-				<span className={ styles.loading_ball }></span>
-				<span className={ styles.loading_ball }></span>
+			<div className={ styles.uploadingIndicators }>
+				<span className={ styles.sectionLoadingText }>Processing</span>
+				<span className={ styles.loadingBall }></span>
+				<span className={ styles.loadingBall }></span>
+				<span className={ styles.loadingBall }></span>
 			</div>
 		</>
 	);

@@ -1,10 +1,7 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
 @use 'sass:color';
-@use 'public/styles/foundation/fonts';
-@use 'public/styles/foundation/colors';
-@use 'public/styles/foundation/responsive';
-@use 'public/styles/foundation/animations';
+@use 'public/styles/foundation/common';
 
 /* ----------------------- MIX-INS ----------------------------- */
 
@@ -13,14 +10,14 @@
  *
  * @author kinsho
  */
-@mixin primary-button($bgColor: colors.$steel-blue, $width: 100%, $isSquare: false) {
-	@include animations.transition-settings($property: all, $duration: 0.25s);
-	@include fonts.define-font($size: fonts.$section, $family: Roboto Mono);
+@mixin primary-button($bgColor: common.$colors-steel-blue, $width: 100%, $isSquare: false) {
+	@include common.animations-transition-settings($property: all, $duration: 0.25s);
+	@include common.fonts-define-font($size: common.$fonts-section, $family: Roboto Mono);
 
 	border: {
 		width: 1px;
 		style: solid;
-		color: colors.$slate_gray
+		color: common.$colors-slate_gray
 	}
 
 	@if $isSquare {
@@ -33,9 +30,14 @@
 	padding: 10px;
 	display: inline-block;
 	background-color: $bgColor;
-	color: colors.$white;
-	box-shadow: colors.$black;
+	color: common.$colors-white;
+	box-shadow: 2px 2px 3px common.$colors-black;
 	cursor: pointer;
+
+	&:active {
+		top: 5px;
+		box-shadow: 1px 1px 1px common.$colors-black;
+	}
 
 	&:disabled {
 		cursor: default;
@@ -48,22 +50,29 @@
  *
  * @author kinsho
  */
-@mixin small-button($bgColor: colors.$indian-red, $width: 100%) {
-	@include animations.transition-settings($property: all, $duration: 0.25s);
-	@include fonts.define-font($family: Roboto Mono);
+@mixin small-button($bgColor: common.$colors-indian-red, $width: 100%) {
+	@include common.animations-transition-settings($property: all, $duration: 0.25s);
+	@include common.fonts-define-font($family: Roboto Mono);
 
 	border: {
 		width: 1px;
 		style: solid;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
+		radius: 0.5px;
 	}
 
 	width: $width;
 	padding: 4.5px;
 	display: inline-block;
+	color: common.$colors-white;
 	background-color: $bgColor;
-	box-shadow: colors.$black;
+	box-shadow: 2px 2px 3px common.$colors-black;
 	cursor: pointer;
+
+	&:active {
+		top: 5px;
+		box-shadow: 1px 1px 1px common.$colors-black;
+	}
 
 	&:disabled {
 		cursor: default;
@@ -76,11 +85,11 @@
  *
  * @author kinsho
  */
-@mixin banner-button($bgColor: colors.$slate-gray) {
-	@include animations.transition-settings($property: all, $duration: 0.25s);
-	@include fonts.define-font($family: Avenir Heavy) {
+@mixin banner-button($bgColor: common.$colors-slate-gray) {
+	@include common.animations-transition-settings($property: all, $duration: 0.25s);
+	@include common.fonts-define-font($family: Avenir Heavy) {
 		letter-spacing: 1.5px;
-		color: colors.$white;
+		color: common.$colors-white;
 	}
 
 	border: {
@@ -103,31 +112,6 @@
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
-%input-control {
-	@include fonts.define-font($size: fonts.$secondary, $family: Poppins);
-
-	height: 2em;
-	color: colors.$slate-gray;
-	box-sizing: border-box;
-
-	&::placeholder {
-		font-style: italic;
-		opacity: 0.4;
-	}
-
-	&.optional-field {
-		background-color: colors.$lavender;
-	}
-
-	&:disabled {
-		opacity: 0.4;
-	}
-
-	&.error {
-		background-color: colors.$negative-red;
-	}
-}
-
 // Specialized input container meant to stow icons besides form fields
 %input-grouping {
 	margin: {
@@ -139,40 +123,13 @@
 		width: 1px;
 		radius: 5px;
 		style: solid;
-		color: colors.$gray;
+		color: common.$colors-gray;
 	}
 
 	display: inline-flex;
 	position: relative;
 	align-items: center;
 	width: 500px;
-
-	& > .input-grouping-icon {
-		color: colors.$slate-gray;
-		width: 50px;
-		height: 2em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		&:first-child {
-			border-right: {
-				width: 0.5px;
-				color: colors.$gray;
-				style: solid;
-			}
-		}
-
-		&:last-child {
-			border-left: {
-				width: 0.5px;
-				color: colors.$gray;
-				style: solid;
-			}
-
-			cursor: pointer;
-		}
-	}
 
 	& > input {
 		margin: {
@@ -186,21 +143,49 @@
 	}
 }
 
+%input-grouping-icon {
+	color: common.$colors-slate-gray;
+	width: 50px;
+	height: 2em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&:first-child {
+		border-right: {
+			width: 0.5px;
+			color: common.$colors-gray;
+			style: solid;
+		}
+	}
+
+	&:last-child {
+		border-left: {
+			width: 0.5px;
+			color: common.$colors-gray;
+			style: solid;
+		}
+
+		cursor: pointer;
+	}
+}
+
+
 // Styling for customized button sets
 %buttonset {
 	& > label, & > a {
-		@include animations.transition-settings($property: all, $duration: 0.5s);
+		@include common.animations-transition-settings($property: all, $duration: 0.5s);
 
 		border: {
 			width: 1px;
 			style: solid;
-			color: colors.$black;
+			color: common.$colors-black;
 		}
 
 		padding: 10px;
 		cursor: pointer;
-		background-color: colors.$silver;
-		color: colors.$black;
+		background-color: common.$colors-silver;
+		color: common.$colors-black;
 
 		&:first-of-type {
 			border-top-left-radius: 10px;
@@ -213,8 +198,8 @@
 		}
 
 		&.selected {
-			background-color: colors.$slate-gray;
-			color: colors.$white;
+			background-color: common.$colors-slate-gray;
+			color: common.$colors-white;
 		}
 	}
 
@@ -232,7 +217,7 @@
 	// Hide the browser's native checkbox as it's quite ugly 
 	appearance: none;
 	margin: 0;
-	background-color: colors.$white;
+	background-color: common.$colors-white;
 
 	& + label {
 		cursor: pointer;
@@ -244,26 +229,26 @@
 				width: 1px;
 				radius: 5px;
 				style: solid;
-				color: colors.$slate-gray;
+				color: common.$colors-slate-gray;
 			}
 
 			margin: {
 				right: 10px;
 			}
 
-			background-color: colors.$smoke-white;
-			color: colors.$smoke-white;
+			background-color: common.$colors-smoke-white;
+			color: common.$colors-smoke-white;
 			display: inline-block;
 			box-shadow: inset 0 1px 3px rgb(0 0 0 / 20%);
 
-			@include responsive.tablet-up() {
+			@include common.responsive-tablet-up() {
 				width: 20px;
 				height: 20px;
 				font-size: 20px;
 				line-height: 20px;
 			}
 
-			@include responsive.phone-only() {
+			@include common.responsive-phone-only() {
 				width: 12px;
 				height: 12px;
 				font-size: 12px;
@@ -273,14 +258,14 @@
 	}
 
 	&:checked + label::before {
-		color: colors.$success;
+		color: common.$colors-success;
 	}
 }
 
 %label {
-	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
 		letter-spacing: 0.3px;
-		color: colors.$low-black;
+		color: common.$colors-low-black;
 	}
 
 	margin: {
@@ -292,20 +277,45 @@
 }
 
 %secondary-label {
-	@include fonts.define-font($size: fonts.$secondary, $family: Avenir Heavy) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
 		letter-spacing: 0.1px;
-		color: colors.$slate-gray;
+		color: common.$colors-slate-gray;
+	}
+}
+
+%input-control {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins);
+
+	height: 2em;
+	color: common.$colors-slate-gray;
+	box-sizing: border-box;
+
+	&::placeholder {
+		font-style: italic;
+		opacity: 0.4;
+	}
+
+	&.optional-field {
+		background-color: common.$colors-lavender;
+	}
+
+	&:disabled {
+		opacity: 0.4;
+	}
+
+	&.error {
+		background-color: common.$colors-negative-red;
 	}
 }
 
 %small-input-control {
 	@extend %input-control;
 
-	@include responsive.tablet-up() {
+	@include common.responsive-tablet-up() {
 		min-width: 100px;
 		max-width: 150px;
 	}
-	@include responsive.phone-only() {
+	@include common.responsive-phone-only {
 		min-width: 80px;
 		max-width: 120px;
 	}
@@ -314,11 +324,11 @@
 %medium-input-control {
 	@extend %input-control;
 
-	@include responsive.tablet-up() {
+	@include common.responsive-tablet-up() {
 		min-width: 250px;
 		max-width: 350px;
 	}
-	@include responsive.phone-only() {
+	@include common.responsive-phone-only {
 		min-width: 200px;
 		max-width: 275px;
 	}
@@ -327,11 +337,11 @@
 %large-input-control {
 	@extend %input-control;
 
-	@include responsive.tablet-up() {
+	@include common.responsive-tablet-up() {
 		min-width: 400px;
 		max-width: 550px;
 	}
-	@include responsive.phone-only() {
+	@include common.responsive-phone-only {
 		min-width: 300px;
 		max-width: 420px;
 	}

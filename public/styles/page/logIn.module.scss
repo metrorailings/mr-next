@@ -1,13 +1,12 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
-@use 'public/styles/foundation/colors';
-@use 'public/styles/foundation/fonts';
 @use 'public/styles/foundation/common';
 @use 'public/styles/page/lib/form';
+@use 'public/styles/page/lib/base';
 
 /* ----------------------- STYLES ----------------------------- */
 
-#page-container {
+.page-container {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -23,7 +22,7 @@
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	background-color: colors.$logo-blue;
+	background-color: common.$colors-logo-blue;
 }
 
 .logo-header {
@@ -32,10 +31,10 @@
 }
 
 .c-suite-header {
-	@extend %page_header;
+	@extend %page-header;
 }
 
-#login-box {
+.login-box {
 	margin: {
 		left: auto;
 		right: auto;
@@ -47,30 +46,53 @@
 		style: solid;
 	}
 
-	background-color: colors.$white;
-	box-shadow: 3px 3px 10px colors.$low-black;
+	background-color: common.$colors-white;
+	box-shadow: 3px 3px 10px common.$colors-low-black;
 }
 
-#login-box-body {
+.login-box-body {
 	padding: {
 		top: 15px;
 		bottom: 15px;
 		left: 30px;
 		right: 30px;
 	}
-
-	& > label {
-		display: block;
-	}
 }
 
-#remember-me {
+.remember-me {
 	margin: {
 		top: 10px;
 		bottom: 10px;
 	}
 
 	text-align: left;
+}
+
+
+.login-box-label {
+	@extend %label;
+
+	display: block;
+}
+
+.login-input-grouping {
+	@extend %input-grouping;
+}
+
+.login-input-grouping-icon {
+	@extend %input-grouping-icon;
+}
+
+.login-input-field {
+	@extend %input-control;
+}
+
+.login-checkbox {
+	@extend %input-checkbox;
+}
+
+.secondary-label {
+	@extend %secondary-label;
 }
 
 .button-primary {
