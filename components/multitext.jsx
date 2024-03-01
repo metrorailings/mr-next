@@ -4,7 +4,7 @@ import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
-const Multitext = ({ values, placeholder, removeValue, addNewValue }) => {
+const Multitext = ({ values, placeholder, removeValue, addNewValue, id }) => {
 
 	const [textValue, setTextValue] = useState('');
 
@@ -61,6 +61,7 @@ const Multitext = ({ values, placeholder, removeValue, addNewValue }) => {
 					onChange={ detectComma }
 					onBlurCapture={ recordValue }
 					value={ textValue }
+					id={ id }
 				></textarea>
 			</div>
 		</>

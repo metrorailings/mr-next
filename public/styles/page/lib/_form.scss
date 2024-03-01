@@ -170,7 +170,6 @@
 	}
 }
 
-
 // Styling for customized button sets
 %buttonset {
 	& > label, & > a {
@@ -287,7 +286,7 @@
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins);
 
 	height: 2em;
-	color: common.$colors-slate-gray;
+	color: common.$colors-low-black;
 	box-sizing: border-box;
 
 	&::placeholder {

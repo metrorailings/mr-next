@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { upload } from '@vercel/blob/client';
 
-import styles from "public/styles/page/file_upload.module.scss";
+import styles from "public/styles/page/components.module.scss";
 
 import GalleryViewer from 'components/galleryViewer';
 
@@ -38,6 +38,8 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 					clientPayload: { orderId : orderId },
 					multipart: filesToUpload[i].size >= 5000000 // Break apart any files greater than 5 MBs in size  
 				});
+				
+				// @TODO - Use toast to notify the user about the status of the upload
 
 				// Update the blob to include metadata specific to our application
 				// Please note that in production, the blob's metadata has been automatically updated and stored in the

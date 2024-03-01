@@ -27,11 +27,11 @@ const LoginPage = () => {
 	}, []);
 
 	const handleCredentialUpdate = (event) => {
-
 		let newCredentials = {
 			...credentials,
 			[event.currentTarget.name]: event.currentTarget.value
 		};
+
 		setCredentials(newCredentials);
 	};
 

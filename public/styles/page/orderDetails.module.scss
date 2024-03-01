@@ -31,6 +31,12 @@
 	@extend %page-header;
 }
 
+.first-page-divider {
+	@extend %page-divider;
+
+	margin-top: 0;
+}
+
 .page-divider {
 	@extend %page-divider;
 }
@@ -41,6 +47,24 @@
 
 .order-form-label {
 	@extend %label;
+}
+
+.order-id-box {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: 'Comfortaa') {
+		font-style: italic;
+	};
+
+	border: {
+		width: 0.5px;
+		style: solid;
+		color: common.$colors-low-black;
+		bottom: none;
+		top-left-radius: 15px;
+		top-right-radius: 15px;
+	}
+
+	padding: 15px;
+	background-color: common.$colors-gray;
 }
 
 .order-form-section {
@@ -121,4 +145,16 @@
 			max-width: 275px;
 		}
 	}
+}
+
+.order-payment-section {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+		left: 20px;
+		right: auto;
+	}
+
+	display: flex;
+	flex-wrap: wrap;
 }

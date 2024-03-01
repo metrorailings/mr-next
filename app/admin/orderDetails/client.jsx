@@ -6,6 +6,7 @@ import { } from '@fortawesome/free-solid-svg-icons'
 import styles from 'public/styles/page/orderDetails.module.scss';
 
 import Multitext from 'components/multitext'; 
+import PaymentForms from 'components/paymentForms';
 import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
 
@@ -63,7 +64,8 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 			valence: order.design?.valence || '',
 			cableSize: order.design?.cableSize || '',
 			glassType: order.design?.glassType || '',
-			glassBuild: order.design?.glassBuild || ''
+			glassBuild: order.design?.glassBuild || '',
+			color: order.design?.color || ''
 		},
 
 		designDescription: {
@@ -81,7 +83,8 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 			valence: order.designDescription?.valence || '',
 			cableSize: order.designDescription?.cableSize || '',
 			glassType: order.designDescription?.glassType || '',
-			glassBuild: order.designDescription?.glassBuild || ''
+			glassBuild: order.designDescription?.glassBuild || '',
+			color: order.design?.color || ''
 		},
 
 		dimensions: {
@@ -149,67 +152,77 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		<>
 			<div className={ styles.pageContainer }>
 				<h3 className={ styles.pageHeader }>CLIENT ORDER</h3>
-				{ order._id ? (
-					<div className={ styles.order_id_box }>
-						<div>ID</div>
-						<div>{ order._id }</div>
+				{ orderDetails._id ? (
+					<div className={ styles.orderIdBox }>
+						ID: { orderDetails._id }
 					</div>
 				) : null }
-				<hr className={ styles.pageDivider }></hr>
+				<hr className={ styles.firstPageDivider }></hr>
 
 				{/* ---------- CUSTOMER SECTION ---------- */}
 
 				<div className={ styles.orderFormSection }>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>Customer Name</label>
+						<label htmlFor='customer.name' className={ styles.orderFormLabel }>Customer Name</label>
 						<input 
 							type='text'
 							name='customer.name'
+							id='customer.name'
 							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
+							value={ orderDetails.customer.name }
 						/>
 					</span>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>Company</label>
+						<label htmlFor='customer.company' className={ styles.orderFormLabel }>Company</label>
 						<input
 							type='text'
 							name='customer.company'
+							id='customer.company'
 							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
+							value={ orderDetails.customer.company }
 						/>
 					</span>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>E-mail Addresses</label>
+						<label htmlFor='customer.email' className={ styles.orderFormLabel }>E-mail Addresses</label>
 						<Multitext
 							values={ orderDetails.customer?.email ? orderDetails.customer.email.split(',') : [] }
 							removeValue={ removeEmail }
 							addNewValue={ addNewEmail }
 							placeholder={ 'Separate e-mail addresses with a comma' }
+							id='customer.email'
 						/>
 					</span>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>Phone Number</label>
+						<label htmlFor='customer.areaCode' className={ styles.orderFormLabel }>Phone Number</label>
 						<span className={ styles.inputSubGroup }>
 							<input
 								type='text'
 								name='customer.areaCode'
+								id='customer.areaCode'
 								placeholder='Area Code'
 								className={ styles.smallInputControl }
 								onChange={ handleOrderUpdate }
+								value={ orderDetails.customer.areaCode }
 							/>
 							<input
 								type='text'
 								name='customer.phoneOne'
+								id='customer.phoneOne'
 								placeholder='###'
 								className={ styles.smallInputControl }
 								onChange={ handleOrderUpdate }
+								value={ orderDetails.customer.phoneOne }
 							/>
 							<input
 								type='text'
 								name='customer.phoneTwo'
+								id='customer.phoneTwo'
 								placeholder='####'
 								className={ styles.smallInputControl }
 								onChange={ handleOrderUpdate }
+								value={ orderDetails.customer.phoneTwo }
 							/>
 						</span>
 					</span>
@@ -221,29 +234,35 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<div className={ styles.orderFormSection }>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>Street Address</label>
+						<label htmlFor='customer.address' className={ styles.orderFormLabel }>Street Address</label>
 						<input
 							type='text'
 							name='customer.address'
+							id='customer.address'
 							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
+							value={ orderDetails.customer.address }
 						/>
 					</span>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>City</label>
+						<label htmlFor='customer.city' className={ styles.orderFormLabel }>City</label>
 						<input
 							type='text'
 							name='customer.city'
+							id='customer.city'
 							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
+							value={ orderDetails.customer.city }
 						/>
 					</span>
 					<span className={ styles.mediumInputGroup }>
-						<label className={ styles.orderFormLabel }>State</label>
+						<label htmlFor='customer.state' className={ styles.orderFormLabel }>State</label>
 						<select
 							name='customer.state'
+							id='customer.state'
 							className={ styles.mediumInputControl }
 							onChange={ handleOrderUpdate }
+							value={ orderDetails.customer.state }
 						>
 							<option value='' disabled>Select a state...</option>
 							<option value='NJ'>New Jersey</option>
@@ -264,7 +283,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						order={ orderDetails }
 						propName={ 'type' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
@@ -277,37 +296,37 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						order={ orderDetails }
 						propName={ 'post' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ handrailings }
 						order={ orderDetails }
 						propName={ 'handrailing' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ postEnds }
 						order={ orderDetails }
 						propName={ 'postEnd' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ postCaps }
 						order={ orderDetails }
 						propName={ 'postCap' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ ada }
 						order={ orderDetails }
 						propName={ 'ada' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ colors }
 						order={ orderDetails }
 						propName={ 'color' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
@@ -320,13 +339,13 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						order={ orderDetails }
 						propName={ 'picketSize' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ picketStyles }
 						order={ orderDetails }
 						propName={ 'picketStyle' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
@@ -339,25 +358,25 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						order={ orderDetails }
 						propName={ 'centerDesign' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ collars }
 						order={ orderDetails }
 						propName={ 'collars' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ baskets }
 						order={ orderDetails }
 						propName={ 'baskets' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ valences }
 						order={ orderDetails }
 						propName={ 'valence' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
@@ -370,7 +389,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						order={ orderDetails }
 						propName={ 'cableSize' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
@@ -383,18 +402,32 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						order={ orderDetails }
 						propName={ 'glassType' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 					<DesignField
 						data={ glassCharacteristics }
 						order={ orderDetails }
 						propName={ 'glassBuild' }
 						dispatch={ orderDispatch }
-					></DesignField>
+					/>
 				</div>
 
+				<hr className={ styles.sectionDivider }></hr>
+
+				{/* ---------- PAYMENTS SECTION ---------- */}
+
+				<div className={ styles.orderPaymentSection }>
+					<PaymentForms
+						orderId={ orderDetails._id }
+						acceptCard={ true }
+						acceptCheck={ true }
+						acceptStripe={ true }
+						acceptExternal={ true }
+						postFunc={ () => { console.log('In post func'); } }
+					/>
+				</div>
 			</div>
 		</>
-	);
+	)
 };
 
 export default OrderDetailsPage;

@@ -2,6 +2,7 @@
 
 @use 'sass:math';
 @use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/form';
 
 /* ------------------ ANIMATIONS ----------------------- */
 
@@ -444,5 +445,77 @@
 		right: 4px;
 	}
 
+	cursor: pointer;
+}
+
+/* ----------------------- FILE UPLOAD MODULE ----------------------------- */
+
+.file-upload-section {
+	margin: {
+		top: 15px;
+		bottom: 15px;
+		left: auto;
+		right: auto;
+	}
+
+	width: 80%;
+	text-align: center;
+}
+
+.upload-file-button {
+	@include form.small-button($width: 250px, $bgColor: common.$colors-slate-gray);
+
+	margin: {
+		left: 5px;
+		right: 5px;
+	}
+
+	font-size: common.$fonts-secondary;
+}
+
+.upload-file-input {
+	margin: 0;
+	padding: 0;
+	opacity: 0;
+	width: 1px;
+}
+
+.files-listing {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+}
+
+.files-container {
+	margin: {
+		top: 8px;
+		bottom: 8px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+}
+
+.files-container-header {
+	@include common.fonts-define-font($size: common.$fonts-subsection);
+
+	letter-spacing: 0.3px;
+}
+
+.see-files-link {
+	@include common.fonts-define-font($size: common.$fonts-secondary);
+
+	margin: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	color: common.$colors-steel-blue;
+	text-decoration: underline;
 	cursor: pointer;
 }

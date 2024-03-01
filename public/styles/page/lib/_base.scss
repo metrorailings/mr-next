@@ -1,5 +1,6 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
 @use 'public/styles/foundation/common';
-@use 'sass:map';
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
@@ -8,6 +9,7 @@
 
 	margin: {
 		top: 20px;
+		bottom: 10px;
 	}
 
 	text-align: center;

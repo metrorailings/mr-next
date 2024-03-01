@@ -8,14 +8,10 @@ import { validateDesignProp } from 'app/admin/orderDetails/designValidation';
 
 const DesignField = ({ data, order, propName, dispatch }) => {
 
-	const [selectedOption, setSelectedOption] = useState(order.design[propName]);
-	const [description, setDescription] = useState(order.designDescription[propName]);
 	const [disabled, setDisabled] = useState(false);
 
 	useEffect(() => {
 		setDisabled(validateDesignProp(order.design, propName) === false);
-		setSelectedOption(order.design[propName]);
-		setDescription(order.designDescription[propName]);
 	}, [order.design, order.designDescription, propName]);
 
 	const handleDesignUpdate = (event) => {
@@ -30,8 +26,6 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 			}
 		}
 
-		setSelectedOption(selection);
-		setDescription(newDesc);
 		dispatch({
 			type: 'designChanged',
 			propName: propName,
@@ -43,7 +37,6 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 	const handleDescUpdate = (event) => {
 		const newDesc = event.currentTarget.value;
 
-		setDescription(newDesc);
 		dispatch({
 			type: 'designDescriptionChanged',
 			propName: propName,
@@ -54,13 +47,14 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 	return (
 		<>
 			<span className={ styles.inputGroup }>
-				<label className={ styles.orderFormLabel }>{ data.technicalLabel }</label>
+				<label htmlFor={ 'design.' + propName } className={ styles.orderFormLabel }>{ data.technicalLabel }</label>
 				<span className={ styles.designInputGroup }>
 					<select
 						className={ styles.inputControl }
 						onChange={ handleDesignUpdate }
-						value={ selectedOption }
+						value={ order.design[propName] }
 						disabled={ disabled }
+						id={ 'design.' + propName }
 					>
 						<option value='' disabled>Select...</option>
 						{ data.options.map((each, index) => {
@@ -70,10 +64,11 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 						})}
 					</select>
 					<textarea
-						value={ description }
+						value={ order.designDescription[propName] }
 						onChange={ handleDescUpdate }
-						className={ styles.mediumInputControl }
+						className={ styles.largeInputControl }
 						disabled={ disabled }
+						id={ 'designDesc.' + propName }
 					></textarea>
 				</span>
 			</span>
