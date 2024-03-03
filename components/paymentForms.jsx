@@ -239,7 +239,7 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 					<div className={ styles.paymentAccordionSection }>
 						<div className={ styles.paymentAccordionSectionHeader } onClick={ () => showSection(cardSection) }>
 							<span className={ styles.paymentAccordionSectionHeaderText }>Credit Card</span>
-							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faCreditCard }/>
+							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faCreditCard } />
 						</div>
 						<div className={ styles.paymentAccordionSectionBody } ref={ cardSection }>
 							<div>

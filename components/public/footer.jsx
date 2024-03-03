@@ -1,0 +1,35 @@
+import { } from 'react';
+import Link from 'next/link';
+
+import styles from "public/styles/page/headerFooter.module.scss";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopyright, faEnvelope, faPhone } from '@fortawesome/free-solid-svg-icons'
+
+export default function Footer() {
+
+	return (
+		<footer className={ styles.footerPublic }>
+
+			<span className={ styles.footerContactNumber }>
+				<FontAwesomeIcon icon={ faPhone } />
+				{ process.env.NEXT_PUBLIC_HOTLINE_NUMBER }
+			</span>
+
+			<Link href='/contactUs' className={ styles.footerMobileContactUs}>
+				<FontAwesomeIcon icon={ faEnvelope } />
+				Write Us
+			</Link>
+
+			<span className={ styles.footerCopyright }>
+				<FontAwesomeIcon icon={ faCopyright } />
+				{ new Date().getFullYear() }
+			</span>
+
+			<Link href={ "tel:" + process.env.NEXT_PUBLIC_HOTLINE_NUMBER } className={ styles.footerMobileCallUs }>
+				<FontAwesomeIcon icon={ faPhone } />
+				Call Us
+			</Link>
+
+		</footer>
+	);
+}

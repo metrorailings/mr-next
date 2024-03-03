@@ -3,7 +3,7 @@
 import { useSearchParams, usePathname } from 'next/navigation'
 import React, { useState, useMemo, useRef, useEffect } from "react";
 
-import FileUpload from 'components/fileUpload';
+import FileUpload from 'components/admin/fileUpload';
 
 import styles from 'public/styles/page/orderSearch.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

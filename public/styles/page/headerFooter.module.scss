@@ -1,0 +1,266 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/form';
+
+/* ----------------------- HEADER STYLES ----------------------------- */
+
+.top-menu {
+	@include common.fonts-define-font($family: Raleway) {
+		letter-spacing: 0.1em;
+		text-decoration: none;
+		color: common.$colors-slate-gray;
+	};
+
+	border-bottom: {
+		width: 3px;
+		style: solid;
+		color: common.$colors-black;
+	}
+
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	position: fixed;
+	z-index: 500;
+	width: 100%;
+	background-color: common.$colors-smoke-white;
+	opacity: 0.95;
+
+	@include common.responsive-print-only() {
+		display: none;
+	}
+}
+
+.top-menu-logo-container {
+	margin: {
+		left: 25px;
+		right: 25px;
+	}
+
+	flex: 1;
+	height: 100%;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+
+	@include common.responsive-desktop-only() {
+		height: 150px;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 135px;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 75px;
+	}
+
+	& > img {
+		cursor: pointer;
+		object-fit: contain;
+	}
+}
+
+.desktop-menu-links {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	flex: 7;
+
+	@include common.responsive-mobile-only() {
+		display: none;
+		flex: 0;
+	}
+}
+
+.mobile-menu-links {
+	@include common.animations-transition-settings($property: height, $duration: 0.4s);
+
+	height: 0;
+	width: 100%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+
+	@include common.responsive-desktop-only() {
+		display: none;
+	}
+}
+
+.top-menu-expander {
+	margin: {
+		left: auto;
+		right: 25px;
+	}
+
+	text-align: right;
+
+	@include common.responsive-desktop-only() {
+		display: none;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		flex: 1;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		flex: 3;
+	}
+
+	& > svg {
+		margin-right: 10px;
+	}
+}
+
+.top-menu-link {
+	margin: {
+		right: 35px;
+	}
+
+	cursor: pointer;
+	text-align: right;
+	text-decoration: none;
+	color: common.$colors-slate-gray;
+
+	@include common.responsive-desktop-only {
+		flex: 1;
+	}
+
+	@include common.responsive-mobile-only {
+		margin: {
+			top: 25px;
+			bottom: 25px;
+			right: 25px;
+			left: 0;
+		}
+
+		flex: none;
+		width: 100%;
+		text-align: right;
+	}
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+/* ----------------------- FOOTER STYLES ----------------------------- */
+
+.footer-public {
+	display: flex;
+	align-items: center;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 500;
+	width: 100%;
+
+	@include common.responsive-desktop-only() {
+		opacity: 0.75;
+		height: 50px;
+		background-color: common.$colors-black;
+	}
+
+	@include common.responsive-mobile-only() {
+		border-top: {
+			width: 1px;
+			style: solid;
+			color: common.$colors-black;
+		}
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 75px;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 40px;
+	}
+}
+
+.footer-contact-number {
+	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa) {
+		color: common.$colors-white;
+		letter-spacing: 5px;
+	};
+
+	margin: {
+		left: 25px;
+		right: auto;
+	}
+
+	flex: 1;
+	text-align: left;
+
+	@include common.responsive-mobile-only() {
+		display: none;
+	}
+
+	& > svg {
+		margin-right: 10px;
+	}
+}
+
+.footer-copyright {
+	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa) {
+		color: common.$colors-white;
+		letter-spacing: 5px;
+	};
+
+	margin: {
+		left: auto;
+		right: 25px;
+	}
+
+	flex: 1;
+	text-align: right;
+
+	@include common.responsive-mobile-only() {
+		display: none;
+	}
+
+	& > svg {
+		margin-right: 10px;
+	}
+}
+
+.footer-mobile-contact-us, .footer-mobile-call-us {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Comfortaa) {
+		color: common.$colors-white;
+		letter-spacing: 0.5px;
+	};
+
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+
+	@include common.responsive-desktop-only() {
+		display: none;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 75px;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 40px;
+	}
+
+	& > svg {
+		margin-right: 10px;
+	}
+}
+
+.footer-mobile-contact-us {
+	background-color: common.$colors-indian-red;
+}
+
+.footer-mobile-call-us {
+	background-color: common.$colors-cadet-blue;
+}

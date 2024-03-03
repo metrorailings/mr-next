@@ -5,9 +5,13 @@ export default function RootLayout({ children }) {
 
 	return (
 		<html lang="en">
-			<head></head>
+			<head>
+				<title>Metro Railings</title>
+				<meta name="description" content='The greatest railing company in New Jersey'/>
+				<link rel='icon' href='/favicon.ico'/>
+			</head>
 			<body>
-				{children}
+				{ children }
 			</body>
 		</html>
 	);

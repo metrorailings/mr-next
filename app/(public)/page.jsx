@@ -1,11 +1,12 @@
-import Link from 'next/link';
+import HomePage from "app/(public)/client";
 
-export default function Page() {
+const HomeServer = () => {
 
 	return (
 		<>
-			<h1>Hello, Home Page!</h1>
-			<Link href='/dashboard'>Dashboard</Link>
+			<HomePage />
 		</>
 	);
-}
+};
+
+export default HomeServer;
