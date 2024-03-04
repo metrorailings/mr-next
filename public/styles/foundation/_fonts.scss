@@ -49,7 +49,7 @@ $special: 12px;
  *
  * @author kinsho
  */
-@mixin define-font($weight: 400, $size: $default, $family: 'Avenir Light') {
+@mixin define-font($weight: 400, $size: $default, $family: Avenir) {
 	font: {
 		weight: $weight;
 		size: $size;

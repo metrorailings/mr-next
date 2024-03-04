@@ -1,0 +1,143 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/base';
+
+/* ----------------------- PLACEHOLDERS ----------------------------- */
+
+%home-section {
+	@include common.fonts-define-font($size: common.$fonts-subsection) {
+		letter-spacing: 0.75px;
+		font-weight: 300;
+	};
+
+	padding: {
+		top: 40px;
+		bottom: 40px;
+	}
+}
+
+%home-section-header {
+	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection) {
+		letter-spacing: 5px;
+	};
+
+	border-bottom: {
+		width: 0.5px;
+		style: solid;
+	}
+
+	padding: {
+		left: 100px;
+		right: 100px;
+	}
+
+	@include common.responsive-tablet-up() {
+		margin: {
+			top: 15px;
+			bottom: 15px;
+		}
+	}
+
+	@include common.responsive-phone-only() {
+		margin: {
+			top: 10px;
+			bottom: 25px;
+		}
+	}
+}
+
+/* ----------------------- CLASSES ----------------------------- */
+
+.home-video-container {
+	position: relative;
+	width: 100vw;
+
+	@include common.responsive-desktop-only() {
+		height: 70vh;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 50vh;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 65vh;
+	}
+
+	video {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+}
+
+.company-name {
+	@include common.fonts-define-font($size: common.$fonts-header) {
+		letter-spacing: 10px;
+		color: common.$colors-white;
+	}
+
+	z-index: 1;
+	position: absolute;
+	display: flex;
+	align-items: center;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background-image: linear-gradient(to right, rgba(0 0 0 / 0%), rgba(0 0 0 / 35%), rgba(0 0 0 / 0%));
+}
+
+.about-us-section {
+	@extend %home-section;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.about-us-section-header {
+	@extend %home-section-header;
+
+	color: common.$colors-slate-gray;
+	border-bottom-color: common.$colors-slate-gray;
+}
+
+.about-us-text {
+	margin: {
+		left: 10px;
+		right: 10px;
+	}
+
+	padding: {
+		left: 30px;
+		right: 30px;
+	}
+
+	border: {
+		style: solid;
+		color: common.$colors-slate-gray;
+		top: none;
+		bottom: none;
+		top-left-radius: 25px;
+		bottom-right-radius: 25px;
+	}
+
+	width: 80%;
+
+	@include common.responsive-tablet-up() {
+		border: {
+			width: 4px;
+		}
+	}
+
+	@include common.responsive-phone-only() {
+		border: {
+			width: 2px;
+			top-right-radius: 25px;
+			bottom-left-radius: 25px;
+		}
+	}
+}

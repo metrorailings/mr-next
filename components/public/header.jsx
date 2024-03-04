@@ -23,7 +23,8 @@ export default function Header() {
 	};
 
 	return (
-		<header className={ styles.topMenu }>
+		<>
+			<header className={ styles.topMenu }>
 			<span className={ styles.topMenuLogoContainer }>
 				<Image
 					src={ logo }
@@ -40,15 +41,18 @@ export default function Header() {
 			</span>
 
 			<span className={ styles.topMenuExpander } onClick={ toggleMobileMenu }>
-				<FontAwesomeIcon icon={ faBars } />
+				<FontAwesomeIcon icon={ faBars }/>
 				MENU
 			</span>
 
-			<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
+				<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
 				<Link href='/contactUs' className={ styles.topMenuLink }>TALK WITH US</Link>				
 				<Link href='/faqs' className={ styles.topMenuLink }>FAQS</Link>				
 				<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
 			</span>
-		</header>
+
+			</header>
+			<div className={ styles.topMenuSpace }></div>
+		</>
 	);
 }

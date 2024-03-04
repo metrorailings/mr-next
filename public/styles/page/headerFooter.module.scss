@@ -46,11 +46,11 @@
 	justify-content: flex-start;
 
 	@include common.responsive-desktop-only() {
-		height: 150px;
+		height: 100px;
 	}
 
 	@include common.responsive-portrait-mobile-only() {
-		height: 135px;
+		height: 150px;
 	}
 
 	@include common.responsive-landscape-mobile-only() {
@@ -145,6 +145,22 @@
 
 	&:hover {
 		text-decoration: underline;
+	}
+}
+
+.top-menu-space {
+	display: block;
+
+	@include common.responsive-desktop-only() {
+		height: 100px;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 150px;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 75px;
 	}
 }
 
