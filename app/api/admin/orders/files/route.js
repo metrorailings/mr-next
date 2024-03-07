@@ -5,7 +5,7 @@ import { handleUpload } from '@vercel/blob/client';
 import { attachFileMetadata } from 'app/api/admin/orders/DAO';
 
 /**
- * Class to upload media directly to Vercel from the client
+ * Method to upload media directly to Vercel from the client
  *
  * @param request
  * @param payload

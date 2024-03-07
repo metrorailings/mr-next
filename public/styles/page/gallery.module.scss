@@ -12,9 +12,16 @@
 
 .gallery-pictures {
 	display: flex;
-	justify-content: flex-start;
 	align-items: center;
 	flex-wrap: wrap;
+
+	@include common.responsive-tablet-up() {
+		justify-content: flex-start;
+	}
+
+	@include common.responsive-phone-only() {
+		justify-content: center;
+	}
 }
 
 .gallery-footer {
@@ -35,25 +42,18 @@
 	background-color: common.$colors-white;
 }
 
-.save-changes-button {
-	@include form.primary-button($width: 180px);
-
-	margin: {
-		left: auto;
-		right: auto;
-	}
-}
-
 .upload-new-pictures-button {
-	@include form.primary-button($bgColor: common.$colors-sea-green, $width: 180px);
+	@include form.small-button($bgColor: common.$colors-steel-blue, $width: 250px);
 
 	margin: {
 		left: auto;
 		right: auto;
 	}
+
+	white-space: nowrap;
 }
 
-.file-download-link {
+.upload-file-input {
 	display: none;
 }
 
@@ -72,6 +72,7 @@
 	}
 
 	width: 250px;
+	height: 250px;
 	display: flex;
 	flex-direction: column;
 	position: relative;
@@ -81,11 +82,39 @@
 	}
 }
 
-.delete-image-icon {
+.photo-delete-icon {
+	border-radius: 50%;
 	position: absolute;
-	top: 8px;
-	left: calc(100% - 8px);
+	top: -12px;
+	left: calc(100% - 12px);
 	cursor: pointer;
-	z-index: 10;
+	z-index: 100;
 	color: common.$colors-indian-red;
+	background-color: common.$colors-white;
+	width: 24px;
+	height: 24px;
+}
+
+.photo-index {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Roboto Mono);
+
+	border: {
+		radius: 50%;
+		color: common.$colors-black;
+		style: solid;
+	}
+
+	padding: {
+		top: 3px;
+		bottom: 3px;
+		left: 18px;
+		right: 18px;
+	}
+
+	position: absolute;
+	top: 5%;
+	left: 5%;
+	z-index: 100;
+	color: common.$colors-black;
+	background-color: common.$colors-white;
 }

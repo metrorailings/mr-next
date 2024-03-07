@@ -4,6 +4,7 @@ import OrderSearchPage from "app/admin/orderSearch/client";
 import { filterOrders } from "app/admin/orderSearch/orderFilter";
 
 import { getAllOrders } from "app/api/admin/orders/DAO";
+
 const OrderSearchServer = async (request) => {
 
 	const orders = await getAllOrders();

@@ -20,6 +20,8 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 	const [showNonMedia, setShowNonMedia] = useState(!(lazyLoad));
 	const [user, setUser] = useState(null);
 
+	const uploadLink = useRef();
+
 	const uploadFiles = async (event) => {
 		event.preventDefault();
 
@@ -63,8 +65,6 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 			console.error(err);
 		}
 	};
-
-	const uploadLink = useRef();
 
 	useEffect(() => {
 		setUser(getUserSession());
