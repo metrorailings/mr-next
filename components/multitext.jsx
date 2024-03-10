@@ -16,7 +16,7 @@ const Multitext = ({ values, placeholder, removeValue, addNewValue, id }) => {
 		}
 
 		// Check to see if the value is already present in the multitext field.
-		// If so, do not record the value
+		// If so, do not record t= he value
 		for (let i = 0; i < values.length; i += 1) {
 			if (textValue === values[i]) {
 				return false;

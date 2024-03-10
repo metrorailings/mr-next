@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { handleUpload } from '@vercel/blob/client';
 
-import { getGalleryImages, addGalleryImage, deleteGalleryImage } from 'app/api/gallery/DAO';
+import { getGalleryImages, addGalleryImage, deleteGalleryImage } from 'lib/http/galleryDAO';
 
 /**
  * Function to retrieve all gallery-related metadata from the database

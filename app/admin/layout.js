@@ -1,11 +1,11 @@
-import PhotoViewer from 'components/photoViewer';
+import EventOrganizer from 'components/eventOrganizer';
 
 export default function RootLayout({ children }) {
 	return (
 		<html lang='en'>
 			<body>
 				{ children }
-				<PhotoViewer />
+				<EventOrganizer />
 			</body>
 		</html>
 	);

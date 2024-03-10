@@ -7,6 +7,7 @@ import { upload } from '@vercel/blob/client';
 
 import { GALLERY_API } from 'lib/http/apiEndpoints';
 import { getUserSession } from 'lib/userInfo';
+import { publish } from 'lib/utils';
 
 import styles from 'public/styles/page/gallery.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,6 +20,24 @@ const GalleryPage = ({ jsonImages }) => {
 
 	const uploadLink = useRef(null);
 
+	// Function to open the image and any other images it's associated with in a whole-page gallery viewer
+	const viewImage = (index) => {
+		publish('open-viewer', { currentIndex: index, photos: existingPhotos });
+	};
+
+	// Function to delete a gallery image permanently
+	const deleteImage = (photo) => {
+		publish('open-confirm-modal', {
+			text: 'Are you sure you want to delete the following image from the gallery permanently?',
+			image: photo,
+			confirmFunction: deleteImageConfirm
+		});
+	};
+
+	const deleteImageConfirm = (photo) => {
+		console.log(photo);
+	}
+
 	const uploadPictures = async (event) => {
 		event.preventDefault();
 
@@ -29,6 +48,7 @@ const GalleryPage = ({ jsonImages }) => {
 
 		// @TODO - Find a way to limit files by size here		
 
+		let newPhotos = [];
 		try {
 			for (let i = 0; i < filesToUpload.length; i += 1) {
 				let newBlob = await upload(filesToUpload[i].name, filesToUpload[i], {
@@ -41,41 +61,44 @@ const GalleryPage = ({ jsonImages }) => {
 
 				const latestGallery = await httpRequest(GALLERY_API.UPLOAD_IMAGE, 'GET');
 				const metadata = {
-					blob: newBlob,
+					url: newBlob.url,
+					pathname: newBlob.pathname,
+					size: newBlob.size,
+					index: latestGallery.length + 1,
 					uploader: getUserSession().username,
+					uploadDate: new Date(),
 					tags: [],
-					index: latestGallery.length + 1
 				};
 				await httpRequest(GALLERY_API.UPLOAD_IMAGE, 'PUT', metadata);
 
-				setExistingPhotos([...existingPhotos, metadata]);
+				newPhotos.push(metadata);
 			}
 		} catch (err) {
 			console.error(err);
 		}
+
+		setExistingPhotos([...existingPhotos, ...newPhotos]);
 	};
 
 	return (
 		<>
 			<div className={ styles.pageHeader }>GALLERY MANAGEMENT</div>
 			<div className={ styles.galleryPictures }>
-				{ /* @TODO - Update the suspense logic so that it works. */ }
-				<Suspense fallback={ <p>Waiting...</p> }>
-					{ existingPhotos.map((photo, index) => {
-						return (
-							<div className={ styles.imageContainer } key={ index }>
-								<Image
-									src={ photo.blob.url }
-									alt={ photo.blob.pathname }
-									fill={ true }
-									sizes="50vw"
-								/>
-								<FontAwesomeIcon icon={ faCircleXmark } className={ styles.photoDeleteIcon } />
-								<span className={ styles.photoIndex }>{ photo.index }</span>
-							</div>
-						);
-					})}
-				</Suspense>
+				{ existingPhotos.map((photo, index) => {
+					return (
+						<div className={ styles.imageContainer } key={ index }>
+							<Image
+								src={ photo.url }
+								alt={ photo.pathname }
+								fill={ true }
+								sizes="50vw"
+								onClick={ () => viewImage(index) }
+							/>
+							<FontAwesomeIcon icon={ faCircleXmark } className={ styles.photoDeleteIcon } onClick={ () => deleteImage(photo) } />
+							<span className={ styles.photoIndex }>{ photo.index }</span>
+						</div>
+					);
+				})}
 			</div>
 			<div className={ styles.galleryFooter }>
 				<button className={ styles.uploadNewPicturesButton } onClick={ () => uploadLink.current.click() }>Upload to

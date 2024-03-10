@@ -1,67 +1,98 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+'use client'
+
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 import styles from "public/styles/page/components.module.scss";
-import classNames from 'classnames/bind';
 
 import { subscribe, unsubscribe } from 'lib/utils';
 
 const ConfirmModal = () => {
 
 	const [doShow, setDoShow] = useState(false);
+	const [toRemove, setToRemove] = useState(false);
 	const [text, setText] = useState('');
 	const [image, setImage] = useState(null);
 	const [confirmFunction, setConfirmFunction] = useState(null);
 
-	const boundStyles = classNames.bind(styles);
+	const overlayElement = useRef(null);
+	const modalContainerElement = useRef(null);
 
 	const showModal = (event) => {
 		setDoShow(true);
 		setText(event.detail.text);
 		setImage(event.detail.image);
 		setConfirmFunction(event.detail.confirmFunction)
-	}
-
-	const confirm = () => {
-		confirmFunction();
 	};
-	const cancel = () => {
+
+	const closeModal = () => {
+		setToRemove(true);
+	};
+
+	const closeModalAfterAnimation = () => {
+		// Only execute this logic when we're closing out this modal
+		if (toRemove) {
+			setToRemove(false);
+			setDoShow(false);
+			setText('');
+			setImage(null);
+			setConfirmFunction(null);
+		}
+	};
+
+	const confirm = (event) => {
+		event.preventDefault();
+
+		confirmFunction();
+		closeModal();
+	};
+
+	const cancel = (event) => {
+		event.preventDefault();
+
+		closeModal();
 	};
 
 	useEffect(() => {
 		subscribe('open-confirm-modal', showModal);
 
+		window.setTimeout(() => {
+			if (doShow) {
+				overlayElement.current.style.backgroundColor = 'rgba(0 0 0 / 80%)';
+			}
+		}, 100);
+
 		return () => {
 			unsubscribe('open-confirm-modal', showModal);
 		}
-	}, []);
-
-	useLayoutEffect(() => {
-
 	}, [doShow]);
 
 	if (doShow) {
 		return (
-			<div className={ styles.test }>
-				<div className={ styles.test }>
-					<div className={ styles.test }>
-						{ image ? (
-							<Image
-								src={ image.url }
-								alt={ image.pathname }
-								height={ 150 }
-							/>
-						) : null }
-						<div className={ styles.test }>{ text }</div>
-					</div>
-					<div className={ styles.test }>
-						<button type='button' onClick={ confirm }>Yes</button>
-						<button type='button' onClick={ cancel }>Cancel</button>
+			<div className={ styles.modalOverlay } onClick={ closeModal } ref={ overlayElement } onAnimationEnd={ closeModalAfterAnimation }>
+				<div className={ styles.modalContainer }>
+					<div className={ styles.modal } ref={ modalContainerElement }>
+						<div className={ styles.modalBody }>
+							{ image ? (
+								<Image
+									src={ image.url }
+									alt={ image.pathname }
+									height={ 150 }
+									width={ 150 }
+								/>
+							) : null }
+							<div className={ styles.modalBodyText }>{ text }</div>
+						</div>
+						<div className={ styles.modalButtonRow }>
+							<button type='button' onClick={ confirm } className={ styles.modalConfirmButton }>Yes</button>
+							<button type='button' onClick={ cancel } className={ styles.modalCancelButton }>Cancel</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		);
-	} else {
+	} else
+	{
 		return (<></>);
 	}
 };

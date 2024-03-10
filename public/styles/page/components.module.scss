@@ -346,7 +346,9 @@
 	cursor: pointer;
 	opacity: 1.0;
 
-	&.gallery-left-button-disabled {
+	&-disabled {
+		@extend .gallery-left-button;
+
 		cursor: default;
 		opacity: 0.3;
 	}
@@ -362,7 +364,9 @@
 	cursor: pointer;
 	opacity: 1.0;
 
-	&.gallery-right-button-disabled {
+	&-disabled {
+		@extend .gallery-right-button;
+
 		cursor: default;
 		opacity: 0.3;
 	}
@@ -518,4 +522,111 @@
 	color: common.$colors-steel-blue;
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+/* ----------------------- MODALS ----------------------------- */
+
+.modal-overlay {
+	@include common.animations-transition-settings($property: background-color, $duration: 0.5s);
+
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 200;
+	background-color: rgba(0 0 0 / 0%);
+}
+
+.modal-overlay-show {
+	background-color: rgba(0 0 0 / 80%);
+}
+
+.modal {
+	@include common.animations-animation-settings($keyframeSet: fadeInDown, $duration: 0.5s, $timing: ease-in-out, $persist: true);
+
+	border: {
+		style: solid;
+		width: 2px;
+		color: common.$colors-slate-gray;
+		radius: 20px;
+	}
+
+	position: fixed;
+	transform: translate(-50%, -50%);
+	opacity: 0.0;
+	top: 45%;
+	left: 50%;
+}
+
+.modal-body {
+	@include common.fonts-define-font();
+
+	border: {
+		top-left-radius: 20px;
+		top-right-radius: 20px;
+	}
+
+	padding: {
+		top: 20px;
+		bottom: 10px;
+		left: 15px;
+		right: 15px;
+	}
+
+	background-color: common.$colors-smoke-white;
+	max-height: 400px;
+	overflow-y: scroll;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.modal-body-text {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+	}	
+}
+
+.modal-button-row {
+	border: {
+		top: {
+			style: solid;
+			width: 2px;
+			color: common.$colors-slate-gray;
+		}
+
+		bottom-left-radius: 20px;
+		bottom-right-radius: 20px;
+	}
+
+	padding: {
+		top: 10px;
+		bottom: 10px;
+	}
+
+	background-color: common.$colors-gray;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-confirm-button {
+	@include form.small-button($bgColor: common.$colors-success, $width: 150px);
+
+	margin: {
+		left: 25px;
+		right: 25px;
+	}
+}
+
+.modal-cancel-button {
+	@include form.small-button($bgColor: common.$colors-indian-red, $width: 150px);
+
+	margin: {
+		left: 25px;
+		right: 25px;
+	}
 }
