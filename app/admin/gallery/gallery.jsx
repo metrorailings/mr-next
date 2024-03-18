@@ -36,10 +36,10 @@ const Gallery = ({ jsonImages }) => {
 				return (
 					<div className={ styles.imageContainer } key={ index }>
 						<Image
-							src={ photo.url }
-							alt={ photo.alt || 'photo' }
+							src={ photo.galleriaUrl }
+							alt={ photo.alt || 'Railing' }
 							fill={ true }
-							sizes="50vw"
+							sizes='50vw'
 							onClick={ () => viewImage(index) }
 						/>
 						<FontAwesomeIcon icon={ faCircleXmark } className={ styles.photoDeleteIcon } onClick={ () => deleteImage(photo) }/>

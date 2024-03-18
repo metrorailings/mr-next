@@ -1,5 +1,6 @@
 import Header from 'components/public/header';
 import Footer from 'components/public/footer';
+import EventOrganizer from 'components/eventOrganizer';
 
 export default function Layout(props) {
 	return (
@@ -7,6 +8,8 @@ export default function Layout(props) {
 			<Header />
 			<main>{props.children}</main>
 			<Footer />
+
+			<EventOrganizer />
 		</>
 	)
 }

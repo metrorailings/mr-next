@@ -6,7 +6,7 @@
 
 /* ------------------ ANIMATIONS ----------------------- */
 
-@include common.animations-keyframes($name: bouncingBalls) {
+@include common.animations-keyframes($name: bouncing-balls) {
 	0% {
 		transform:scale(0, 0);
 	}
@@ -24,7 +24,7 @@
 	}
 }
 
-@include common.animations-keyframes($name: fadeIntoView) {
+@include common.animations-keyframes($name: fade-into-view) {
 	0% {
 		opacity: 0.0;
 	}
@@ -35,6 +35,54 @@
 
 	100% {
 		opacity: 1.0;
+	}
+}
+
+@include common.animations-keyframes($name: photo-viewer-fade-out-left) {
+	0% {
+		opacity: 1.0;
+		transform: translate(0);
+	}
+
+	100% {
+		opacity: 0.0;
+		transform: translate(-100px);
+	}
+}
+
+@include common.animations-keyframes($name: photo-viewer-fade-out-right) {
+	0% {
+		opacity: 1.0;
+		transform: translate(0);
+	}
+
+	100% {
+		opacity: 0.0;
+		transform: translate(100px);
+	}
+}
+
+@include common.animations-keyframes($name: photo-viewer-fade-in-left) {
+	0% {
+		opacity: 0.0;
+		transform: translate(100px);
+	}
+
+	100% {
+		opacity: 1.0;
+		transform: translate(0);
+	}
+}
+
+@include common.animations-keyframes($name: photo-viewer-fade-in-right) {
+	0% {
+		opacity: 0.0;
+		transform: translate(-100px);
+	}
+
+	100% {
+		opacity: 1.0;
+		transform: translate(0);
 	}
 }
 
@@ -131,7 +179,7 @@
 
 .loading-text {
 	@include common.fonts-define-font($weight: 700, $size: common.$fonts-header, $family: Comfortaa);
-	@include common.animations-animation-settings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+	@include common.animations-animation-settings($keyframeSet: fade-into-view, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
@@ -140,7 +188,7 @@
 
 .section-loading-text {
 	@include common.fonts-define-font($weight: 700, $size: common.$fonts-section, $family: Comfortaa);
-	@include common.animations-animation-settings($keyframeSet: fadeIntoView, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+	@include common.animations-animation-settings($keyframeSet: fade-into-view, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
@@ -148,7 +196,7 @@
 }
 
 .loading-ball {
-	@include common.animations-animation-settings($keyframeSet: bouncingBalls, $duration: 1.5s, $timing: ease-in-out, $iterations: infinite);
+	@include common.animations-animation-settings($keyframeSet: bouncing-balls, $duration: 1.5s, $timing: ease-in-out, $iterations: infinite);
 
 	margin: {
 		left: 30px;
@@ -256,16 +304,22 @@
 /* ----------------------- PHOTO VIEWER ----------------------------- */
 
 .gallery-overlay {
-	@include common.animations-transition-settings($property: background-color, $duration: 0.35s);
+	@include common.animations-transition-settings($property: all, $duration: 0.35s);
 
 	position: fixed;
 	width: 100vw;
 	height: 100vh;
 	top: 0;
 	left: 0;
-	background-color: rgba(0 0 0 / 80%);
 	z-index: 4000;
 	display: block;
+	background-color: rgba(0 0 0 / 0%);
+	opacity: 0.0;
+}
+
+.gallery-overlay-show {
+	background-color: rgba(0 0 0 / 80%);
+	opacity: 1.0;
 }
 
 .gallery-container {
@@ -304,20 +358,38 @@
 }
 
 .gallery-picture-viewer {
-	@include common.animations-transition-settings($property: all, $duration: 0.35s);
+	@include common.animations-transition-settings($property: transform, $duration: 0.35s);
 
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 75%;
-	opacity: 1.0;
+	width: 750px;
+	height: 750px;
+	position: relative;
+	object-fit: contain;
+}
+
+.gallery-picture-viewer-shift {
+	&-left-out {
+		@include common.animations-animation-settings($keyframeSet: photo-viewer-fade-out-left, $duration: 0.25s, $timing: ease, $persist: true);
+	}
+
+	&-right-out {
+		@include common.animations-animation-settings($keyframeSet: photo-viewer-fade-out-right, $duration: 0.25s, $timing: ease, $persist: true);
+	}
+
+	&-left-in {
+		@include common.animations-animation-settings($keyframeSet: photo-viewer-fade-in-left, $duration: 0.25s, $timing: ease, $persist: true);
+	}
+
+	&-right-in {
+		@include common.animations-animation-settings($keyframeSet: photo-viewer-fade-in-right, $duration: 0.25s, $timing: ease, $persist: true);
+	}
 }
 
 .gallery-picture {
-	max-width: 100%;
-	max-height: 100%;
 	cursor: pointer;
+	object-fit: contain;
 }
 
 .gallery-exit-button {

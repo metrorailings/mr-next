@@ -5,6 +5,7 @@ export default function RootLayout({ children }) {
 		<html lang='en'>
 			<body>
 				{ children }
+
 				<EventOrganizer />
 			</body>
 		</html>

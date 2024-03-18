@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Image from "next/image";
 
 import styles from "public/styles/page/components.module.scss";
@@ -13,14 +13,52 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 
 	const [photoIndex, setPhotoIndex] = useState(currentIndex);
 
-	const closeViewer = () => {
-		closeFunc();
+	const overlayRef = useRef(null);
+	const pictureContainerRef = useRef(null);
+
+	const isCurrentlyShifting = () => {
+		return (pictureContainerRef.current.classList.contains(styles.galleryPictureViewerShiftLeftIn) ||
+			pictureContainerRef.current.classList.contains(styles.galleryPictureViewerShiftLeftOut) ||
+			pictureContainerRef.current.classList.contains(styles.galleryPictureViewerShiftRightIn) ||
+			pictureContainerRef.current.classList.contains(styles.galleryPictureViewerShiftRightOut));
+	};
+
+	const finishShifting = () => {
+		pictureContainerRef.current.classList.remove(styles.galleryPictureViewerShiftLeftIn);
+		pictureContainerRef.current.classList.remove(styles.galleryPictureViewerShiftLeftOut);
+		pictureContainerRef.current.classList.remove(styles.galleryPictureViewerShiftRightIn);
+		pictureContainerRef.current.classList.remove(styles.galleryPictureViewerShiftRightOut);
 	};
 
 	const changeCurrentPhoto = (event, newIndex) => {
 		event.stopPropagation();
-		if (newIndex >= 0 && newIndex < photos.length) {
-			setPhotoIndex(newIndex);
+
+		// Note that the logic below is complicated in order to animate the viewer properly
+		// Do not change the photo if we're in the middle of a shift
+		if (isCurrentlyShifting()	=== false && newIndex >= 0 && newIndex < photos.length) {
+			if (newIndex > photoIndex) {
+				pictureContainerRef.current.classList.add(styles.galleryPictureViewerShiftLeftOut);
+				window.setTimeout(() => {
+					setPhotoIndex(newIndex);
+					pictureContainerRef.current.classList.add(styles.galleryPictureViewerShiftLeftIn);
+					window.setTimeout(finishShifting, 275);
+				}, 275);
+			} else {
+				pictureContainerRef.current.classList.add(styles.galleryPictureViewerShiftRightOut);
+				window.setTimeout(() => {
+					setPhotoIndex(newIndex);
+					pictureContainerRef.current.classList.add(styles.galleryPictureViewerShiftRightIn);
+					window.setTimeout(finishShifting, 275);
+				}, 275);
+			}
+		}
+	};
+
+	const closeViewer = () => {
+		// Only close out the photo viewer if there's no animation currently taking place
+		if (isCurrentlyShifting() === false && overlayRef.current.classList.contains(styles.galleryOverlayShow)) {
+			overlayRef.current.classList.remove(styles.galleryOverlayShow);
+			window.setTimeout(closeFunc, 500);
 		}
 	};
 
@@ -39,6 +77,7 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 
 	useEffect(() => {
 		document.addEventListener('keydown', navigateWithKeyPresses);
+		setTimeout(() => overlayRef.current.classList.add(styles.galleryOverlayShow), 100);
 
 		return () => { 
 			document.removeEventListener('keydown', navigateWithKeyPresses);
@@ -47,7 +86,7 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 
 	return (
 		<>
-			<div className={ styles.galleryOverlay } onClick={ closeViewer }>
+			<div className={ styles.galleryOverlay } onClick={ closeViewer } ref={ overlayRef }>
 				<div className={ styles.galleryContainer }>
 
 					<div className={ styles.galleryExitRow }>
@@ -58,14 +97,13 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 						/>
 					</div>
 
-					<div className={ styles.galleryPictureViewer }>
+					<div className={ styles.galleryPictureViewer } ref={ pictureContainerRef }>
 						<Suspense fallback={ <SubLoader /> }>
 							<Image
 								className={ styles.galleryPicture }
-								src={ photos[photoIndex].url }
-								alt={ photos[photoIndex].pathname || 'Photo' }
-								width={ 500 }
-								height={ 500 }
+								src={ photos[photoIndex].galleriaUrl || photos[photoIndex].originalUrl }
+								alt={ photos[photoIndex].alt || 'Railing' }
+								fill={ true }
 								onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].url) }}
 							/>
 						</Suspense>

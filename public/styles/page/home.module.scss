@@ -9,6 +9,7 @@
 	@include common.fonts-define-font($size: common.$fonts-subsection) {
 		letter-spacing: 0.75px;
 		font-weight: 300;
+		line-height: 1.5em;
 	};
 
 	padding: {
@@ -47,7 +48,27 @@
 	}
 }
 
+/* ----------------------- EXPORTED VARIABLES ----------------------------- */
+
+/* stylelint-disable */
+:export {
+	silverSkeleton: common.$colors-gray;
+	whiteHighlighter: common.$colors-smoke-white;
+};
+/* stylelint-enable */
+
 /* ----------------------- CLASSES ----------------------------- */
+
+.section-descriptive-text {
+	margin: {
+		left: 10px;
+		right: 10px;
+		top: 10px;
+		bottom: 15px;
+	}
+
+	text-align: center;
+}
 
 .home-video-container {
 	position: relative;
@@ -139,5 +160,205 @@
 			top-right-radius: 25px;
 			bottom-left-radius: 25px;
 		}
+	}
+}
+
+.gallery-section {
+	@extend %home-section;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: common.$colors-steel-blue;
+	color: common.$colors-white;
+}
+
+.gallery-section-header {
+	@extend %home-section-header;
+
+	color: common.$colors-white;
+	border-bottom-color: common.$colors-white;
+	text-shadow: 1px 1px common.$colors-black;
+}
+
+.gallery-images-container {
+	@include common.animations-transition-settings($property: height, $duration: 0.5s);
+
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	width: 100%;
+	overflow: hidden;
+}
+
+.gallery-image-outer-slot {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	@include common.responsive-tablet-up() {
+		width: calc(100% / 3);
+	}
+
+	@include common.responsive-phone-only() {
+		width: calc(100% / 2);
+	}
+}
+
+.gallery-image-inner-slot {
+	margin: {
+		top: 15px;
+		bottom: 15px;
+		left: 10px;
+		right: 10px;
+	}
+
+	display: flex;
+	justify-content: center;
+	object-fit: contain;
+	position: relative;
+
+	@include common.responsive-desktop-only() {
+		width: 300px;
+		height: 300px;
+	}
+
+	@include common.responsive-tablet-only() {
+		width: 250px;
+		height: 250px;
+	}
+
+	@include common.responsive-phone-only() {
+		width: 150px;
+		height: 150px;
+	}
+}
+
+.gallery-image {
+	cursor: pointer;
+}
+
+.expand-gallery-link {
+	@include common.fonts-define-font() {
+		color: common.$colors-white;
+	};
+
+	margin: {
+		top: 20px;
+		bottom: 15px;
+	}
+
+	&-active {
+		@extend .expand-gallery-link;
+
+		cursor: pointer;
+		text-decoration: underline;
+	}
+}
+
+.review-section {
+	@extend %home-section;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.review-section-header {
+	@extend %home-section-header;
+
+	color: common.$colors-slate-gray;
+	border-bottom-color: common.$colors-slate-gray;
+}
+
+.review-block {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+		left: auto;
+		right: auto;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	@include common.responsive-tablet-up() {
+		width: 80%;
+	}
+
+	@include common.responsive-phone-only() {
+		width: 90%;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		width: 350px;
+	}
+}
+
+.review-block-body {
+	@include common.fonts-define-font();
+
+	width: 100%;
+	text-align: center;
+}
+
+.review-block-author {
+	@include common.fonts-define-font($size: common.$fonts-subsection) {
+		text-decoration: underline;
+	};
+
+	width: 150px;
+	text-align: center;
+}
+
+.review-block-data {
+	@include common.fonts-define-font($family: Roboto Mono);
+
+	width: 150px;
+	text-align: center;
+}
+
+.review-block-star {
+	margin: {
+		left: 2px;
+		right: 2px;
+	}
+
+	color: common.$colors-gold;
+	font-size: common.$fonts-subsection;
+}
+
+.review-block-images {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+
+	& > img {
+		margin: {
+			top: 10px;
+			bottom: 10px;
+			left: 20px;
+			right: 20px;
+		}
+	}
+
+	height: 200px;
+
+	@include common.responsive-tablet-up() {
+		width: 80%;
+	}
+
+	@include common.responsive-phone-only() {
+		width: 90%;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		width: 350px;
 	}
 }

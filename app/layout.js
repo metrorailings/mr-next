@@ -1,4 +1,5 @@
 import "public/styles/foundation/global.scss";
+import 'react-loading-skeleton/dist/skeleton.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
 export default function RootLayout({ children }) {

@@ -15,7 +15,7 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
 
 	// Function to open the image and any other images it's associated with in a whole-page gallery viewer
 	const viewImage = (index) => {
-		publish('open-viewer', {currentIndex: index, photos: files});
+		publish('open-photo-viewer', { currentIndex: index, photos: files });
 	};
 
 	// Function used to download non-media files

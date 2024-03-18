@@ -1,6 +1,7 @@
 /* ----------------------- LOCAL CONSTANTS ----------------------------- */
 
-$smart-phone-only: 768px;
+$phone-portrait-max: 390px;
+$phone-general-max: 768px;
 $tablet-min: 769px;
 $tablet-max: 1200px;
 $desktop-only: 1201px;
@@ -50,7 +51,7 @@ $desktop-only: 1201px;
  * @author kinsho
  */
 @mixin phone-only() {
-	@media only screen and (max-device-width: $smart-phone-only) {
+	@media only screen and (max-device-width: $phone-general-max) {
 		@content;
 	}
 }
@@ -68,19 +69,8 @@ $desktop-only: 1201px;
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on viewports where the width is longer than the height
- *
- * @author kinsho
- */
-@mixin landscape-only() {
-	@media only screen and (orientation: landscape) {
-		@content;
-	}
-}
-
-/*
- * Mix-in is responsible for enforcing CSS stylings only on mobile devices that are currently displaying content
- * in portrait mode
+ * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * a mobile environment
  *
  * @author kinsho
  */
@@ -91,8 +81,20 @@ $desktop-only: 1201px;
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on mobile devices that are currently displaying content
- * in landscape mode
+ * Mix-in is responsible for enforcing CSS stylings only on phones that are currently displaying content
+ * in portrait mode
+ *
+ * @author kinsho
+ */
+@mixin portrait-phone-only() {
+	@media only screen and (max-device-width: $phone-portrait-max) and (orientation: portrait) {
+		@content;
+	}
+}
+
+/*
+ * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * a mobile environment
  *
  * @author kinsho
  */
