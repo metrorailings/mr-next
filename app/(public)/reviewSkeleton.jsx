@@ -7,12 +7,12 @@ const ReviewSkeleton = () => {
 	return (
 		<SkeletonTheme baseColor={ styles.silverSkeleton } highlightColor={ styles.whiteHighlighter }>
 			<div className={ styles.reviewBlock }>
-				<Skeleton count={ 5 } containerClassName={ styles.reviewBlockBody } />
-				<Skeleton containerClassName={ styles.reviewBlockAuthor } />
+				<Skeleton count={ 2 } containerClassName={ styles.reviewBlockBody } />
+				<Skeleton containerClassName={ styles.reviewBlockData } />
 				<Skeleton containerClassName={ styles.reviewBlockAuthor } />
 				<Skeleton containerClassName={ styles.reviewBlockData } />
-				<Skeleton containerClassName={ styles.reviewBlockData } />
-				<Skeleton containerClassName={ styles.reviewBlockImages } height={ 200 } />
+				<Skeleton containerClassName={ styles.reviewBlockImages } height={ 100 } />
+				<Skeleton count={ 1 } containerClassName={ styles.reviewBlockBody } />
 			</div>
 		</SkeletonTheme>
 	);

@@ -33,6 +33,8 @@
 		right: 100px;
 	}
 
+	max-width: 75vw;
+
 	@include common.responsive-tablet-up() {
 		margin: {
 			top: 15px;
@@ -94,6 +96,25 @@
 	}
 }
 
+.m-logo-container {
+	position: relative;
+
+	@include common.responsive-desktop-only() {
+		width: 128px;
+		height: 128px;
+	}
+
+	@include common.responsive-tablet-only() {
+		width: 96px;
+		height: 96px;
+	}
+
+	@include common.responsive-phone-only() {
+		width: 80px;
+		height: 80px;
+	}
+}
+
 .company-name {
 	@include common.fonts-define-font($size: common.$fonts-header) {
 		letter-spacing: 10px;
@@ -104,10 +125,87 @@
 	position: absolute;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
 	background-image: linear-gradient(to right, rgba(0 0 0 / 0%), rgba(0 0 0 / 35%), rgba(0 0 0 / 0%));
+	width: 90%;
+
+	@include common.responsive-portrait-phone-only() {
+		font-size: 25px;
+		letter-spacing: 5px;
+	}
+}
+
+.products-section {
+	@extend %home-section;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.products-section-header {
+	@extend %home-section-header;
+
+	color: common.$colors-slate-gray;
+	border-bottom-color: common.$colors-slate-gray;
+}
+
+.product-box-listing {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	width: 90%;
+
+	@include common.responsive-mobile-only() {
+		flex-wrap: wrap;
+	}
+}
+
+.product-box {
+	border: {
+		width: 1px;
+		color: common.$colors-silver;
+		style: solid;
+	}
+
+	padding: 15px;
+	max-width: 400px;
+	background-color: common.$colors-smoke-white;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+}
+
+.product-box-title {
+	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
+
+	margin: {
+		bottom: 10px;
+	}
+}
+
+.product-box-text {
+	@include common.fonts-define-font();
+
+	margin: {
+		top: 10px;
+	}
+}
+
+.product-box-learning-link {
+	@include common.fonts-define-font($family: Raleway) {
+		text-decoration: underline;
+	};
+
+	margin: {
+		top: auto;
+		bottom: 10px;
+	}
 }
 
 .about-us-section {

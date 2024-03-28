@@ -2,16 +2,19 @@ import { readFileSync } from 'node:fs';
 import React, { Suspense } from 'react';
 import { list } from '@vercel/blob'
 import Image from 'next/image';
+import Link from 'next/link';
 
 import GallerySection from 'app/(public)/gallery';
 import ReviewsServer from 'app/(public)/reviewsServer';
 import ReviewSkeleton from 'app/(public)/reviewSkeleton';
 import VideoComponent from 'components/public/videoComponent';
+
 import { textToParagraphs } from 'lib/utils';
 import { getGalleryImages } from 'lib/http/galleryDAO';
 
 import styles from 'public/styles/page/home.module.scss';
 import mLogo from 'assets/images/logos/m-logo.png';
+import products from 'assets/text/products.js';
 
 const HomeServer = async () => {
 
@@ -34,17 +37,42 @@ const HomeServer = async () => {
 			{ /* BANNER VIDEO */ }
 			<div className={ styles.homeVideoContainer }>
 				<div className={ styles.companyName }>
-					<Image
-						src={ mLogo }
-						alt='M'
-						width={ 128 }
-						height={ 128 }
-					/>
+					<span className={ styles.mLogoContainer }>
+						<Image
+							src={ mLogo }
+							alt='M'
+							fill={ true }
+							sizes='(max-width: 768px) 80px, (max-width: 1200px) 96px, 128px'
+						/>
+					</span>
 					<span>ETRO RAILINGS</span>
 				</div>
 				<Suspense fallback={ <p>Blahblahblah</p> }>
 					<VideoComponent videos={ blobs } />
 				</Suspense>
+			</div>
+
+			{ /* PRODUCTS */ }
+			<div className={ styles.productsSection }>
+				<div className={ styles.productsSectionHeader }>CRAFTING RAILINGS FOR THE 21ST CENTURY</div>
+				<div className={ styles.productBoxListing }>
+					{ products.map((product, index) => {
+						return (
+							<span key={ index } className={ styles.productBox }>
+							<div className={ styles.productBoxTitle }>{ product.name }</div>
+							<Image
+								src={ product.picture.src }
+								alt={ product.pictureAlt }
+								className={ styles.productBoxImage }
+								width={ 250 }
+								height={ 250 }
+							/>
+							<p className={ styles.productBoxText }>{ product.text }</p>
+							<Link href={ product.link } className={ styles.productBoxLearningLink }>Show Me More</Link>
+						</span>
+						);
+					})}
+				</div>
 			</div>
 
 			{ /* ABOUT US */ }

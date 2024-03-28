@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { attachFileMetadata } from 'app/api/admin/orders/DAO';
+import { attachFileMetadata } from 'lib/http/ordersDAO';
 
 /**
  * Function to store/modify file metadata for a given order

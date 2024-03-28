@@ -53,7 +53,7 @@
 	}
 
 	@include common.responsive-landscape-mobile-only() {
-		height: 75px;
+		height: 55px;
 	}
 
 	& > img {
@@ -155,11 +155,11 @@
 	}
 
 	@include common.responsive-portrait-mobile-only() {
-		height: 150px;
+		height: 120px;
 	}
 
 	@include common.responsive-landscape-mobile-only() {
-		height: 75px;
+		height: 55px;
 	}
 }
 

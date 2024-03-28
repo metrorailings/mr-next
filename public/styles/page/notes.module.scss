@@ -1,0 +1,218 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@use 'sass:math';
+@use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/form';
+
+/* ------------------ GENERAL STYLES ----------------------- */
+
+.note-listing {
+	border: {
+		style: solid;
+		width: 1px;
+		color: common.$colors-gray;
+	}
+
+	margin: {
+		top: 20px;
+		left: auto;
+		right: auto;
+	}
+
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	width: 90%;
+}
+
+.new-note-upload {
+	width: 100%;
+}
+
+.new-note-text-container {
+	width: 100%;
+	min-height: 120px;
+	padding: 5px;
+	border: 0;
+	box-shadow: none;
+	resize: none;
+	box-sizing: border-box;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.new-note-actions {
+	padding: {
+		top: 25px;
+		bottom: 25px;
+	}
+
+	background-color: common.$colors-faint-silver;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.note-prop-field {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	flex: 1;
+}
+
+.note-prop-field-label {
+	@extend %secondary-label;
+
+	margin-bottom: 3px;
+}
+
+.note-prop-field-input {
+	@extend %small-input-control;
+}
+
+.note-prop-field-submit-button {
+	@include form.small-button($bgColor: common.$colors-pale-violet-red, $width: 150px);
+	@include common.fonts-define-font($family: Avenir Next, $size: common.$fonts-secondary);
+}
+
+.note-lazy-load-link {
+	@include common.fonts-define-font() {
+		text-decoration: none;
+		color: common.$colors-cadet-blue;
+	}
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.note-records-container {
+	margin: {
+		left: auto;
+		right: auto;
+	}
+
+	width: 90%;
+}
+
+.note-record {
+	border: {
+		width: 1px;
+		style: solid;
+		color: common.$colors-gray;
+		spacing: 0;
+	}
+
+	display: grid;
+	grid-template-columns: [first] 3fr [second] 14fr [third] 40px;
+	min-height: 120px;
+	width: 100%;
+
+	&-task {
+		@extend .note-record;
+
+		background-color: common.$colors-lavender;
+	}
+}
+
+.note-record-row {
+	min-height: 120px;
+}
+
+.note-metadata-cell {
+	border-right: {
+		style: solid;
+		width: 1px;
+		color: common.$colors-silver;
+	}
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	flex: 3;
+	height: 100%;
+}
+
+.note-date-subcell {
+	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection) {
+		color: common.$colors-slate-gray;
+	};
+
+	margin: {
+		top: 0.25em;
+	}
+}
+
+.note-author-subcell {
+	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection);
+
+	margin: {
+		top: 0.75em;
+	}
+}
+
+.note-text-cell {
+	@include common.fonts-define-font();
+
+	padding: 15px;
+	display: flex;
+	align-items: center;
+}
+
+.note-cell-special-header {
+	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-section) {
+		text-transform: uppercase;
+		transform: rotate(270deg);
+	};
+}
+
+.task-metadata-cell {
+	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-section);
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.task-status-subcell {
+	@include common.fonts-define-font($family: Raleway) {
+		color: common.$colors-sea-green;
+	};
+
+	margin: {
+		top: 5px;
+		bottom: 10px;
+	}
+}
+
+.task-owners-subcell {
+	@include common.fonts-define-font($family: Raleway);
+
+	margin: {
+		top: 10px;
+		bottom: 5px;
+	}
+}
+
+.task-actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.task-resolve-icon {
+	color: common.$colors-success;
+	cursor: pointer;
+}
+
+.task-cancel-icon {
+	color: common.$colors-slate-gray;
+	cursor: pointer;
+}

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import OrderSearchPage from "app/admin/orderSearch/client";
 import { filterOrders } from "app/admin/orderSearch/orderFilter";
 
-import { getAllOrders } from "app/api/admin/orders/DAO";
+import { getAllOrders } from 'lib/http/ordersDAO';
 
 const OrderSearchServer = async (request) => {
 

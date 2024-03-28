@@ -7,6 +7,7 @@ import styles from 'public/styles/page/orderDetails.module.scss';
 
 import Multitext from 'components/multitext'; 
 import PaymentForms from 'components/paymentForms';
+import Notes from 'components/admin/notes';
 import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
 
@@ -159,12 +160,12 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 				) : null }
 				<hr className={ styles.firstPageDivider }></hr>
 
-				{/* ---------- CUSTOMER SECTION ---------- */}
+				{/* ---------- CUSTOMER SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<span className={ styles.mediumInputGroup }>
 						<label htmlFor='customer.name' className={ styles.orderFormLabel }>Customer Name</label>
-						<input 
+						<input
 							type='text'
 							name='customer.name'
 							id='customer.name'
@@ -230,7 +231,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- ADDRESS SECTION ---------- */}
+				{/* ---------- ADDRESS SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<span className={ styles.mediumInputGroup }>
@@ -275,7 +276,23 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- DESIGN TYPE SECTION ---------- */}
+				{/* ---------- NOTES SECTION ---------- */ }
+
+				{ orderDetails._id ? (
+					<div className={ styles.orderFormSection }>
+						<Notes
+							orderId={ orderDetails._id }
+							existingNotes={ orderDetails.notes || [] }
+							lazyLoad={ false }
+							inSpanish={ false }
+							users={ [] }
+						/>
+					</div>
+				) : null }
+
+				<hr className={ styles.sectionDivider }></hr>
+
+				{/* ---------- DESIGN TYPE SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<DesignField
@@ -288,7 +305,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- BASE DESIGN SECTION ---------- */}
+				{/* ---------- BASE DESIGN SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<DesignField
@@ -331,7 +348,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- PICKET SECTION ---------- */}
+				{/* ---------- PICKET SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<DesignField
@@ -350,7 +367,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- TRADITIONAL OPTIONS SECTION ---------- */}
+				{/* ---------- TRADITIONAL OPTIONS SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<DesignField
@@ -381,7 +398,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- CABLE OPTIONS SECTION ---------- */}
+				{/* ---------- CABLE OPTIONS SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<DesignField
@@ -394,7 +411,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- GLASS OPTIONS SECTION ---------- */}
+				{/* ---------- GLASS OPTIONS SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
 					<DesignField
@@ -413,7 +430,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
-				{/* ---------- PAYMENTS SECTION ---------- */}
+				{/* ---------- PAYMENTS SECTION ---------- */ }
 
 				<div className={ styles.orderPaymentSection }>
 					<PaymentForms
@@ -422,7 +439,9 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						acceptCheck={ true }
 						acceptStripe={ true }
 						acceptExternal={ true }
-						postFunc={ () => { console.log('In post func'); } }
+						postFunc={ () => {
+							console.log('In post func');
+						} }
 					/>
 				</div>
 			</div>

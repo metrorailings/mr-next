@@ -1,100 +1,63 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 import styles from "public/styles/page/components.module.scss";
 
-import { subscribe, unsubscribe } from 'lib/utils';
+const ConfirmModal = ({ text, image, confirmFunc, closeFunc }) => {
 
-const ConfirmModal = () => {
+	const overlayRef = useRef(null);
+	const modalRef = useRef(null);
 
-	const [doShow, setDoShow] = useState(false);
-	const [toRemove, setToRemove] = useState(false);
-	const [text, setText] = useState('');
-	const [image, setImage] = useState(null);
-	const [confirmFunction, setConfirmFunction] = useState(null);
+	const isCurrentlyAnimating = () => {
+		return (modalRef.current.classList.contains(styles.modalShiftDownOut));
+	}
 
-	const overlayElement = useRef(null);
-	const modalContainerElement = useRef(null);
+	const closeModal = (runConfirmFunction) => {
+		event.preventDefault();
 
-	const showModal = (event) => {
-		setDoShow(true);
-		setText(event.detail.text);
-		setImage(event.detail.image);
-		setConfirmFunction(event.detail.confirmFunction)
-	};
+		if (isCurrentlyAnimating() === false) {
+			modalRef.current.classList.add(styles.modalShiftDownOut);
 
-	const closeModal = () => {
-		setToRemove(true);
-	};
-
-	const closeModalAfterAnimation = () => {
-		// Only execute this logic when we're closing out this modal
-		if (toRemove) {
-			setToRemove(false);
-			setDoShow(false);
-			setText('');
-			setImage(null);
-			setConfirmFunction(null);
+			window.setTimeout(() => {
+				modalRef.current.classList.remove(styles.modalOverlayShow);
+				window.setTimeout(() => {
+					if (runConfirmFunction) { confirmFunc() }
+					closeFunc();
+				}, 100);
+			}, 275);
 		}
-	};
-
-	const confirm = (event) => {
-		event.preventDefault();
-
-		confirmFunction();
-		closeModal();
-	};
-
-	const cancel = (event) => {
-		event.preventDefault();
-
-		closeModal();
-	};
+	}
 
 	useEffect(() => {
-		subscribe('open-confirm-modal', showModal);
-
 		window.setTimeout(() => {
-			if (doShow) {
-				overlayElement.current.style.backgroundColor = 'rgba(0 0 0 / 80%)';
-			}
+			overlayRef.current.classList.add(styles.modalOverlayShow);
+			modalRef.current.classList.add(styles.modalShiftDownIn);
 		}, 100);
+	}, []);
 
-		return () => {
-			unsubscribe('open-confirm-modal', showModal);
-		}
-	}, [doShow]);
-
-	if (doShow) {
-		return (
-			<div className={ styles.modalOverlay } onClick={ closeModal } ref={ overlayElement } onAnimationEnd={ closeModalAfterAnimation }>
-				<div className={ styles.modalContainer }>
-					<div className={ styles.modal } ref={ modalContainerElement }>
-						<div className={ styles.modalBody }>
-							{ image ? (
-								<Image
-									src={ image.url }
-									alt={ image.pathname }
-									height={ 150 }
-									width={ 150 }
-								/>
-							) : null }
-							<div className={ styles.modalBodyText }>{ text }</div>
-						</div>
-						<div className={ styles.modalButtonRow }>
-							<button type='button' onClick={ confirm } className={ styles.modalConfirmButton }>Yes</button>
-							<button type='button' onClick={ cancel } className={ styles.modalCancelButton }>Cancel</button>
-						</div>
-					</div>
+	return (
+		<div className={ styles.modalOverlay } ref={ overlayRef }>
+			<div className={ styles.modal } ref={ modalRef }>
+				<div className={ styles.modalBody }>
+					{ image ? (
+						<Image
+							src={ image.galleriaUrl || image.originalUrl }
+							alt={ image.alt || 'Railing' }
+							height={ 150 }
+							width={ 150 }
+						/>
+					) : null }
+					<div className={ styles.modalBodyText }>{ text }</div>
+				</div>
+				<div className={ styles.modalButtonRow }>
+					<button type='button' onClick={ () => closeModal(true) } className={ styles.modalConfirmButton }>Yes</button>
+					<button type='button' onClick={ () => closeModal(false) } className={ styles.modalCancelButton }>Cancel</button>
 				</div>
 			</div>
-		);
-	} else
-	{
-		return (<></>);
-	}
+		</div>
+	);
 };
 
 export default ConfirmModal;

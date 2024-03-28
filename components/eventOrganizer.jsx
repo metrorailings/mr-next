@@ -16,7 +16,7 @@ const EventOrganizer = () => {
 	const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 	const [modalText, setModalText] = useState('');
 	const [modalImage, setModalImage] = useState(null);
-	const [postModalFunc, setPostModalFunc] = useState(() => {});
+	const [postModalFunc, setPostModalFunc] = useState(null);
 
 	const openViewer = (event) => {
 		setPhotoViewerOpen(true);
@@ -36,13 +36,13 @@ const EventOrganizer = () => {
 	const openModal = (event) => {
 		setModalText(event.detail.text);
 		setModalImage(event.detail.image);
-		setPostModalFunc(event.detail.confirmFunction);
+		setPostModalFunc(() => event.detail.confirmFunction);
 	}
 	const closeModal = () => {
 		setConfirmModalOpen(false);
 		setModalText('');
 		setModalImage(null);
-		setPostModalFunc(() => {});
+		setPostModalFunc(null);
 	}
 
 	useEffect(() => {

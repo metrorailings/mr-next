@@ -1,6 +1,6 @@
 import OrderDetailsPage from "app/admin/orderDetails/client";
 
-import { getOrderById } from "app/api/admin/orders/DAO";
+import { getOrderById } from 'lib/http/ordersDAO';
 
 const OrderDetailsServer = async ({ searchParams }) => {
 	const orderId = searchParams?.id || 0;
@@ -11,7 +11,7 @@ const OrderDetailsServer = async ({ searchParams }) => {
 
 	return (
 		<>
-			<OrderDetailsPage jsonOrder={ JSON.stringify(order) } />
+			<OrderDetailsPage jsonOrder={ JSON.stringify(order) }/>
 		</>
 	);
 };

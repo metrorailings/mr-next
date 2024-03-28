@@ -8,8 +8,9 @@ import EmblaCarousel from 'lib/carousel/EmblaCarousel';
 
 import styles from 'public/styles/page/home.module.scss';
 import 'public/styles/foundation/embla.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import googleLogo from 'assets/images/logos/google-name.png';
 
 const ReviewSection = ({ jsonReviews }) => {
 	const googleReviews = JSON.parse(jsonReviews);
@@ -24,10 +25,11 @@ const ReviewSection = ({ jsonReviews }) => {
 							{ Array.from(Array(parseInt(review.rating, 10)).keys()).map((index) => {
 								return (<FontAwesomeIcon key={ index } icon={ faStar } className={ styles.reviewBlockStar } />);
 							})}
+							<Image src={ googleLogo } alt='Goo Logo' height={ 20 } />
 						</div>
 						<div className={ styles.reviewBlockAuthor }>{ review.author }</div>
 						<div className={ styles.reviewBlockData }>
-							{ dayjs(review.date).format('MMM DD, YYYY') }
+							{ dayjs(review.date).format('MMMM DD, YYYY') }
 						</div>
 						{ review.images.length ? (
 							<div className={ styles.reviewBlockImages }>

@@ -1,6 +1,6 @@
 import DashboardPage from "app/admin/dashboard/client";
 
-import { getAllOpenOrders } from "app/api/admin/orders/DAO";
+import { getAllOpenOrders } from 'lib/http/ordersDAO';
 
 const DashboardServer = async () => {
 	// Fetch all open orders

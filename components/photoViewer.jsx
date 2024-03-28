@@ -1,13 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from "next/image";
 
 import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle, faCircleArrowLeft, faCircleArrowRight } from '@fortawesome/free-solid-svg-icons'
-
-import { SubLoader } from 'components/loaderIcons';
 
 const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 
@@ -98,15 +96,13 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 					</div>
 
 					<div className={ styles.galleryPictureViewer } ref={ pictureContainerRef }>
-						<Suspense fallback={ <SubLoader /> }>
-							<Image
-								className={ styles.galleryPicture }
-								src={ photos[photoIndex].galleriaUrl || photos[photoIndex].originalUrl }
-								alt={ photos[photoIndex].alt || 'Railing' }
-								fill={ true }
-								onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].url) }}
-							/>
-						</Suspense>
+						<Image
+							className={ styles.galleryPicture }
+							src={ photos[photoIndex].galleriaUrl || photos[photoIndex].originalUrl }
+							alt={ photos[photoIndex].alt || 'Railing' }
+							fill={ true }
+							onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].url) }}
+						/>
 					</div>
 
 					<div className={ styles.galleryControls }>

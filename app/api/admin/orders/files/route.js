@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { handleUpload } from '@vercel/blob/client';
 
-import { attachFileMetadata } from 'app/api/admin/orders/DAO';
+import { attachFileMetadata } from 'lib/http/ordersDAO';
 
 /**
  * Method to upload media directly to Vercel from the client
