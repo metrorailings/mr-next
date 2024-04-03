@@ -110,19 +110,48 @@
 	}
 }
 
-/* ----------------------- TOAST ----------------------------- */
-
-.custom-error-toast {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins) {
-		color: common.$colors-white;
-	};
-
-	border: {
-		radius: 20px;
+@include common.animations-keyframes($name: rotate-spinner) {
+	0% {
+		transform: rotate(0);
 	}
 
-	padding: 10px;
-	background-color: common.$colors-negative-red;
+	25% {
+		transform: rotate(90deg);
+	}
+
+	50% {
+		transform: rotate(180deg);
+	}
+
+	75% {
+		transform: rotate(270deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+/* ----------------------- EXPORTED VARIABLES ----------------------------- */
+
+/* stylelint-disable */
+:export {
+	toastIconGeneralPrimary: common.$colors-white;
+	toastIconGeneralSecondary: common.$colors-logo-blue;
+	toastIconSuccessSecondary: common.$colors-success;
+	toastIconErrorSecondary: common.$colors-negative-red;
+};
+/* stylelint-enable */
+
+/* ----------------------- TOAST ----------------------------- */
+
+%standard-toast {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins) {
+		color: common.$colors-white !important;
+	};
+
+	border-radius: 20px !important;
+	padding: 10px !important;
 
 	@include common.responsive-tablet-up() {
 		min-width: 250px;
@@ -133,41 +162,24 @@
 		width: 175px;
 		max-width: 300px;
 	}
-
-	.close-icon {
-		padding: {
-			right: 40px;
-		}
-
-		width: 12px;
-		height: 12px;
-		text-align: right;
-		cursor: pointer;
-	}
-
-	.error-icon {
-		width: 100%;
-		text-align: center;
-
-		svg {
-			width: 48px;
-			height: 48px;
-		}
-	}
-
-	.custom-error-body {
-		padding: 10px;
-		width: 100%;
-		text-align: left;
-	}
 }
 
-.validation-error-list {
-	text-align: left;
+.general-toast {
+	@extend %standard-toast;
 
-	& > li {
-		text-align: left;
-	}
+	background-color: common.$colors-logo-blue !important;
+}
+
+.success-toast {
+	@extend %standard-toast;
+
+	background-color: common.$colors-success !important;
+}
+
+.error-toast {
+	@extend %standard-toast;
+
+	background-color: common.$colors-negative-red !important;
 }
 
 /* ----------------------- LOADERS ----------------------------- */
@@ -268,6 +280,15 @@
 		background-color: common.$colors-indian-red;
 		width: 30px;
 		height: 20px;
+	}
+}
+
+.rotate-spinner {
+	@include common.animations-animation-settings($keyframeSet: rotate-spinner, $duration: 1.0s, $timing: ease, $iterations: infinite);
+
+	margin: {
+		left: 10px;
+		right: 10px;
 	}
 }
 

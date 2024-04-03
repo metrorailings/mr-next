@@ -11,17 +11,8 @@
 }
 
 .gallery-pictures {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-
-	@include common.responsive-tablet-up() {
-		justify-content: flex-start;
-	}
-
-	@include common.responsive-phone-only() {
-		justify-content: center;
-	}
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
 }
 
 .gallery-footer {
@@ -57,6 +48,22 @@
 	display: none;
 }
 
+.image-card {
+	border: {
+		width: 0.75px;
+		style: solid;
+		color: common.$colors-slate-gray;
+		radius: 10px;
+	}
+
+	margin: 1vw;
+	padding: 3px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
 .image-container {
 	margin: {
 		top: 15px;
@@ -73,13 +80,42 @@
 
 	width: 300px;
 	height: 300px;
-	display: flex;
-	flex-direction: column;
 	position: relative;
 
 	& > img {
 		cursor: pointer;
 	}
+}
+
+.image-data-form {
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.image-data-row {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+	}
+
+	display: grid;
+	grid-template-columns: [first] 1fr [second] 3fr;
+	justify-content: flex-start;
+	align-items: center;
+	width: 100%;
+}
+
+.image-data-label {
+	@extend %secondary-label;
+
+	margin-right: 5px;
+}
+
+.image-data-field {
+	@extend %medium-input-control;
 }
 
 .photo-delete-icon {

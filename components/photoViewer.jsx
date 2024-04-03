@@ -101,7 +101,7 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 							src={ photos[photoIndex].galleriaUrl || photos[photoIndex].originalUrl }
 							alt={ photos[photoIndex].alt || 'Railing' }
 							fill={ true }
-							onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].url) }}
+							onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].originalUrl) }}
 						/>
 					</div>
 

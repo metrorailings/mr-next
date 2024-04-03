@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
 import styles from 'public/styles/page/home.module.scss';
-import { publish } from '../../lib/utils';
+import { publish } from 'lib/utils';
 
 const GallerySection = ({ jsonImages }) => {
 
@@ -40,14 +40,12 @@ const GallerySection = ({ jsonImages }) => {
 				{ Array.from(Array(shownImageCount).keys()).map((value, i) => {
 					return (
 						<span className={ styles.galleryImageOuterSlot } key={ i }>
-							<span className={ styles.galleryImageInnerSlot }>
+							<span className={ styles.galleryImageInnerSlot } onClick={ () => viewImage(i) }>
 								<Image
 									src={ images[i].galleriaUrl }
 									alt={ images[i].alt || 'Luxury railing' }
 									fill={ true }
 									sizes="(max-width: 768px) 50vw, 33vw"
-									className={ styles.galleryImage }
-									onClick={ () => viewImage(i) }
 								/>
 							</span>
 						</span>

@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
-import { handleUpload } from '@vercel/blob/client';
+import { revalidatePath } from 'next/cache';
 
-import { getGalleryImages, addGalleryImage, deleteGalleryImage } from 'lib/http/galleryDAO';
+import {
+	getGalleryImages,
+	addGalleryImage,
+	deleteGalleryImage,
+	deleteFromVercel,
+	updateGalleryImageData
+} from 'lib/http/galleryDAO';
 
 /**
  * Function to retrieve all gallery-related metadata from the database
@@ -31,11 +37,8 @@ export async function PUT(request) {
 	const metadata = await request.json();
 
 	try {
-		if (await addGalleryImage(metadata)) {
-			return NextResponse.json({}, { status: 200 });
-		} else {
-			return NextResponse.json({ error: 'Could not upload the gallery metadata for some reason' }, { status: 500 });
-		}
+		const processedMetadata = await addGalleryImage(metadata);
+		return NextResponse.json(processedMetadata, { status: 200 });
 	} catch (error) {
 		console.error(error);
 		return NextResponse.json( { error: 'Server issue' }, { status: 500 });
@@ -52,7 +55,9 @@ export async function DELETE(request) {
 	const params = request.nextUrl.searchParams;
 
 	try {
-		if (await deleteGalleryImage(params.pathname, params.index)) {
+		if (await deleteGalleryImage(params.get('name'), parseInt(params.get('index'), 10))) {
+			deleteFromVercel(params.get('originalUrl'), params.get('galleriaUrl'));
+			revalidatePath('/admin/gallery');
 			return NextResponse.json({}, { status: 200 });
 		} else {
 			return NextResponse.json({ error: 'Error attempting to delete a gallery image from the database' }, { status: 500 });
@@ -71,31 +76,13 @@ export async function DELETE(request) {
  * @returns {Promise<NextResponse>}
  */
 export async function POST(request) {
-	const body = await request.json();
+	const imageData = await request.json();
 
 	try {
-		// Note that the two functions being passed into handleUpload need to be explicitly async, regardless of the
-		// presence of the await keyword 
-		const jsonResponse = await handleUpload({
-			body,
-			request,
-			onBeforeGenerateToken: (pathname) => {
-
-				console.log('About to upload an image - ' + pathname);
-
-				return {
-					allowedContentTypes: ['image/jpeg', 'image/png']
-				};
-			},
-			onUploadCompleted: ({ blob, tokenPayload }) => {
-				console.log('Media has been uploaded -- ', blob, tokenPayload);
-			}
-		});
-
-		return NextResponse.json(jsonResponse);
+		await updateGalleryImageData(imageData);
+		return NextResponse.json({}, { status: 200 });
 	} catch (error) {
-		// Do note that the webhook will retry 5 times waiting for a status 200;
 		console.error(error);
-		return NextResponse.json({ error: "Upload issue" },{ status: 500 });
+		return NextResponse.json( { error: 'Server is menopausal' }, { status: 500 });
 	}
 }
