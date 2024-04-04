@@ -28,17 +28,17 @@
 		style: solid;
 	}
 
-	padding: {
-		left: 100px;
-		right: 100px;
-	}
-
-	max-width: 75vw;
+	text-align: center;
 
 	@include common.responsive-tablet-up() {
 		margin: {
 			top: 15px;
 			bottom: 15px;
+		}
+
+		padding: {
+			left: 100px;
+			right: 100px;
 		}
 	}
 
@@ -46,6 +46,18 @@
 		margin: {
 			top: 10px;
 			bottom: 25px;
+		}
+
+		padding: {
+			left: 50px;
+			right: 50px;
+		}
+	}
+
+	@include common.responsive-portrait-phone-only() {
+		padding: {
+			left: 25px;
+			right: 25px;
 		}
 	}
 }
@@ -259,6 +271,92 @@
 			bottom-left-radius: 25px;
 		}
 	}
+}
+
+.stats-section {
+	@extend %home-section;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: common.$colors-indian-red;
+	color: common.$colors-white;
+}
+
+.stats-section-header {
+	@extend %home-section-header;
+
+	color: common.$colors-white;
+	border-bottom-color: common.$colors-white;
+	text-shadow: 1px 1px common.$colors-black;
+}
+
+.stats-score-display {
+	margin: {
+		left: 5px;
+		right: 5px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+
+	@include common.responsive-mobile-only() {
+		flex-direction: column;
+	}
+}
+
+.stat-container {
+	margin: {
+		top: 25px;
+		bottom: 25px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	flex: 1;
+}
+
+.stat-metric {
+	@include common.fonts-define-font($size: common.$fonts-subheader, $family: Roboto Mono) {
+		letter-spacing: 2px;
+	};
+}
+
+.stat-label {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Avenir Light) {
+		letter-spacing: 0.5px;
+	};
+
+	margin-top: 8px;
+}
+
+.stats-as-of-date {
+	@include common.fonts-define-font($family: Avenir Light) {
+		font-style: italic;
+	};
+
+	border: {
+		width: 1px;
+		color: common.$colors-white;
+		style: solid;
+		top: none;
+		bottom:none;
+		top-left-radius: 15px;
+		bottom-right-radius: 15px;
+	}
+
+	margin: {
+		left: auto;
+		right: auto;
+	}
+
+	padding: 15px;
+	text-align: center;
 }
 
 .gallery-section {

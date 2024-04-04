@@ -4,6 +4,7 @@ import { list } from '@vercel/blob'
 import Image from 'next/image';
 import Link from 'next/link';
 
+import StatsSection from 'app/(public)/stats';
 import GallerySection from 'app/(public)/gallery';
 import ReviewsServer from 'app/(public)/reviewsServer';
 import ReviewSkeleton from 'app/(public)/reviewSkeleton';
@@ -48,13 +49,13 @@ const HomeServer = async () => {
 					<span>ETRO RAILINGS</span>
 				</div>
 				<Suspense fallback={ <p>Blahblahblah</p> }>
-					<VideoComponent videos={ blobs } />
+					<VideoComponent videos={ blobs }/>
 				</Suspense>
 			</div>
 
 			{ /* PRODUCTS */ }
 			<div className={ styles.productsSection }>
-				<div className={ styles.productsSectionHeader }>CRAFTING RAILINGS FOR THE 21ST CENTURY</div>
+				<div className={ styles.productsSectionHeader }>WHAT WE DO</div>
 				<div className={ styles.productBoxListing }>
 					{ products.map((product, index) => {
 						return (
@@ -71,7 +72,7 @@ const HomeServer = async () => {
 							<Link href={ product.link } className={ styles.productBoxLearningLink }>Show Me More</Link>
 						</span>
 						);
-					})}
+					}) }
 				</div>
 			</div>
 
@@ -83,18 +84,21 @@ const HomeServer = async () => {
 						return (
 							<p key={ index }>{ paragraph }</p>
 						);
-					})}
+					}) }
 				</div>
 			</div>
 
+			{ /* STATS */ }
+			<StatsSection />
+
 			{ /* GALLERY */ }
-			<GallerySection jsonImages={ JSON.stringify(galleryImages) } />
+			<GallerySection jsonImages={ JSON.stringify(galleryImages) }/>
 
 			{ /* REVIEWS */ }
 			<div className={ styles.reviewSection }>
 				<div className={ styles.reviewSectionHeader }>CLIENT TESTIMONIALS</div>
-				<Suspense fallback={ <ReviewSkeleton /> }>
-					<ReviewsServer />
+				<Suspense fallback={ <ReviewSkeleton/> }>
+					<ReviewsServer/>
 				</Suspense>
 			</div>
 		</>
