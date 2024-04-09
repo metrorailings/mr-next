@@ -227,13 +227,14 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	background-color: common.$colors-slate-gray;
+	color: common.$colors-white;
 }
 
 .about-us-section-header {
 	@extend %home-section-header;
 
-	color: common.$colors-slate-gray;
-	border-bottom-color: common.$colors-slate-gray;
+	border-bottom-color: common.$colors-white;
 }
 
 .about-us-text {
@@ -249,7 +250,7 @@
 
 	border: {
 		style: solid;
-		color: common.$colors-slate-gray;
+		color: common.$colors-white;
 		top: none;
 		bottom: none;
 		top-left-radius: 25px;
@@ -270,6 +271,13 @@
 			top-right-radius: 25px;
 			bottom-left-radius: 25px;
 		}
+	}
+}
+
+.about-us-paragraph {
+	margin: {
+		top: 20px;
+		bottom: 20px;
 	}
 }
 
@@ -548,5 +556,53 @@
 
 	@include common.responsive-portrait-mobile-only() {
 		width: 350px;
+	}
+}
+
+.special-thanks-section {
+	@extend %home-section;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: common.$colors-silver;
+}
+
+.special-thanks-section-header {
+	@extend %home-section-header;
+}
+
+.special-thanks-text {
+	text-align: center;
+}
+
+.special-thanks-logo-container {
+	margin: {
+		left: 10px;
+		right: 10px;
+		top: 20px;
+		bottom: 30px;
+	}
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.special-thanks-logo {
+	@include common.responsive-tablet-up() {
+		margin: {
+			left: 20px;
+			right: 20px;
+		}
+	}
+
+	@include common.responsive-phone-only() {
+		margin: {
+			left: 10px;
+			right: 10px;
+		}
 	}
 }

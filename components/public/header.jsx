@@ -35,7 +35,7 @@ export default function Header() {
 			</span>
 
 			<span className={ styles.desktopMenuLinks }>
-				<Link href='/contactUs' className={ styles.topMenuLink }>TALK WITH US</Link>				
+				<Link href='/contact-us' className={ styles.topMenuLink }>CONTACT US</Link>
 				<Link href='/faqs' className={ styles.topMenuLink }>FAQS</Link>				
 				<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
 			</span>
@@ -46,7 +46,7 @@ export default function Header() {
 			</span>
 
 				<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
-				<Link href='/contactUs' className={ styles.topMenuLink }>TALK WITH US</Link>				
+				<Link href='/contact-us' className={ styles.topMenuLink }>CONTACT US</Link>				
 				<Link href='/faqs' className={ styles.topMenuLink }>FAQS</Link>				
 				<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
 			</span>

@@ -129,7 +129,6 @@
 	display: inline-flex;
 	position: relative;
 	align-items: center;
-	width: 500px;
 
 	& > input {
 		margin: {
@@ -286,6 +285,7 @@
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins);
 
 	height: 2em;
+	max-width: 400px;
 	color: common.$colors-low-black;
 	box-sizing: border-box;
 
@@ -310,38 +310,17 @@
 %small-input-control {
 	@extend %input-control;
 
-	@include common.responsive-tablet-up() {
-		min-width: 100px;
-		max-width: 150px;
-	}
-	@include common.responsive-phone-only {
-		min-width: 80px;
-		max-width: 120px;
-	}
+	width: 20vw;
 }
 
 %medium-input-control {
 	@extend %input-control;
 
-	@include common.responsive-tablet-up() {
-		min-width: 250px;
-		max-width: 350px;
-	}
-	@include common.responsive-phone-only {
-		min-width: 200px;
-		max-width: 275px;
-	}
+	width: 35vw;
 }
 
 %large-input-control {
 	@extend %input-control;
 
-	@include common.responsive-tablet-up() {
-		min-width: 400px;
-		max-width: 550px;
-	}
-	@include common.responsive-phone-only {
-		min-width: 300px;
-		max-width: 420px;
-	}
+	width: 50vw;
 }

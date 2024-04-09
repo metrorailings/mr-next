@@ -80,6 +80,7 @@ const LoginPage = () => {
 				<div className={ styles.loginBox }>
 					<form>
 						<div className={ styles.loginBoxBody }>
+
 							<label className={ styles.loginBoxLabel }>User Name</label>
 							<div className={ styles.loginInputGrouping }>
 								<span className={ styles.loginInputGroupingIcon }>
@@ -101,7 +102,7 @@ const LoginPage = () => {
 									<FontAwesomeIcon icon={ faKey } />
 								</span>
 								<input
-									type={showPasswordFlag ? 'text' : 'password'}
+									type={ showPasswordFlag ? 'text' : 'password' }
 									name='password'
 									className={ styles.loginInputField }
 									placeholder='Enter your password here...'

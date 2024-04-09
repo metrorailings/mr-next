@@ -1,31 +1,48 @@
-import React from "react";
+'use client'
+
+import React, { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import classNames from 'classnames';
 
 import componentStyles from "public/styles/page/components.module.scss";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 const MRToaster = () => {
+
+	useEffect(() => {
+	}, []);
 
 	return (
 		<>
 			<Toaster
-				position="bottom-center"
 				toastOptions={{
+					className: componentStyles.generalToast,
 
-					style: {
-						fontFamily: componentStyles.toastFont,
-						width: "200px"
+					iconTheme: {
+						primary: componentStyles.toastIconGeneralPrimary,
+						secondary: componentStyles.toastIconGeneralSecondary,
+					},
+
+					success: {
+						className: componentStyles.successToast,
+						duration: 6500,
+
+						iconTheme: {
+							primary: componentStyles.toastIconGeneralPrimary,
+							secondary: componentStyles.toastIconSuccessSecondary
+						},
 					},
 
 					error: {
-						duration: 12000,
-						style: {
-							backgroundColor: componentStyles.errorColor,
-							color: componentStyles.whiteColor
-						}
+						className: componentStyles.errorToast,
+						duration: 10000,
+
+						iconTheme: {
+							primary: componentStyles.toastIconGeneralPrimary,
+							secondary: componentStyles.toastIconErrorSecondary
+						},
 					}
 				}}
+				onClick={ (event) => event.preventDefault() }
 			/>
 		</>
 	);
@@ -41,32 +58,28 @@ export default MRToaster;
  * @author kinsho
  */
 export function toastValidationError(errors = []) {
-
-	const errorList = errors.map((error, index) =>
-		<li key={index}>{error}</li>
-	);
-
-	toast.custom(
-		<>
-			<div className={componentStyles.custom_error_toast}>
-				<div className={componentStyles.close_icon}>
-					<FontAwesomeIcon icon={faXmark} />
-				</div>
-				<div className={componentStyles.error_icon}>
-					<FontAwesomeIcon icon={faCircleExclamation} />
-				</div>
-				<div className={componentStyles.custom_error_body}>
-					<div className={componentStyles.validation_errors_opener}>
-						Some things need to be fixed with the stuff you typed in the fields above.
-					</div>
-					<ul className={componentStyles.validation_error_list}>
-						{errorList}
+	toast((t) => {
+		return (
+			<div>
+				<div className={ componentStyles.customErrorToastBody }>
+					Some things need to be fixed with the stuff you typed in the fields above.
+					<ul className={ componentStyles.customErrorToastValidationErrorList }>
+						{ errors.map((error, index) => {
+							return (
+								<li key={ index }>{ error }</li>
+							);
+						}) }
 					</ul>
 				</div>
+				<div className={ componentStyles.customErrorToastCloseRow } onClick={ () => toast.dismiss(t.id) }>
+					Close This Alert
+				</div>
 			</div>
-		</>,
+		)},
 		{
-			duration: 80000
+			id: 'custom-error-toast',
+			duration: 50000,
+			position: 'bottom-center'
 		}
 	);
 }

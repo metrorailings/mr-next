@@ -15,6 +15,11 @@ import { getGalleryImages } from 'lib/http/galleryDAO';
 
 import styles from 'public/styles/page/home.module.scss';
 import mLogo from 'assets/images/logos/m-logo.png';
+import sassLogo from 'assets/images/logos/sass.svg';
+import reactLogo from 'assets/images/logos/react.png';
+import mongoDbLogo from 'assets/images/logos/mongodb.svg';
+import nextJsLogo from 'assets/images/logos/nextJS.png';
+
 import products from 'assets/text/products.js';
 
 const HomeServer = async () => {
@@ -82,14 +87,14 @@ const HomeServer = async () => {
 				<div className={ styles.aboutUsText }>
 					{ aboutMeParagraphs.map((paragraph, index) => {
 						return (
-							<p key={ index }>{ paragraph }</p>
+							<p key={ index } className={ styles.aboutUsParagraph }>{ paragraph }</p>
 						);
 					}) }
 				</div>
 			</div>
 
 			{ /* STATS */ }
-			<StatsSection />
+			<StatsSection/>
 
 			{ /* GALLERY */ }
 			<GallerySection jsonImages={ JSON.stringify(galleryImages) }/>
@@ -101,6 +106,19 @@ const HomeServer = async () => {
 					<ReviewsServer/>
 				</Suspense>
 			</div>
+
+			{ /* SPECIAL THANKS */ }
+			<div className={ styles.specialThanksSection }>
+				<div className={ styles.specialThanksSectionHeader }>SPECIAL THANKS</div>
+				<p className={ styles.specialThanksText }>Special thanks to the following technologies and libraries for helping us build this wonderful site.</p>
+				<div className={ styles.specialThanksLogoContainer }>
+					<Image src={ nextJsLogo } alt='Next JS' width={ 128 } height={ 64 } className={ styles.specialThanksLogo } />
+					<Image src={ mongoDbLogo } alt='MongoDB' width={ 128 } height={ 64 } className={ styles.specialThanksLogo } />
+					<Image src={ reactLogo } alt='React' width={ 64 } height={ 64 } className={ styles.specialThanksLogo } />
+					<Image src={ sassLogo } alt='Sass' width={ 96 } height={ 64 } className={ styles.specialThanksLogo } />
+				</div>
+			</div>
+
 		</>
 	);
 };

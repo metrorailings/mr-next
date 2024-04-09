@@ -2,7 +2,6 @@
 
 import React, { useReducer } from "react";
 
-import { } from '@fortawesome/free-solid-svg-icons'
 import styles from 'public/styles/page/orderDetails.module.scss';
 
 import Multitext from 'components/multitext'; 

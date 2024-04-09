@@ -132,6 +132,23 @@
 	}
 }
 
+@include common.animations-keyframes($name: toast-in) {
+	0% {
+		transform: translate(0, -50%);
+		opacity: 0.0;
+	}
+
+	90% {
+		transform: translate(0, 10%);
+		opacity: 0.9;
+	}
+
+	100% {
+		transform: translate(0, 0);
+		opacity: 1.0;
+	}
+}
+
 /* ----------------------- EXPORTED VARIABLES ----------------------------- */
 
 /* stylelint-disable */
@@ -151,7 +168,7 @@
 	};
 
 	border-radius: 20px !important;
-	padding: 10px !important;
+	padding: 15px !important;
 
 	@include common.responsive-tablet-up() {
 		min-width: 250px;
@@ -180,6 +197,40 @@
 	@extend %standard-toast;
 
 	background-color: common.$colors-negative-red !important;
+}
+
+.custom-toast {
+	&-animate-in {
+		@include common.animations-animation-settings($keyframeSet: toast-in, $duration: 0.75s, $timing: ease-in, $iterations: 1, $persist: true);
+	}
+
+	&-animate-out {
+		@include common.animations-animation-settings($keyframeSet: toast-in, $duration: 0.75s, $timing: ease-in, $iterations: 1, $persist: true, $direction: reverse);
+	}
+}
+
+.custom-error-toast-close-row {
+	@include common.fonts-define-font($size: common.$fonts-secondary) {
+		text-decoration: underline;
+	};
+
+	padding: {
+		right: 40px;
+	}
+
+	width: 100%;
+	text-align: right;
+	cursor: pointer;
+}
+
+.custom-error-toast-body {
+	width: 100%;
+	text-align: left;
+}
+
+.custom-error-toast-validation-error-list {
+	text-align: left;
+	padding: 0;
 }
 
 /* ----------------------- LOADERS ----------------------------- */
