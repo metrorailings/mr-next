@@ -1,15 +1,16 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import { upload } from '@vercel/blob/client';
-import toast from 'react-hot-toast';
+import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
+import classNames from 'classnames';
+
+import { toastValidationError } from 'components/customToaster';
 
 import { validateNumberOnly } from "lib/validators/inputValidators";
-import { getUserSession } from 'lib/userInfo';
-import { PAYMENTS_API } from 'lib/http/apiEndpoints';
-import { httpRequest } from 'lib/http/clientHttpRequester';
-import { publish } from 'lib/utils';
+import { serverActionCall } from 'lib/http/clientHttpRequester';
+import { validateEmpty, validateDefined, validateCurrency, runValidators } from 'lib/validators/inputValidators';
+
+import { addCardAndPayByCard, payByCard, payByImage } from 'actions/payment';
 
 import styles from 'public/styles/page/paymentWidget.module.scss';
 import visaLogo from 'assets/images/logos/visa.svg';
@@ -17,36 +18,55 @@ import amexLogo from 'assets/images/logos/amex.svg';
 import mastercardLogo from 'assets/images/logos/mastercard.svg';
 import discoverLogo from 'assets/images/logos/discover.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCreditCard, faBuildingColumns, faDollarSign } from '@fortawesome/free-solid-svg-icons';
-import { faCcStripe } from '@fortawesome/free-brands-svg-icons'
+import { faCreditCard, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faCcVisa, faCcDiscover, faCcMastercard, faCcAmex } from '@fortawesome/free-brands-svg-icons';
 
-const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptExternal, presetPaymentAmount, postFunc }) => {
+const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPaymentAmount, postFunc, balanceRemaining }) => {
 
+	// ---------- State variables
 	const [paymentAmount, setPaymentAmount] = useState(presetPaymentAmount || '');
+	const [existingCards, setExistingCards] = useState(cards || []);
+	const [selectedCard, setSelectedCard] = useState('');
 	const [creditCard, setCreditCard] = useState({
 		cardNumber: "",
 		expiration: "",
 		cardCode: "",
 		brand: null
 	});
-	const [check, setCheck] = useState({
-		image: null
-	});
-	const [stripeInvoice, setStripeInvoice] = useState({
-		id: null
-	});
-	const [externalPayment, setExternalPayment] = useState({
-		image: null
-	});
-	const [user, setUser] = useState(null);
+	const [alternatePaymentImage, setAlternatePaymentImage] = useState(null);
 
+	// ---------- React References
 	const cardSection = useRef(null);
-	const checkSection = useRef(null);
-	const stripeSection = useRef(null);
-	const externalSection = useRef(null);
-	const uploadCheckLink = useRef(null);
-	const uploadExternalImageLink = useRef(null);
+	const alternateSection = useRef(null);
+	const uploadAlternateImageLink = useRef(null);
 
+	// ---------- Validation functions for client-side error handling
+	const validateCreditCardNumber = () => validateEmpty(creditCard.cardNumber) === false || (creditCard.cardNumber.split(' ').join('').length === (creditCard.brand === 'amex' ? 15 : 16));
+	const validateCreditCardExpiration = () => validateEmpty(creditCard.expiration) === false || (creditCard.expiration.split('/').join('').length === 4);
+	const validateCreditCardCVC = () => validateEmpty(creditCard.cardCode) === false || (creditCard.cardCode.length === (creditCard.brand === 'amex' ? 4 : 3));
+	const isValidAmount = () => validateEmpty(paymentAmount) === false || (parseFloat(paymentAmount) < parseFloat(balanceRemaining));
+
+	// ---------- Client-side error tests
+	const paymentValidationFields = [
+		{ prop: paymentAmount, validator: validateEmpty, errorMsg: 'Please specify how much exactly is going to be paid here.' },
+		{ prop: paymentAmount, validator: isValidAmount, errorMsg: 'Please enter a payment amount less than the balance outstanding on this order.' }
+	];
+	const newCardValidationFields = [
+		{ prop: creditCard.cardNumber, validator: validateEmpty, errorMsg: 'A credit card number is required.' },
+		{ prop: creditCard.expiration, validator: validateEmpty, errorMsg: 'Your credit card\'s expiration month and year are required.' },
+		{ prop: creditCard.cardCode, validator: validateEmpty, errorMsg: 'Your credit card\'s CVC is required.'  },
+		{ prop: creditCard.cardNumber, validator: validateCreditCardNumber, errorMsg: 'The credit card number you provided us is missing some digits.' },
+		{ prop: creditCard.expiration, validator: validateCreditCardExpiration, errorMsg: 'The credit card expiration date you provided us is incomplete.' },
+		{ prop: creditCard.cardCode, validator: validateCreditCardCVC, errorMsg: 'Your CVC is too short.' },
+	];
+	const existingCardValidationFields = [
+		{ prop: selectedCard, validator: validateEmpty, errorMsg: 'A registered card needs to be selected. Either select a card if one\'s been registered or put in your credit card details.' }
+	];
+	const alternateValidationFields = [
+		{ prop: alternatePaymentImage, validator: validateDefined, errorMsg: 'Select what file you want uploaded first before submitting this payment.' }
+	];
+
+	// ---------- State Update Functions
 	const handleCreditCardUpdate = (event) => {
 		const prop = event.currentTarget.name;
 		let value = event.currentTarget.value;
@@ -90,37 +110,16 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 		setCreditCard(newCard);
 	};
 
-	const uploadCheckImage = async (event) => {
-		let checkBlob = await uploadFile(event);
-		let newCheck = {
-			...check,
-			image: checkBlob
-		};
-
-		setCheck(newCheck);
-	};
-
-	const handleStripeUpdate = (event) => {
-		let newStripeInvoice = {
-			...stripeInvoice,
-			[event.currentTarget.name]: event.currentTarget.value
-		};
-
-		setStripeInvoice(newStripeInvoice);
-	};
-
-	const uploadExternalPaymentImage = async (event) => {
-		let externalBlob = await uploadFile(event);
-		let newPayment = {
-			...externalPayment,
-			image: externalBlob
-		};
-
-		setExternalPayment(newPayment);
+	const uploadAlternatePaymentImage = (event) => {
+		setAlternatePaymentImage(event.currentTarget.files[0]);
 	}
 
-	// Use this function to test whether characters are being validly typed the credit card inputs
-	const testNumber = (event, limit, inputValue) => {
+	const handleCardToUse = (event) => {
+		setSelectedCard(event.currentTarget.value);
+	}
+
+	// Use this function to test whether characters are being properly typed into the credit card inputs
+	const testCCNumbers = (event, limit, inputValue) => {
 		const prop = event.currentTarget.name;
 
 		// First, verify that the character that was pressed is indeed a number
@@ -140,6 +139,14 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 		}
 	};
 
+	// Use this function to test whether characters are being properly typed into the payment amount input
+	const testPaymentAmountNumber = (event) => {
+		if (validateCurrency(paymentAmount + event.data) === false) {
+			event.preventDefault();
+		}
+	}
+
+	// Control cursor positioning in the inputs
 	const placeCursorAtEnd = (event) => {
 		const inputField = event.currentTarget;
 
@@ -147,67 +154,121 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 		inputField.focus();
 	};
 
-	// Function to open the image and any other images it's associated with in a whole-page gallery viewer
-	const viewImage = (imageToDisplay) => {
-		publish('open-viewer', { currentIndex: 0, photos: [imageToDisplay] });
-	};
-
-	const uploadFile = async (event) => {
-		// Dismiss any lingering toasts
-		toast.dismiss();
-
-		const filesToUpload = event.currentTarget.files;
-
-		try {
-			let newBlob = await upload(filesToUpload[0].name, filesToUpload[0], {
-				access: 'public',
-				handleUploadUrl: PAYMENTS_API.UPLOAD_IMAGE,
-				clientPayload: { orderId : orderId },
-				multipart: filesToUpload[0].size >= 5000000 // Break apart any files greater than 5 MBs in size  
-			});
-
-			// @TODO - Use toast to notify the user about the status of the upload
-
-			// Update the blob to include metadata specific to our application
-			// Please note that in production, the blob's metadata has been automatically updated and stored in the
-			// database while we were uploading the file
-			newBlob.orderId = orderId;
-			newBlob.uploader = user.username;
-
-			return newBlob;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 	const showSection = (refElement) => {
 		if (cardSection.current) { cardSection.current.style.height = '0px'; }
-		if (checkSection.current) { checkSection.current.style.height = '0px'; }
-		if (stripeSection.current) { stripeSection.current.style.height = '0px'; }
-		if (externalSection.current) { externalSection.current.style.height = '0px'; }
+		if (alternateSection.current) { alternateSection.current.style.height = '0px'; }
 
 		refElement.current.style.height = refElement.current.scrollHeight + 'px';
 	};
 
-	const submitPayment = () => {
-		// @TODO - Insert code here to send/authorize the payment data to Stripe 
+	const determineCardIcon = (brand) => {
+		switch (brand?.toLowerCase()) {
+			case 'visa': return faCcVisa;
+			case 'mastercard': return faCcMastercard;
+			case 'discover': return faCcDiscover;
+			case 'amex': return faCcAmex;
+			default: return faCreditCard;
+		}
+	};
 
-		if (postFunc) {
-			postFunc();
+	// ---------- Server Functions
+	const addCardAndSubmitPayment = async () => {
+		const errors = runValidators(newCardValidationFields);
+
+		if (errors.length === 0) {
+			const serverResult = await serverActionCall(addCardAndPayByCard, {
+				...creditCard,
+				orderId: orderId,
+				paymentAmount: paymentAmount
+			}, {
+				loading: 'Processing the credit card...',
+				success: 'A new card has been registered. If you want to pay using that credit card, go ahead and do it now.',
+				error: 'Something went wrong when trying to validate the credit card. Please try again.'
+			});
+
+			if (serverResult?.success) {
+				setExistingCards([...existingCards, serverResult.card]);
+			}
+		} else {
+			toastValidationError(errors);
+		}
+	};
+
+	const submitCardPayment = async () => {
+		const errors = runValidators(existingCardValidationFields);
+
+		if (errors.length === 0) {
+			const serverResult = await serverActionCall(payByCard, {
+				card: selectedCard,
+				orderId: orderId,
+				paymentAmount: paymentAmount
+			}, {
+				loading: 'Now processing the credit card payment...',
+				success: 'A new card payment has been successfully charged!',
+				error: 'Something went wrong when trying to charge the credit card. Please try again.'
+			});
+
+			return serverResult;
+		} else {
+			toastValidationError(errors);
+		}
+
+		return false;
+	};
+
+	const submitAlternatePayment = async () => {
+		const errors = runValidators(alternateValidationFields);
+
+		if (errors.length === 0) {
+			const serverResult = await serverActionCall(payByImage, {
+				paymentImage: alternatePaymentImage,
+				orderId: orderId,
+				paymentAmount: paymentAmount
+			}, {
+				loading: 'Uploading the image...',
+				success: 'A new payment has been successfully registered!',
+				error: 'Something went wrong when trying to process this payment. Please try again.'
+			});
+
+			return serverResult;
+		} else {
+			toastValidationError(errors);
+		}
+
+		return false;
+	};
+
+	const submitPayment = async () => {
+		const errors = runValidators(paymentValidationFields);
+		let serverResult = null;
+
+		if (errors.length === 0) {
+			if (cardSection.current && window.parseInt(cardSection.current.style.height, 10)) {
+				if (selectedCard) {
+					serverResult = await submitCardPayment();
+				} else {
+					serverResult = await addCardAndSubmitPayment();
+				}
+			}
+			else if (alternateSection.current && window.parseInt(alternateSection.current.style.height, 10)) {
+				serverResult = await submitAlternatePayment();
+			}
+
+			console.log(serverResult);
+
+			if (postFunc) {
+				postFunc();
+			}
+		} else {
+			toastValidationError(errors);
 		}
 	};
 
 	useEffect(() => {
-		setUser(getUserSession());
-
 		if (cardSection.current) {
 			showSection(cardSection);
-		} else if (checkSection.current) {
-			showSection(checkSection);
-		} else if (stripeSection.current) {
-			showSection(stripeSection);
-		} else {
-			showSection(externalSection);
+		} else if (alternateSection.current) {
+			showSection(alternateSection);
 		}
 	}, []);
 
@@ -216,7 +277,7 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 			<div className={ styles.paymentAccordion }>
 
 				<div className={ styles.paymentAmountSection }>
-					{ presetPaymentAmount ? '$' + (
+					{ presetPaymentAmount ? (
 						<div className={ styles.paymentAmountValue }>
 							Amount to Pay: ${ presetPaymentAmount }
 						</div>
@@ -229,9 +290,15 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 								className={ styles.paymentAmountField }
 								onChange={ (event) => setPaymentAmount(event.currentTarget.value) }
 								value={ paymentAmount }
+								tabIndex='-1'
+								onBeforeInput={ (event) => testPaymentAmountNumber(event) }
+								onPaste={ (event) => event.preventDefault() }
+								onClick={ placeCursorAtEnd }
+								onKeyUp={ placeCursorAtEnd }
+								autoComplete='off'
 							/>
 						</>
-					) }
+					)}
 				</div>
 
 				{ /* CREDIT CARD SECTION */ }
@@ -239,10 +306,36 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 					<div className={ styles.paymentAccordionSection }>
 						<div className={ styles.paymentAccordionSectionHeader } onClick={ () => showSection(cardSection) }>
 							<span className={ styles.paymentAccordionSectionHeaderText }>Credit Card</span>
-							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faCreditCard } />
+							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faCreditCard }/>
 						</div>
-						<div className={ styles.paymentAccordionSectionBody } ref={ cardSection }>
-							<div>
+						<form className={ styles.paymentAccordionSectionBody } ref={ cardSection }>
+							<input type='hidden' name='paymentAmount' value={ paymentAmount }/>
+							<input type='hidden' name='orderId' value={ orderId }/>
+
+							<div className={ styles.paymentRegularRowFlexEnd }>
+								<span className={ styles.paymentCcExistingCard }>
+									<input id={ 'card_new' } type='radio' name='card' defaultChecked={ true } value='' onClick={ handleCardToUse }/>
+									<label htmlFor={ 'card_new' } className={ styles.paymentCcExistingCardLogo }>New Card</label>
+								</span>
+								{ existingCards.map((card, index) => {
+									return (
+										<span key={ index }>
+											<input id={ 'card_' + card.id } type='radio' name='card' value={ card.id } onClick={ handleCardToUse }/>
+											<label htmlFor={ 'card_' + card.id } className={ styles.paymentCcExistingCardLogo }>
+												<FontAwesomeIcon icon={ determineCardIcon(card.brand) } className={ styles.paymentCcExistingCardLogo }/>
+												{ '(...' + card.last4 + ')' }
+											</label>
+										</span>
+									);
+								}) }
+							</div>
+
+							<hr className={ styles.paymentRegularRowRule }/>
+
+							<div className={ classNames({
+								[styles.paymentRegularRowCenter]: true,
+								[styles.paymentRegularRowDisabled]: !!selectedCard
+							}) }>
 								<input
 									name='cardNumber'
 									type='tel'
@@ -251,14 +344,18 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 									placeholder='Enter your 15 or 16-digit card number here...'
 									value={ creditCard.cardNumber }
 									onChange={ handleCreditCardUpdate }
-									onBeforeInput={ (event) => testNumber(event, (creditCard.brand === 'amex' ? 15 : 16), creditCard.cardNumber) }
+									onBeforeInput={ (event) => testCCNumbers(event, (creditCard.brand === 'amex' ? 15 : 16), creditCard.cardNumber) }
 									onPaste={ (event) => event.preventDefault() }
 									onClick={ placeCursorAtEnd }
 									onKeyUp={ placeCursorAtEnd }
 									autoComplete='off'
+									disabled={ !!(selectedCard) }
 								/>
 							</div>
-							<div>
+							<div className={ classNames({
+								[styles.paymentRegularRowCenter]: true,
+								[styles.paymentRegularRowDisabled]: !!selectedCard
+							})}>
 								<label htmlFor='creditCardExp' className={ styles.paymentAmountLabel }>Exp Date</label>
 								<input
 									id='creditCardExp'
@@ -269,11 +366,12 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 									placeholder='MM/YY'
 									value={ creditCard.expiration }
 									onChange={ handleCreditCardUpdate }
-									onBeforeInput={ (event) => testNumber(event, 4, creditCard.expiration) }
+									onBeforeInput={ (event) => testCCNumbers(event, 4, creditCard.expiration) }
 									onPaste={ (event) => event.preventDefault() }
 									onClick={ placeCursorAtEnd }
 									onKeyUp={ placeCursorAtEnd }
 									autoComplete='off'
+									disabled={ !!(selectedCard) }
 								/>
 								<label htmlFor='creditCardCode' className={ styles.paymentAmountLabel }>CSC</label>
 								<input
@@ -285,11 +383,12 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 									placeholder={ (creditCard.brand === 'amex' ? '####' : '###') }
 									value={ creditCard.cardCode }
 									onChange={ handleCreditCardUpdate }
-									onBeforeInput={ (event) => testNumber(event, (creditCard.brand === 'amex' ? 4 : 3), creditCard.cardCode) }
+									onBeforeInput={ (event) => testCCNumbers(event, (creditCard.brand === 'amex' ? 4 : 3), creditCard.cardCode) }
 									onPaste={ (event) => event.preventDefault() }
 									onClick={ placeCursorAtEnd }
 									onKeyUp={ placeCursorAtEnd }
 									autoComplete='off'
+									disabled={ !!(selectedCard) }
 								/>
 								<span className={ styles.paymentCcIcons }>
 									<Image
@@ -322,95 +421,38 @@ const PaymentForms = ({ orderId, acceptCard, acceptCheck, acceptStripe, acceptEx
 									/>
 								</span>
 							</div>
-						</div>
+						</form>
 					</div>
 				) : null }
 
-				{ /* CHECK SECTION */ }
-				{ acceptCheck ? (
+				{ /* ALTERNATE SECTION */ }
+				{ acceptAlternate ? (
 					<div className={ styles.paymentAccordionSection }>
-						<div className={ styles.paymentAccordionSectionHeader } onClick={ () => showSection(checkSection) }>
-							<span className={ styles.paymentAccordionSectionHeaderText }>Check</span>
-							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faBuildingColumns }/>
+						<div className={ styles.paymentAccordionSectionHeader } onClick={ () => showSection(alternateSection) }>
+							<span className={ styles.paymentAccordionSectionHeaderText }>Other</span>
+							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faImage }/>
 						</div>
-						<div className={ styles.paymentAccordionSectionBody } ref={ checkSection }>
-							{ check.image ? (
-								<div className={ styles.paymentImageContainer }>
-									<Image
-										src={ check.image.url }
-										width={ 100 }
-										height={ 100 }
-										alt={ check.image.pathname }
-										onClick={ () => viewImage(check.image) }
-									/>
-								</div>
-							) : null }
-							<div>
-								<button className={ styles.uploadImageButton } onClick={ () => uploadCheckLink.current.click() }>
-									Upload Check
-								</button>
-								<input
-									type='file'
-									ref={ uploadCheckLink }
-									className={ styles.uploadFileInput }
-									accept='.pdf,.jpeg,.jpg,.mp4,.png'
-									onChange={ uploadCheckImage }
-								/>
+						<form className={ styles.paymentAccordionSectionBody } ref={ alternateSection }>
+							<input type='hidden' name='paymentAmount' value={ paymentAmount }/>
+							<input type='hidden' name='orderId' value={ orderId } />
+
+							<div className={ styles.paymentRegularRowCenter }>
+								{ alternatePaymentImage ? alternatePaymentImage.name : 'No file selected yet...' }
 							</div>
-						</div>
-					</div>
-				) : null }
-
-				{ /* STRIPE SECTION */ }
-				{ acceptStripe ? (
-					<div className={ styles.paymentAccordionSection }>
-						<div className={ styles.paymentAccordionSectionHeader } onClick={ () => showSection(stripeSection) }>
-							<span className={ styles.paymentAccordionSectionHeaderText }>Stripe</span>
-							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faCcStripe }/>
-						</div>
-						<div className={ styles.paymentAccordionSectionBody } ref={ stripeSection }>
-							<div>
-								<select className={ styles.paymentSelect } name='id' onChange={ handleStripeUpdate }>
-									<option value='' disabled>Please select from below...</option>
-								</select>
-							</div>
-						</div>
-					</div>
-				) : null }
-
-				{ /* EXTERNAL SECTION */ }
-				{ acceptExternal ? (
-					<div className={ styles.paymentAccordionSection }>
-						<div className={ styles.paymentAccordionSectionHeader } onClick={ () => showSection(externalSection) }>
-							<span className={ styles.paymentAccordionSectionHeaderText }>Check</span>
-							<FontAwesomeIcon className={ styles.paymentAccordionSectionHeaderIcon } icon={ faDollarSign }/>
-						</div>
-						<div className={ styles.paymentAccordionSectionBody } ref={ externalSection }>
-							{ externalPayment.image ? (
-								<div className={ styles.paymentImageContainer }>
-									<Image
-										src={ externalPayment.image.url }
-										width={ 100 }
-										height={ 100 }
-										alt={ externalPayment.image.pathname }
-										onClick={ () => viewImage(externalPayment.image) }
-									/>
-								</div>
-							) : null }
-							<div>
-								<button className={ styles.uploadImageButton }
-												onClick={ () => uploadExternalImageLink.current.click() }>
+							<div className={ styles.paymentRegularRowCenter }>
+								<button type='button' className={ styles.uploadImageButton } onClick={ () => uploadAlternateImageLink.current.click() }>
 									Upload Image
 								</button>
 								<input
 									type='file'
-									ref={ uploadExternalImageLink }
+									name='externalPaymentImage'
+									ref={ uploadAlternateImageLink }
 									className={ styles.uploadFileInput }
-									accept='.pdf,.jpeg,.jpg,.mp4,.png'
-									onChange={ uploadExternalPaymentImage }
+									accept='.pdf,.jpeg,.jpg,.png'
+									onChange={ uploadAlternatePaymentImage }
 								/>
 							</div>
-						</div>
+						</form>
 					</div>
 				) : null }
 

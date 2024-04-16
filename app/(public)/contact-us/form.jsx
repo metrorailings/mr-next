@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { toastValidationError } from 'components/customToaster';
 import { createProspectFromContactUs } from 'actions/order';
@@ -27,6 +28,8 @@ const ContactUsForm = () => {
 		{ prop: comments, validator: validateEmpty, errorMsg: 'Please include some comments before sending us this message.' },
 		{ prop: email, validator: validateEmail, errorMsg: 'Please write a proper e-mail address in the e-mail field.' }
 	];
+
+	const router = useRouter()
 
 	const updateProp = (event, updaterFunction) => {
 		updaterFunction(event.currentTarget.value);
@@ -56,10 +59,11 @@ const ContactUsForm = () => {
 	const submitForm = async () => {
 		// Relay any errors should the form not be ready for submission
 		const errors = runValidators(validationFields);
+		let serverResult = false;
 
 		if (errors.length === 0) {
 			try {
-				await serverActionCall(createProspectFromContactUs, {
+				serverResult = await serverActionCall(createProspectFromContactUs, {
 					name: name,
 					address: address,
 					city: city,
@@ -69,11 +73,23 @@ const ContactUsForm = () => {
 					comments: comments
 				}, {
 					loading: 'Sending form...',
-					success: 'Your information has been sent to us! Expect a response by the next business day.',
+					success: 'Your information has been sent to us! Expect a response by the next business day. Taking you back to the home page in 5 seconds...',
 					error: 'Something weird happened here. Try sending the form again. If that doesn\'t work, give us a call at ' + process.env.NEXT_PUBLIC_HOTLINE_NUMBER + '.'
 				});
 			} catch (err) {
 				console.error(err);
+			} finally {
+				if (serverResult?.success) {
+					setName('');
+					setPhone('');
+					setAddress('');
+					setCity('');
+					setState('');
+					setEmail('');
+					setComments('');
+
+					window.setTimeout(() => router.push('/'), 6000);
+				}
 			}
 		} else {
 			toastValidationError(errors);

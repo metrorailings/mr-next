@@ -31,6 +31,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 	const order = JSON.parse(jsonOrder);
 
+console.log(order);
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
 		version: order.version || 1,
@@ -435,9 +436,9 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 					<PaymentForms
 						orderId={ orderDetails._id }
 						acceptCard={ true }
-						acceptCheck={ true }
-						acceptStripe={ true }
-						acceptExternal={ true }
+						acceptAlternate={ true }
+						cards={ orderDetails.payments?.cards }
+						balanceRemaining={ orderDetails.payments?.balanceRemaining }
 						postFunc={ () => {
 							console.log('In post func');
 						} }

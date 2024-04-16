@@ -28,6 +28,7 @@
     "sass": "^1.62.1",
     "server-only": "^0.0.1",
     "sharp": "^0.33.2",
+    "stripe": "^15.0.0",
     "validator": "^13.9.0"
   },
   "scripts": {

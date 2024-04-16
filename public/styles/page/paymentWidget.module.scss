@@ -105,12 +105,57 @@
 	flex-direction: column;
 	overflow: hidden;
 	background-color: common.$colors-white;
+}
 
-	& > div {
+.payment-regular-row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+
+	&-center {
+		@extend .payment-regular-row;
+
 		padding: 10px;
-		display: flex;
 		justify-content: center;
-		align-items: center;
+	}
+
+	&-flex-end {
+		@extend .payment-regular-row;
+
+		padding: 10px;
+		justify-content: flex-end;
+	}
+
+	&-rule {
+		@extend .payment-regular-row;
+
+		border-top: {
+			width: 3px;
+			color: common.$colors-silver;
+			style: double;
+		}
+
+		margin: 0;
+	}
+
+	&-disabled {
+		opacity: 0.5;
+	}
+}
+
+.payment-cc-existing-card {
+	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+
+	margin: {
+		left: 10px;
+		right: 10px;
+	}
+}
+
+.payment-cc-existing-card-logo {
+	margin: {
+		right: 2px;
 	}
 }
 
@@ -193,15 +238,6 @@
 	padding: 0;
 	opacity: 0;
 	width: 1px;
-}
-
-.payment-select {
-	@extend %medium-input-control;
-
-	margin: {
-		left: auto;
-		right: auto;
-	}
 }
 
 .submit-row {

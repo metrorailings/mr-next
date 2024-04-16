@@ -1,6 +1,8 @@
-import DashboardPage from "app/admin/dashboard/client";
+import DashboardBubble from 'app/admin/dashboard/bubble';
 
 import { getAllOpenOrders } from 'lib/http/ordersDAO';
+
+import styles from 'public/styles/page/dashboard.module.scss';
 
 const DashboardServer = async () => {
 	// Fetch all open orders
@@ -8,7 +10,16 @@ const DashboardServer = async () => {
 
 	return (
 		<>
-			<DashboardPage jsonOrders={ JSON.stringify(orders) } />
+			<h3 className={ styles.pageHeader }>DASHBOARD</h3>
+			<hr className={ styles.pageDivider }></hr>
+
+			<div className={ styles.dashboardBubblesContainer }>
+				{ orders.map((order, index) => {
+					return (
+						<DashboardBubble jsonOrder={ JSON.stringify(order) } key={ index } />
+					);
+				})}
+			</div>
 		</>
 	);
 };

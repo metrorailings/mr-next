@@ -31,7 +31,7 @@ const StatsSection = () => {
 
 					observer.unobserve(observerTarget.current);
 				}
-			}, { threshold: 1.0 });
+			}, { threshold: 0.75 });
 		const observedNode = observerTarget?.current || null;
 
 		if (observedNode) {

@@ -1,6 +1,7 @@
 /* ----------------------- IMPORTS ----------------------------- */
 
 @use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/base';
 
 /* ----------------------- STYLES ----------------------------- */
 
@@ -19,7 +20,7 @@
 	@extend %page-divider;
 }
 
-#dashboard-bubbles-container {
+.dashboard-bubbles-container {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
@@ -31,7 +32,7 @@
 
 	border: {
 		width: 0.5px;
-		color: colors.$gray;
+		color: common.$colors-gray;
 		style: solid;
 
 		top-left-radius: 10px;
@@ -50,6 +51,7 @@
 	box-shadow: 1px 1px 7px common.$colors-low-black;
 	text-align: center;
 	background-color: common.$colors-white;
+	cursor: pointer;
 }
 
 .dashboard-bubble-body {
@@ -57,10 +59,12 @@
 }
 
 .dashboard-bubble-customer-name {
-	@include common.fonts-define-font($family: Avenir Heavy);
+	@include common.fonts-define-font($family: Avenir Heavy) {
+		color: black;
+	};
 
 	padding: 10px;
-	background-color: common.$colors-silver;
+	background-color: common.$colors-faint-silver;
 }
 
 .dashboard-bubble-company-text {
@@ -76,16 +80,17 @@
 	& > div {
 		margin: {
 			top: 5px;
-			bottom: 5px;
 		}
 	}
 }
 
 .dashboard-bubble-task {
-	@include common.fonts-define-font($size: common.$fonts-secondary);
+	@include common.fonts-define-font($size: common.$fonts-secondary) {
+		color: white;
+	};
 
 	padding: 5px;
-	background-color: common.$colors-silver;
+	background-color: common.$colors-pale-violet-red;
 }
 
 .dashboard-bubble-navigator {
@@ -113,7 +118,7 @@
 		radius: 50%;
 		width: 2px;
 		style: solid;
-		color: colors.$black;
+		color: common.$colors-black;
 	}
 
 	padding: 12px;
