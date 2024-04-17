@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
 import styles from 'public/styles/page/home.module.scss';
+
 import { publish } from 'lib/utils';
 
 const GallerySection = ({ jsonImages }) => {

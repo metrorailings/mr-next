@@ -12,6 +12,7 @@ const EventOrganizer = () => {
 	const [photoViewerOpen, setPhotoViewerOpen] = useState(false);
 	const [photos, setPhotos] = useState([]);
 	const [openIndex, setOpenIndex] = useState(0);
+	const [preventAccessToOriginal, setPreventAccessToOriginal] = useState(false);
 
 	const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 	const [modalText, setModalText] = useState('');
@@ -22,11 +23,13 @@ const EventOrganizer = () => {
 		setPhotoViewerOpen(true);
 		setPhotos(event.detail.photos);
 		setOpenIndex(event.detail.currentIndex);
+		setPreventAccessToOriginal(event.detail.preventAccessToOriginal || false);
 	}
 	const closeViewer = () => {
 		setPhotoViewerOpen(false);
 		setPhotos([]);
 		setOpenIndex(0);
+		setPreventAccessToOriginal(false);
 	}
 
 	const openConfirmModal = (event) => {
@@ -58,7 +61,7 @@ const EventOrganizer = () => {
 	return (
 		<>
 			{ photoViewerOpen ? (
-				<PhotoViewer photos={ photos } currentIndex={ openIndex } closeFunc={ closeViewer } />
+				<PhotoViewer photos={ photos } currentIndex={ openIndex } preventAccessToOriginal={ preventAccessToOriginal || false } closeFunc={ closeViewer } />
 			) : null }
 
 			{ confirmModalOpen ? (

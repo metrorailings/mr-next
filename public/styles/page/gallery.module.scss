@@ -154,3 +154,7 @@
 	color: common.$colors-black;
 	background-color: common.$colors-white;
 }
+
+.public-gallery-footer-offset {
+	@extend %footer-offset;
+}

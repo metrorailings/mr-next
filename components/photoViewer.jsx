@@ -7,7 +7,7 @@ import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle, faCircleArrowLeft, faCircleArrowRight } from '@fortawesome/free-solid-svg-icons'
 
-const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
+const PhotoViewer = ({ photos, currentIndex, preventAccessToOriginal, closeFunc }) => {
 
 	const [photoIndex, setPhotoIndex] = useState(currentIndex);
 
@@ -62,7 +62,9 @@ const PhotoViewer = ({ photos, currentIndex, closeFunc }) => {
 
 	const viewOriginalPhoto = (event, url) => {
 		event.stopPropagation();
-		window.open(url, '_blank');
+		if (preventAccessToOriginal !== true) {
+			window.open(url, '_blank');
+		}
 	}
 
 	const navigateWithKeyPresses = (event) => {

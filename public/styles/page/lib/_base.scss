@@ -36,3 +36,19 @@
 	height: 0.5px;
 	background-color: common.$colors-gray;
 }
+
+%footer-offset {
+	display: block;
+
+	@include common.responsive-desktop-only()  {
+		height: 50px;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 75px;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 40px;
+	}
+}
