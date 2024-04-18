@@ -15,7 +15,7 @@ export default function Footer() {
 				{ process.env.NEXT_PUBLIC_HOTLINE_NUMBER }
 			</span>
 
-			<Link href='/contactUs' className={ styles.footerMobileContactUs}>
+			<Link href='/contact-us' className={ styles.footerMobileContactUs}>
 				<FontAwesomeIcon icon={ faEnvelope } />
 				Write Us
 			</Link>

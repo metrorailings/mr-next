@@ -27,8 +27,17 @@ const GallerySection = ({ jsonImages }) => {
 		publish('open-photo-viewer', { currentIndex: index, photos: images.slice(0, shownImageCount) });
 	};
 
-	useEffect(() => {
+	const setGallerySectionHeight = () => {
 		galleryContainer.current.style.height = galleryContainer.current.scrollHeight + 'px';
+	}
+
+	useEffect(() => {
+		window.screen.orientation.addEventListener('change', setGallerySectionHeight);
+		setGallerySectionHeight();
+
+		return () => {
+			window.screen.orientation.removeEventListener('change', setGallerySectionHeight);
+		}
 	}, [shownImageCount]);
 
 	return (

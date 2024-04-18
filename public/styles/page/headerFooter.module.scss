@@ -192,7 +192,7 @@
 	}
 
 	@include common.responsive-landscape-mobile-only() {
-		height: 40px;
+		height: 50px;
 	}
 }
 
@@ -263,7 +263,7 @@
 	}
 
 	@include common.responsive-landscape-mobile-only() {
-		height: 40px;
+		height: 50px;
 	}
 
 	& > svg {

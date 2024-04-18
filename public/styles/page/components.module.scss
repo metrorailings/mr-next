@@ -458,10 +458,18 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 750px;
-	height: 750px;
 	position: relative;
 	object-fit: contain;
+
+	@include common.responsive-tablet-up() {
+		width: 750px;
+		height: 750px;
+	}
+
+	@include common.responsive-phone-only() {
+		width: 80vw;
+		height: 80vh;
+	}
 }
 
 .gallery-picture-viewer-shift {
@@ -816,11 +824,11 @@
 	display: grid;
 	width: 100%;
 
-	@include common.responsive-tablet-up() {
+	@include common.responsive-desktop-only() {
 		grid-template-columns: repeat(4, 1fr);
 	}
 
-	@include common.responsive-phone-only() {
+	@include common.responsive-mobile-only() {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
