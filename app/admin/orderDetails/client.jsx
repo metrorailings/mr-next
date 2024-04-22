@@ -7,6 +7,7 @@ import styles from 'public/styles/page/orderDetails.module.scss';
 import Multitext from 'components/multitext'; 
 import PaymentForms from 'components/paymentForms';
 import Notes from 'components/admin/notes';
+
 import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
 
@@ -27,11 +28,11 @@ import cableSizes from 'lib/designs/cableSizes';
 import glassTypes from 'lib/designs/glassTypes';
 import glassCharacteristics from 'lib/designs/glassCharacteristics';
 
-const OrderDetailsPage = ({ jsonOrder }) => {
+const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 
 	const order = JSON.parse(jsonOrder);
+	const users = JSON.parse(jsonUsers);
 
-console.log(order);
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
 		version: order.version || 1,
@@ -285,7 +286,7 @@ console.log(order);
 							existingNotes={ orderDetails.notes || [] }
 							lazyLoad={ false }
 							inSpanish={ false }
-							users={ [] }
+							users={ users }
 						/>
 					</div>
 				) : null }

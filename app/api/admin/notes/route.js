@@ -74,6 +74,15 @@ export async function PUT(request) {
 	noteData.author = JSON.parse(request.cookies.get('user').value).username;
 	noteData = recordUpdateInfo(noteData, noteData.author);
 
+	// Add in more metadata should the note be a tas
+	if (noteData.type === 'task') {
+		noteData.assignFrom = noteData.author;
+		noteData.status = 'open';
+	}
+
+	// Massage out the note text so that line breaks are properly saved
+	noteData.text = noteData.text.split('\n').join('<br />');
+
 	try {
 		// Pull the ID number from our counters collection and increment the ID sequencer accordingly
 		const countersResult = await Counters.findByIdAndUpdate('notes', { $inc: { seq: 1 } }).exec();

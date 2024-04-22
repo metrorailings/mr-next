@@ -5,8 +5,12 @@ import toast from 'react-hot-toast';
 
 import { NOTE_API } from 'lib/http/apiEndpoints';
 import { httpRequest } from 'lib/http/clientHttpRequester';
+import { sortNotes } from 'lib/utils';
 
 import NoteRecord from 'components/admin/noteRecord';
+
+import { validateEmpty, runValidators } from 'lib/validators/inputValidators';
+import { toastValidationError } from 'components/customToaster';
 
 import styles from 'public/styles/page/notes.module.scss';
 
@@ -14,30 +18,63 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 
 	const [newNote, setNewNote] = useState({
 		text: '',
+		assignee: '',
 		type: 'note',
 		assignTo: '',
-		orderId: orderId
+		orderId: orderId || null
 	});
 	const [notes, setNotes] = useState(existingNotes || []);
 	const [notesLoaded, setNotesLoaded] = useState(lazyLoad);
 
+	// ---------- Validation functions
+	const validateNoteText = () => validateEmpty(newNote.text);
+
+	// ---------- Client-side error tests
+	const newNoteValidationFields = [
+		{ prop: newNote.text, validator: validateNoteText, errorMsg: 'A note/task is meaningless without any text.' }
+	];
+
 	const updateNote = (event) => {
-		setNewNote({
+		const prop = event.currentTarget.name;
+		const value = event.currentTarget.value;
+
+		let changedNote = {
 			...newNote,
-			[event.currentTarget.name]: event.currentTarget.value
-		});
+			[prop]: value
+		};
+
+		if (prop === 'type' && value !== 'task') {
+			changedNote.assignTo = '';
+		}
+
+		setNewNote(changedNote);
 	};
 
 	const saveNote = async () => {
-		toast.dismiss();
+		const errors = runValidators(newNoteValidationFields);
 
-		try {
-			const savedNote = await httpRequest(NOTE_API.NOTE, 'PUT', newNote);
-			toast.success('A new note has been posted!');
-			setNotes(notes.concat(savedNote.result));
-		} catch (error) {
-			console.error(error);
-			toast.error('Please try saving the note again');
+		if (errors.length === 0) {
+
+			// Save the new note and display a proper toast message in the process
+			const noteType = (newNote.type === 'task' ? 'task' : 'note');
+			const savedNote = await httpRequest(NOTE_API.NOTE, 'PUT', newNote, {
+				loading: 'Adding a new ' + noteType + '..',
+				success: 'A new ' + noteType + ' has been added.',
+				error: 'Something went wrong when trying to register a new ' + noteType + '. Please try again.'
+			});
+
+			// Add the new note and make sure the note collection is properly sorted
+			const allNotes = [...notes, savedNote.result];
+			sortNotes(allNotes);
+			setNotes(allNotes);
+
+			// Clear out the textarea in the new note form as well
+			setNewNote({
+				...newNote,
+				text: ''
+			});
+		} else {
+			toastValidationError(errors);
 		}
 	}
 
@@ -71,7 +108,6 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 							onChange={ updateNote }
 							name='type'
 							value={ newNote.type }
-							disabled={ true }
 						>
 							<option value='note'>Note</option>
 							<option value='task'>Task</option>
@@ -84,10 +120,11 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 						<select
 							className={ styles.notePropFieldInput }
 							onChange={ updateNote }
-							name='assignee'
-							value={ newNote.assignee }
+							name='assignTo'
+							value={ newNote.assignTo }
 							disabled={ newNote.type !== 'task' }
 						>
+							<option value=''>Select a username...</option>
 							{ users.map((username, index) => {
 								return (
 									<option key={ index } value={ username }>{ username }</option>
@@ -112,9 +149,7 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 				<div className={ styles.noteRecordsContainer }>
 					{ notes.map((note, index) => {
 						return (
-							<div className={ styles.noteRecord } key={ index }>
-								<NoteRecord note={ note } inSpanish={ inSpanish } />
-							</div>
+							<NoteRecord note={ note } inSpanish={ inSpanish } key={ index }/>
 						);
 					})}
 				</div>

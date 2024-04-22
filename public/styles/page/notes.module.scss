@@ -108,19 +108,27 @@
 	}
 
 	display: grid;
-	grid-template-columns: [first] 3fr [second] 14fr [third] 40px;
-	min-height: 120px;
 	width: 100%;
+	min-height: 120px;
 
-	&-task {
+	&-plain {
 		@extend .note-record;
 
+		grid-template-columns: [zero] 60px [first] 3fr [second] 14fr;
+	}
+
+	&-task-open {
+		@extend .note-record;
+
+		grid-template-columns: [zero] 60px [first] 3fr [second] 11fr [third] 2fr [fourth] 1fr;
 		background-color: common.$colors-lavender;
 	}
-}
 
-.note-record-row {
-	min-height: 120px;
+	&-task-closed {
+		@extend .note-record;
+
+		grid-template-columns: [zero] 60px [first] 3fr [second] 11fr [third] 3fr;
+	}
 }
 
 .note-metadata-cell {
@@ -134,7 +142,6 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	flex: 3;
 	height: 100%;
 }
 
@@ -144,7 +151,7 @@
 	};
 
 	margin: {
-		top: 0.25em;
+		top: 10px;
 	}
 }
 
@@ -152,12 +159,19 @@
 	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection);
 
 	margin: {
-		top: 0.75em;
+		top: 20px;
+		bottom: 10px;
 	}
 }
 
 .note-text-cell {
 	@include common.fonts-define-font();
+
+	border-right: {
+		style: solid;
+		width: 1px;
+		color: common.$colors-silver;
+	}
 
 	padding: 15px;
 	display: flex;
@@ -167,12 +181,33 @@
 .note-cell-special-header {
 	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-section) {
 		text-transform: uppercase;
-		transform: rotate(270deg);
+		letter-spacing: 1px;
+		color: common.$colors-low-black;
 	};
+
+	border-right: {
+		style: solid;
+		width: 1px;
+		color: common.$colors-silver;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.note-cell-special-header-text {
+	transform: rotate(270deg);
 }
 
 .task-metadata-cell {
 	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-section);
+
+	border-right: {
+		style: solid;
+		width: 1px;
+		color: common.$colors-silver;
+	}
 
 	display: flex;
 	justify-content: center;
@@ -181,13 +216,35 @@
 }
 
 .task-status-subcell {
-	@include common.fonts-define-font($family: Raleway) {
-		color: common.$colors-sea-green;
-	};
-
 	margin: {
 		top: 5px;
 		bottom: 10px;
+	}
+
+	text-align: center;
+
+	&-open {
+		@extend .task-status-subcell;
+
+		@include common.fonts-define-font($family: Raleway) {
+			color: common.$colors-sea-green;
+		};
+	}
+
+	&-resolved {
+		@extend .task-status-subcell;
+
+		@include common.fonts-define-font($family: Raleway) {
+			color: common.$colors-pale-violet-red;
+		};
+	}
+
+	&-cancelled {
+		@extend .task-status-subcell;
+
+		@include common.fonts-define-font($family: Raleway) {
+			color: common.$colors-slate-gray;
+		};
 	}
 }
 
@@ -198,6 +255,8 @@
 		top: 10px;
 		bottom: 5px;
 	}
+
+	text-align: center;
 }
 
 .task-actions {
@@ -207,12 +266,24 @@
 	flex-direction: column;
 }
 
-.task-resolve-icon {
-	color: common.$colors-success;
-	cursor: pointer;
-}
+.task-icon {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+	}
 
-.task-cancel-icon {
-	color: common.$colors-slate-gray;
+	size: common.$fonts-subsection;
 	cursor: pointer;
+
+	&-resolved {
+		@extend .task-icon;
+
+		color: common.$colors-pale-violet-red;
+	}
+
+	&-cancelled {
+		@extend .task-icon;
+
+		color: common.$colors-slate-gray;
+	}
 }

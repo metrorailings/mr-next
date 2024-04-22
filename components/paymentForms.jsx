@@ -4,11 +4,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 
-import { toastValidationError } from 'components/customToaster';
 
-import { validateNumberOnly } from "lib/validators/inputValidators";
 import { serverActionCall } from 'lib/http/clientHttpRequester';
-import { validateEmpty, validateDefined, validateCurrency, runValidators } from 'lib/validators/inputValidators';
+import { validateEmpty, validateDefined, validateNumberOnly, validateCurrency, runValidators } from 'lib/validators/inputValidators';
+import { toastValidationError } from 'components/customToaster';
 
 import { addCardAndPayByCard, payByCard, payByImage } from 'actions/payment';
 
@@ -23,7 +22,7 @@ import { faCcVisa, faCcDiscover, faCcMastercard, faCcAmex } from '@fortawesome/f
 
 const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPaymentAmount, postFunc, balanceRemaining }) => {
 
-	// ---------- State variables
+	// ---------- State Variables
 	const [paymentAmount, setPaymentAmount] = useState(presetPaymentAmount || '');
 	const [existingCards, setExistingCards] = useState(cards || []);
 	const [selectedCard, setSelectedCard] = useState('');
