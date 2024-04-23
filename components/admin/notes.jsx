@@ -147,9 +147,9 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 				</div>
 			) : (
 				<div className={ styles.noteRecordsContainer }>
-					{ notes.map((note, index) => {
+					{ notes.map((note) => {
 						return (
-							<NoteRecord note={ note } inSpanish={ inSpanish } key={ index }/>
+							<NoteRecord note={ note } inSpanish={ inSpanish } key={ note._id }/>
 						);
 					})}
 				</div>

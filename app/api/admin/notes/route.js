@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import dbConnect from 'lib/database';
-import { logRequest } from 'lib/logger';
-import { getNotes } from 'lib/http/notesDAO';
+import { getNotes, updateNoteTask, addNote, addTask } from 'lib/http/notesDAO';
 import { addNewNoteToOrder } from 'lib/http/ordersDAO';
-
-import Notes from 'lib/models/note';
-import Counters from 'lib/models/counters';
 
 /**
  * Method to retrieve all the notes in the system
@@ -35,23 +30,14 @@ export async function GET(request) {
  * @returns {Promise<NextResponse>}
  */
 export async function POST(request) {
-	await dbConnect();
 	const payloadData = await request.json();
 	const username = JSON.parse(request.cookies.get('user').value).username;
-	logRequest('api/admin/notes', 'POST', payloadData);
 
 	let { noteId, noteData } = payloadData;
 
-	// Update the note metadata with timestamp and updater information
-	noteData = recordUpdateInfo(noteData, username);
-
 	try {
-		const serverResponse = await Notes.updateOne({ _id: noteId }, noteData);
-		if (serverResponse.modifiedCount) {
-			return NextResponse.json({}, { status: 200 });
-		} else {
-			return NextResponse.json({ error: 'DB Issue' }, { status: 500 });
-		}
+		await updateNoteTask(noteId, noteData, username);
+		return NextResponse.json({}, { status: 200 });
 	} catch (error) {
 		console.error(error);
 		return NextResponse.json({ error: "Server issue" },{ status: 500 });
@@ -66,38 +52,16 @@ export async function POST(request) {
  * @returns {Promise<NextResponse>}
  */
 export async function PUT(request) {
-	await dbConnect();
-	let noteData = await request.json();
-
-	// Update the note metadata with timestamp and updater information
-	noteData.dates = { created: new Date() };
-	noteData.author = JSON.parse(request.cookies.get('user').value).username;
-	noteData = recordUpdateInfo(noteData, noteData.author);
-
-	// Add in more metadata should the note be a tas
-	if (noteData.type === 'task') {
-		noteData.assignFrom = noteData.author;
-		noteData.status = 'open';
-	}
-
-	// Massage out the note text so that line breaks are properly saved
-	noteData.text = noteData.text.split('\n').join('<br />');
+	const payloadData = await request.json();
+	const username = JSON.parse(request.cookies.get('user').value).username;
 
 	try {
-		// Pull the ID number from our counters collection and increment the ID sequencer accordingly
-		const countersResult = await Counters.findByIdAndUpdate('notes', { $inc: { seq: 1 } }).exec();
-
-		// Add the new note inside the notes collection and don't forget to attach it to the order as well
-		const processedNote = await Notes.create({
-			_id: countersResult.seq,
-			...noteData
-		});
-		const isOrderUpdated = await addNewNoteToOrder(processedNote);
-
-		if (isOrderUpdated) {
+		const processedNote = (payloadData.type === 'task' ? await addTask(payloadData, username) : await addNote(payloadData, username));
+		// Add the note to the order it belongs to as well, if the note was created with an order in context
+		if (!(payloadData.orderId) || await addNewNoteToOrder(processedNote)) {
 			return NextResponse.json({ result: processedNote }, { status: 200 });
 		} else {
-			throw new Error('There was an issue updating the database. Please try again.');
+			return NextResponse.json({ error: 'Some sort of database issue here preventing us from updating the note properly. Please try again.' }, { status: 500 });
 		}
 	} catch (error) {
 		console.error(error);
@@ -105,11 +69,3 @@ export async function PUT(request) {
 	}
 }
 
-function recordUpdateInfo(noteData, username) {
-	noteData.dates.modified = noteData.dates.modified || [];
-	noteData.updaters = noteData.updaters || [];
-	noteData.dates.modified.push(new Date());
-	noteData.updaters.push(username);
-
-	return noteData;
-}

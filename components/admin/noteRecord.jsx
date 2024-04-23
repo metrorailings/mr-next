@@ -14,26 +14,35 @@ import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 const NoteRecord = ({ note }) => {
 
-	const [noteStatus, setNoteStatus] = useState(note.status);
+	const [noteStatus, setNoteStatus] = useState(note.status || '');
+	const [noteCloser, setNoteCloser] = useState(note.closer || '');
 
 	const updateStatus = async (newStatus) => {
-		setNoteStatus(newStatus);
+		const username = getUserSession().username;
 
 		// Note the status update in the back-end
-		await httpRequest(NOTE_API.NOTE, 'POST', {
-			noteId: note._id,
-			noteData: {
-				status: newStatus,
-				closer: getUserSession().username
-			},
-		});
+		try {
+			await httpRequest(NOTE_API.NOTE, 'POST', {
+				noteId: note._id,
+				noteData: {
+					status: newStatus,
+					closer: username
+				}
+			});
+
+			// Update the local copy of the note where necessary
+			setNoteStatus(newStatus);
+			setNoteCloser(username);
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	return (
 		<div className={ classNames({
 			[styles.noteRecordPlain]: (note.type === 'note'),
-			[styles.noteRecordTaskOpen]: (note.type === 'task' && note.status === 'open'),
-			[styles.noteRecordTaskClosed]: (note.type === 'task' && (note.status === 'resolved' || note.status ==='cancelled'))
+			[styles.noteRecordTaskOpen]: (note.type === 'task' && noteStatus === 'open'),
+			[styles.noteRecordTaskClosed]: (note.type === 'task' && (noteStatus === 'resolved' || noteStatus ==='cancelled'))
 		})}>
 			{ (note.type !== 'note') ? (
 				<span className={ styles.noteCellSpecialHeader }>
@@ -66,19 +75,25 @@ const NoteRecord = ({ note }) => {
 					{ noteStatus === 'open' ? (
 						<>
 							<div className={ styles.taskStatusSubcellOpen }>OPEN</div>
-							<div className={ styles.taskOwnersSubcell }>Assigned to: <br/>{ note.assignTo }</div>
+							<div className={ styles.taskOwnersSubcell }>
+								{ note.assignTo ? (
+									<>
+										Assigned to: <br/>{ note.assignTo }
+									</>
+								) : 'UNASSIGNED' }
+							</div>
 						</>
 					) : null }
 					{ noteStatus === 'resolved' ? (
 						<>
 							<div className={ styles.taskStatusSubcellResolved }>RESOLVED</div>
-							<div className={ styles.taskOwnersSubcell }>Closed by <br/>{ note.closer }</div>
+							<div className={ styles.taskOwnersSubcell }>Closed by <br/>{ noteCloser }</div>
 						</>
 					) : null }
 					{ noteStatus === 'cancelled' ? (
 						<>
 							<div className={ styles.taskStatusSubcellCancelled }>CANCELLED</div>
-							<div className={ styles.taskOwnersSubcell }>Closed by <br/>{ note.closer }</div>
+							<div className={ styles.taskOwnersSubcell }>Closed by <br/>{ noteCloser }</div>
 						</>
 					) : null }
 				</span>
