@@ -352,11 +352,7 @@
 }
 
 .file-thumbnail-container {
-	margin: {
-		left: 15px;
-		right: 15px;
-	}
-
+	margin: 15px;
 	width: 150px;
 	max-height: 150px;
 	cursor: pointer;
@@ -366,13 +362,14 @@
 .file-delete-icon {
 	border-radius: 50%;
 	position: absolute;
-	top: -8px;
-	left: calc(100% - 8px);
+	top: -10px;
+	left: calc(100% - 10px);
 	z-index: 20;
 	cursor: pointer;
 	color: common.$colors-indian-red;
 	background-color: common.$colors-white;
 	box-shadow: 1px 1px 1px common.$colors-black;
+	font-size: common.$fonts-subsection;
 }
 
 .thumbnail-title-bar {

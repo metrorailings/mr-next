@@ -1,70 +1,107 @@
 import React, { useState, useRef, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { upload } from '@vercel/blob/client';
 
-import styles from "public/styles/page/components.module.scss";
+import { addFileToOrder, deleteFileFromOrder } from 'actions/order';
 
 import GalleryViewer from 'components/galleryViewer';
+import { toastValidationError } from 'components/customToaster';
 
 import { getUserSession } from 'lib/userInfo';
 import { acceptableMediaExtensions } from 'lib/dictionary';
-import { ORDER_API } from 'lib/http/apiEndpoints';
-import { httpRequest } from 'lib/http/clientHttpRequester';
+import { serverActionCall } from 'lib/http/clientHttpRequester';
+import { runValidators } from 'lib/validators/inputValidators';
+import { publish } from 'lib/utils';
+
+import styles from "public/styles/page/components.module.scss";
 
 const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 
 	existingFiles = existingFiles || [];
-	const [media, setMedia] = useState(existingFiles.filter( (file) => acceptableMediaExtensions[file.contentType]) );
+	const [media, setMedia] = useState(existingFiles.filter((file) => acceptableMediaExtensions[file.contentType]) );
 	const [nonMedia, setNonMedia] = useState( existingFiles.filter((file) => !(acceptableMediaExtensions[file.contentType])) );
 	const [showMedia, setShowMedia] = useState(!(lazyLoad));
 	const [showNonMedia, setShowNonMedia] = useState(!(lazyLoad));
+	const [isDeletingFile, setIsDeletingFile] = useState(false);
 	const [user, setUser] = useState(null);
 
-	const uploadLink = useRef();
+	const uploadLink = useRef(null);
+	const uploadForm = useRef(null);
 
+	// ---------- Validation functions for client-side error handling
+	// @TODO - add in validation to prevent certain types of file from being uploaded. Also check file sizes
+
+	// ---------- Client-side error tests
+	// @TODO - add in client error-side tests once validation functions have been written
+	const fileValidationFields = [];
+
+	// Function to upload a new image
 	const uploadFiles = async (event) => {
 		event.preventDefault();
 
-		// Dismiss any lingering toasts
-		toast.dismiss();
+		const errors = runValidators(fileValidationFields);
 
-		const filesToUpload = event.currentTarget.files;
-
-		// @TODO - Find a way to limit files by size here		
-
-		try {
-			for (let i = 0; i < filesToUpload.length; i += 1) {
-				let newBlob = await upload(filesToUpload[i].name, filesToUpload[i], {
-					access: 'public',
-					handleUploadUrl: ORDER_API.POST_UPLOAD_FILE,
-					clientPayload: { orderId : orderId },
-					multipart: filesToUpload[i].size >= 5000000 // Break apart any files greater than 5 MBs in size  
+		if (errors.length === 0) {
+			try {
+				const serverResponse = await serverActionCall(addFileToOrder, new FormData(uploadForm.current), {
+					loading: 'Uploading the file...',
+					success: 'The file\'s been uploaded.',
+					error: 'Something went wrong when trying to upload this file. See Rickin for more details.'
 				});
-				
-				// @TODO - Use toast to notify the user about the status of the upload
 
-				// Update the blob to include metadata specific to our application
-				// Please note that in production, the blob's metadata has been automatically updated and stored in the
-				// database while we were uploading the file
-				newBlob.orderId = orderId;
-				newBlob.uploader = user.username;
+				if (serverResponse?.success) {
+					const uploadedFile = serverResponse.file;
 
-				// The following block of code only executes on my local machine, as the whole Vercel Blob process never
-				// really finishes on local machines for some strange reason 
-				if (process.env.NEXT_PUBLIC_DOMAIN === 'localhost') {
-					newBlob = await httpRequest(ORDER_API.SAVE_UPLOAD_METADATA, 'POST', { blob : newBlob });
+					if (acceptableMediaExtensions[uploadedFile.contentType]) {
+						setMedia([...media, uploadedFile]);
+					} else {
+						setNonMedia([...nonMedia, uploadedFile]);
+					}
 				}
-
-				if (acceptableMediaExtensions[newBlob.contentType]) {
-					setMedia([...media, newBlob]);
-				} else {
-					setNonMedia([...media, newBlob]);
-				}
+			}	catch (err) {
+				console.error(err);
 			}
-		} catch (err) {
-			console.error(err);
+		} else {
+			toastValidationError(errors);
 		}
 	};
+
+	// Function to delete a gallery image permanently
+	const deleteFile = (file) => {
+		if (isDeletingFile === false) {
+
+			// Figure out which image to display inside the modal
+			const image = acceptableMediaExtensions[file.contentType] ? file.url : null;
+
+			publish('open-confirm-modal', {
+				text: 'Are you sure you want to delete the following file permanently?',
+				boldText: file.name || 'Unnamed File',
+				image: image,
+				confirmFunction: () => deleteFileConfirm(file)
+			});
+		}
+	};
+
+	const deleteFileConfirm = async (fileToDelete) => {
+		setIsDeletingFile(true);
+		const serverResponse = await serverActionCall(deleteFileFromOrder, {
+			orderId: fileToDelete.orderId,
+			fileId: fileToDelete._id,
+			fileUrl: fileToDelete.url
+		}, {
+			loading: 'Deleting the file...',
+			success: 'The file\'s been deleted.',
+			error: 'Something went wrong when trying to delete this file. See Rickin for more details.'
+		});
+
+		// After the file is deleted successfully from the server, update our local copy of the data as well to reflect the deletion
+		if (serverResponse?.success) {
+			if (acceptableMediaExtensions[fileToDelete.contentType]) {
+				setMedia(media.filter((file) => (file._id !== fileToDelete._id)));
+			} else {
+				setNonMedia(nonMedia.filter((file) => (file._id !== fileToDelete._id)));
+			}
+		}
+		setIsDeletingFile(false);
+	}
 
 	useEffect(() => {
 		setUser(getUserSession());
@@ -76,14 +113,19 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 				<>
 					<div className={ styles.fileUploadSection }>
 						<button className={ styles.uploadFileButton } onClick={() => uploadLink.current.click() }>Upload Media/File</button>
-						<input
-							type='file'
-							ref={ uploadLink }
-							className={ styles.uploadFileInput }
-							multiple
-							accept='.pdf,.jpeg,.jpg,.mp4,.png'
-							onChange={ uploadFiles }
-						/>
+						<form ref={ uploadForm } action={ addFileToOrder }>
+							<input
+								type='file'
+								ref={ uploadLink }
+								name='newFile'
+								className={ styles.uploadFileInput }
+								multiple
+								accept='.pdf,.jpeg,.jpg,.mp4,.png'
+								onChange={ uploadFiles }
+							/>
+							<input type='hidden' name='orderId' value={ orderId } />
+							<input type='hidden' name='uploader' value={ user?.username } />
+						</form>
 					</div>
 				</>
 			) : null }
@@ -100,7 +142,7 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 								files={ media }
 								imgWidth={ 150 }
 								imgHeight={ 150 }
-								allowDelete={ user?.role === "admin" || user?.role === "office" }
+								deleteFunc={ (user?.role === 'admin' || user?.role === 'office') ? deleteFile : null }
 							/>
 						) : (
 							<span className={ styles.seeFilesLink } onClick={() => setShowMedia(true) }>
@@ -120,7 +162,7 @@ const FileUpload = ({ orderId, existingFiles, lazyLoad }) => {
 								files={ nonMedia }
 								imgWidth={ 150 }
 								imgHeight={ 150 }
-								allowDelete={ user?.role === "admin" || user?.role === "office" }
+								deleteFunc={ (user?.role === 'admin' || user?.role === 'office') ? deleteFile : null }
 							/>
 						) : (
 							<span className={ styles.seeFilesLink } onClick={() => setShowNonMedia(true) }>

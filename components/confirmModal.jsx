@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import styles from "public/styles/page/components.module.scss";
 
-const ConfirmModal = ({ text, image, confirmFunc, closeFunc }) => {
+const ConfirmModal = ({ text, boldText, image, confirmFunc, closeFunc }) => {
 
 	const overlayRef = useRef(null);
 	const modalRef = useRef(null);
@@ -43,11 +43,14 @@ const ConfirmModal = ({ text, image, confirmFunc, closeFunc }) => {
 				<div className={ styles.modalBody }>
 					{ image ? (
 						<Image
-							src={ image.galleriaUrl || image.originalUrl }
-							alt={ image.alt || 'Railing' }
+							src={ image }
+							alt={ 'Railing' }
 							height={ 150 }
 							width={ 150 }
 						/>
+					) : null }
+					{ boldText ? (
+						<div className={ styles.modalBodyText }><b>{ boldText }</b></div>
 					) : null }
 					<div className={ styles.modalBodyText }>{ text }</div>
 				</div>

@@ -100,10 +100,10 @@ const PhotoViewer = ({ photos, currentIndex, preventAccessToOriginal, closeFunc 
 					<div className={ styles.galleryPictureViewer } ref={ pictureContainerRef }>
 						<Image
 							className={ styles.galleryPicture }
-							src={ photos[photoIndex].galleriaUrl || photos[photoIndex].originalUrl }
+							src={ photos[photoIndex].galleriaUrl || photos[photoIndex].originalUrl || photos[photoIndex].url }
 							alt={ photos[photoIndex].alt || 'Railing' }
 							fill={ true }
-							onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].originalUrl) }}
+							onClick={(event) => { viewOriginalPhoto(event, photos[photoIndex].originalUrl || photos[photoIndex].url) }}
 						/>
 					</div>
 

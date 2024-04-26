@@ -1,11 +1,12 @@
 'use server'
 
+import { saveNewOrder, attachFileToOrder, deleteFileFromOrder as deleteOrderFile } from 'lib/http/ordersDAO';
+import { saveNewFile, deleteFile, uploadFileToVercel, uploadImageToVercel, deleteFromVercel } from 'lib/http/filesDAO';
 import { validateEmail, validateEmpty, runValidators } from 'lib/validators/inputValidators';
-import { saveNewOrder } from 'lib/http/ordersDAO';
+import { acceptableImageExtensions } from 'lib/dictionary';
 import { sendLeadEmail } from 'lib/loopMailer';
 
 export async function createProspectFromContactUs(data) {
-
 	let newOrder = {};
 
 	const validationFields = [
@@ -35,6 +36,58 @@ export async function createProspectFromContactUs(data) {
 			await sendLeadEmail(data);
 			return { success: true };
 		}
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+}
+
+export async function addFileToOrder(formData) {
+	const uploadedFile = formData.get('newFile');
+	let fileBlob;
+
+	try {
+		// Upload the file first to Vercel's blob service
+		if (acceptableImageExtensions[uploadedFile.type]) {
+			fileBlob = await uploadImageToVercel(uploadedFile);
+		} else {
+			fileBlob = await uploadFileToVercel(uploadedFile);
+		}
+
+		// Save the new file into our database
+		// Make sure to notate which order the file is to be associated with
+		const metadata = {
+			...fileBlob,
+			orderId: formData.get('orderId'),
+			uploader: formData.get('uploader')
+		};
+		const dbNote = await saveNewFile(metadata);
+		await attachFileToOrder(dbNote.orderId, dbNote._id);
+
+		return { success: true, file: metadata };
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+}
+
+export async function deleteFileFromOrder(data) {
+
+	try {
+		// Delete references of the file from the order
+		await deleteOrderFile(data.orderId, data.fileId);
+
+		// Delete Vercel's reference of the file from their Blob service as well as our back-end
+		// In case we fail to properly delete the file for whatever reason, still notate the operation as a success
+		// as the file's been detached from the order
+		try {
+			await deleteFile(data.fileId);
+			await deleteFromVercel(data.fileUrl);
+		} catch (error) {
+			console.error(error);
+		}
+
+		return { success: true };
 	} catch (error) {
 		console.error(error);
 		return { success: false };

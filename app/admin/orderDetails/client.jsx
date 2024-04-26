@@ -7,6 +7,7 @@ import styles from 'public/styles/page/orderDetails.module.scss';
 import Multitext from 'components/multitext'; 
 import PaymentForms from 'components/paymentForms';
 import Notes from 'components/admin/notes';
+import FileUpload from 'components/admin/fileUpload';
 
 import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
@@ -125,7 +126,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		modHistory: order.modHistory || [],
 		dates: order.dates || {},
 		notes: order.notes || [],
-		pictures: order.pictures || []
+		files: order.files || []
 	});
 
 	const handleOrderUpdate = (event) => {
@@ -293,6 +294,20 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 
 				<hr className={ styles.sectionDivider }></hr>
 
+				{/* ---------- FILE SECTION ---------- */ }
+
+				{ orderDetails._id ? (
+					<div className={ styles.orderFormSection }>
+						<FileUpload
+							orderId={ orderDetails._id }
+							existingFiles={ orderDetails.files }
+							lazyLoad={ false }
+						/>
+					</div>
+				) : null }
+
+				<hr className={ styles.sectionDivider } />
+
 				{/* ---------- DESIGN TYPE SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
@@ -304,7 +319,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 					/>
 				</div>
 
-				<hr className={ styles.sectionDivider }></hr>
+				<hr className={ styles.sectionDivider } />
 
 				{/* ---------- BASE DESIGN SECTION ---------- */ }
 

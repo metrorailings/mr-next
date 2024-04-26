@@ -1,15 +1,16 @@
-import React, { Suspense, useRef } from 'react';
-import Image from "next/image";
+import React, { useRef } from 'react';
+import Image from 'next/image';
 
-import styles from "public/styles/page/components.module.scss";
+import styles from 'public/styles/page/components.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faFile, faFilePdf } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import pdfFileThumbnail from 'assets/images/miscellany/pdf-thumbnail.png';
+import genericFileThumbnail from 'assets/images/miscellany/file-thumbnail.png';
 
 import { publish } from 'lib/utils';
 import { acceptableMediaExtensions } from 'lib/dictionary';
-import { SubLoader } from 'components/loaderIcons';
 
-const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
+const GalleryViewer = ({ files, imgWidth, imgHeight, deleteFunc }) => {
 
 	const downloadLink = useRef();
 
@@ -29,46 +30,44 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, allowDelete }) => {
 		<div className={ styles.fileCarousel }>
 			{ files.map((file, index) => {
 				return (
-					<div key={ index }>
+					<div key={ file._id }>
 						{ acceptableMediaExtensions[file.contentType] ? (
 							<div className={ styles.fileThumbnailContainer }>
-								<Suspense fallback={ <SubLoader/> }>
-									<Image
-										src={ file.url }
-										width={ imgWidth }
-										height={ imgHeight }
-										alt={ file.pathname }
-										index={ index }
-										onClick={ () => viewImage(index) }
-									/>
-									<div className={ styles.thumbnailTitleBar }>{ file.pathname }</div>
-									{ allowDelete ? (
-										<FontAwesomeIcon icon={ faCircleXmark } className={ styles.fileDeleteIcon }/>
-									) : null }
-								</Suspense>
+								<Image
+									src={ file.url }
+									width={ imgWidth }
+									height={ imgHeight }
+									alt={ file.pathname }
+									index={ index }
+									onClick={ () => viewImage(index) }
+								/>
+								<div className={ styles.thumbnailTitleBar }>{ file.name || file.pathname }</div>
+								{ deleteFunc ? (
+									<FontAwesomeIcon icon={ faCircleXmark } className={ styles.fileDeleteIcon } onClick={ () => deleteFunc(file) } />
+								) : null }
 							</div>
 						) : (
 							<div className={ styles.fileThumbnailContainer }>
 								{ file.pathname.split('.').pop().toLowerCase() === 'pdf' ? (
-									<FontAwesomeIcon
-										icon={ faFilePdf }
+									<Image
+										src={ pdfFileThumbnail }
+										alt={ file.name }
 										width={ imgWidth }
 										height={ imgHeight }
-										index={ index }
 										onClick={() => downloadFile(file.url, file.pathname)}
 									/>
 								) : (
-									<FontAwesomeIcon
-										icon={ faFile }
+									<Image
+										src={ genericFileThumbnail }
+										alt={ file.name }
 										width={ imgWidth }
 										height={ imgHeight }
-										key={ index }
 										onClick={() => downloadFile(file.url, file.pathname)}
 									/>
 								)}
-								<div className={ styles.thumbnailTitleBar }>{ file.pathname }</div>
-								{ allowDelete ? (
-									<FontAwesomeIcon icon={ faCircleXmark } className={ styles.fileDeleteIcon }/>
+								<div className={ styles.thumbnailTitleBar }>{ file.name || file.pathname }</div>
+								{ deleteFunc ? (
+									<FontAwesomeIcon icon={ faCircleXmark } className={ styles.fileDeleteIcon } onClick={ () => deleteFunc(file) } />
 								) : null }
 							</div>
 						)}

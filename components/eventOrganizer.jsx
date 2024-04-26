@@ -16,6 +16,7 @@ const EventOrganizer = () => {
 
 	const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 	const [modalText, setModalText] = useState('');
+	const [modalBoldText, setModalBoldText] = useState('');
 	const [modalImage, setModalImage] = useState(null);
 	const [postModalFunc, setPostModalFunc] = useState(null);
 
@@ -38,6 +39,7 @@ const EventOrganizer = () => {
 	}
 	const openModal = (event) => {
 		setModalText(event.detail.text);
+		setModalBoldText(event.detail.boldText);
 		setModalImage(event.detail.image);
 		setPostModalFunc(() => event.detail.confirmFunction);
 	}
@@ -65,7 +67,7 @@ const EventOrganizer = () => {
 			) : null }
 
 			{ confirmModalOpen ? (
-				<ConfirmModal text={ modalText } image={ modalImage } confirmFunc={ postModalFunc } closeFunc={ closeModal } />
+				<ConfirmModal text={ modalText } boldText={ modalBoldText } image={ modalImage } confirmFunc={ postModalFunc } closeFunc={ closeModal } />
 			) : null }
 		</>
 	);

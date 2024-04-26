@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
-import {
-	getGalleryImages,
-	addGalleryImage,
-	deleteGalleryImage,
-	deleteFromVercel,
-	updateGalleryImageData
-} from 'lib/http/galleryDAO';
+import { getGalleryImages, addGalleryImage, deleteGalleryImage, deleteFromVercel, updateGalleryImageData } from 'lib/http/galleryDAO';
 
 /**
  * Function to retrieve all gallery-related metadata from the database

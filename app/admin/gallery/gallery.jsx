@@ -26,7 +26,7 @@ const Gallery = ({ jsonImages }) => {
 		if (isDeletingPicture === false) {
 			publish('open-confirm-modal', {
 				text: 'Are you sure you want to delete the following image from the gallery permanently?',
-				image: photo,
+				image: photo.galleriaUrl,
 				confirmFunction: () => deleteImageConfirm(photo)
 			});
 		}
