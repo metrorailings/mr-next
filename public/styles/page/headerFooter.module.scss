@@ -194,6 +194,10 @@
 	@include common.responsive-landscape-mobile-only() {
 		height: 50px;
 	}
+
+	@include common.responsive-print-only() {
+		display: none;
+	}
 }
 
 .footer-contact-number {

@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import classNames from 'classnames';
 
-
 import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { validateEmpty, validateDefined, validateNumberOnly, validateCurrency, runValidators } from 'lib/validators/inputValidators';
 import { toastValidationError } from 'components/customToaster';
@@ -24,7 +23,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 
 	// ---------- State Variables
 	const [paymentAmount, setPaymentAmount] = useState(presetPaymentAmount || '');
-	const [existingCards, setExistingCards] = useState(cards || []);
+  const [existingCards, setExistingCards] = useState(cards || []);
 	const [selectedCard, setSelectedCard] = useState('');
 	const [creditCard, setCreditCard] = useState({
 		cardNumber: "",
@@ -38,6 +37,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 	const cardSection = useRef(null);
 	const alternateSection = useRef(null);
 	const uploadAlternateImageLink = useRef(null);
+	const submitButtonRef = useRef(null);
 
 	// ---------- Validation functions for client-side error handling
 	const validateCreditCardNumber = () => validateEmpty(creditCard.cardNumber) === false || (creditCard.cardNumber.split(' ').join('').length === (creditCard.brand === 'amex' ? 15 : 16));
@@ -51,12 +51,12 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 		{ prop: paymentAmount, validator: isValidAmount, errorMsg: 'Please enter a payment amount less than the balance outstanding on this order.' }
 	];
 	const newCardValidationFields = [
-		{ prop: creditCard.cardNumber, validator: validateEmpty, errorMsg: 'A credit card number is required.' },
-		{ prop: creditCard.expiration, validator: validateEmpty, errorMsg: 'Your credit card\'s expiration month and year are required.' },
-		{ prop: creditCard.cardCode, validator: validateEmpty, errorMsg: 'Your credit card\'s CVC is required.'  },
 		{ prop: creditCard.cardNumber, validator: validateCreditCardNumber, errorMsg: 'The credit card number you provided us is missing some digits.' },
 		{ prop: creditCard.expiration, validator: validateCreditCardExpiration, errorMsg: 'The credit card expiration date you provided us is incomplete.' },
 		{ prop: creditCard.cardCode, validator: validateCreditCardCVC, errorMsg: 'Your CVC is too short.' },
+		{ prop: creditCard.cardNumber, validator: validateEmpty, errorMsg: 'A credit card number is required.' },
+		{ prop: creditCard.expiration, validator: validateEmpty, errorMsg: 'Your credit card\'s expiration month and year are required.' },
+		{ prop: creditCard.cardCode, validator: validateEmpty, errorMsg: 'Your credit card\'s CVC is required.'  },
 	];
 	const existingCardValidationFields = [
 		{ prop: selectedCard, validator: validateEmpty, errorMsg: 'A registered card needs to be selected. Either select a card if one\'s been registered or put in your credit card details.' }
@@ -181,8 +181,8 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 				paymentAmount: paymentAmount
 			}, {
 				loading: 'Processing the credit card...',
-				success: 'A new card has been registered. If you want to pay using that credit card, go ahead and do it now.',
-				error: 'Something went wrong when trying to validate the credit card. Please try again.'
+				success: 'A new payment has been successfully processed!',
+				error: 'Something went wrong when trying to validate and charge the credit card. Please check your credit card details and try again.'
 			});
 
 			if (serverResult?.success) {
@@ -203,8 +203,8 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 				paymentAmount: paymentAmount
 			}, {
 				loading: 'Now processing the credit card payment...',
-				success: 'A new card payment has been successfully charged!',
-				error: 'Something went wrong when trying to charge the credit card. Please try again.'
+				success: 'A new payment has been successfully processed!',
+				error: 'Something went wrong when trying to charge the credit card. Please try again. If you keep seeing this error message, the card is likely being declined.'
 			});
 
 			return serverResult;
@@ -239,21 +239,20 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 
 	const submitPayment = async () => {
 		const errors = runValidators(paymentValidationFields);
-		let serverResult = null;
 
 		if (errors.length === 0) {
+			submitButtonRef.current.disabled = true;
 			if (cardSection.current && window.parseInt(cardSection.current.style.height, 10)) {
 				if (selectedCard) {
-					serverResult = await submitCardPayment();
+					await submitCardPayment();
 				} else {
-					serverResult = await addCardAndSubmitPayment();
+					await addCardAndSubmitPayment();
 				}
 			}
 			else if (alternateSection.current && window.parseInt(alternateSection.current.style.height, 10)) {
-				serverResult = await submitAlternatePayment();
+				await submitAlternatePayment();
 			}
-
-			console.log(serverResult);
+			submitButtonRef.current.disabled = false;
 
 			if (postFunc) {
 				postFunc();
@@ -317,15 +316,17 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 									<label htmlFor={ 'card_new' } className={ styles.paymentCcExistingCardLogo }>New Card</label>
 								</span>
 								{ existingCards.map((card, index) => {
-									return (
-										<span key={ index }>
+									if (index < 3) {
+										return (
+											<span key={ index }>
 											<input id={ 'card_' + card.id } type='radio' name='card' value={ card.id } onClick={ handleCardToUse }/>
 											<label htmlFor={ 'card_' + card.id } className={ styles.paymentCcExistingCardLogo }>
 												<FontAwesomeIcon icon={ determineCardIcon(card.brand) } className={ styles.paymentCcExistingCardLogo }/>
 												{ '(...' + card.last4 + ')' }
 											</label>
 										</span>
-									);
+										);
+									}
 								}) }
 							</div>
 
@@ -456,7 +457,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 				) : null }
 
 				<div className={ styles.submitRow }>
-					<button className={ styles.submitButton } type='button' onClick={ submitPayment }>Make Payment</button>
+					<button className={ styles.submitButton } type='button' onClick={ submitPayment } ref={ submitButtonRef }>Make Payment</button>
 				</div>
 			</div>
 		</>

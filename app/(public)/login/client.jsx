@@ -128,7 +128,7 @@ const LoginPage = () => {
 								<label
 									htmlFor='rememberMe'
 									className={ styles.secondaryLabel }
-									onClick={() => { setRememberMeFlag(!rememberMeFlag) }}
+									onClick={() => setRememberMeFlag(!rememberMeFlag) }
 								>
 									Remember Me
 								</label>

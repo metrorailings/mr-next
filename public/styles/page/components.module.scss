@@ -149,6 +149,20 @@
 	}
 }
 
+@include common.animations-keyframes($name: scroll-down-arrow) {
+	0% {
+		transform: translate(0, 0);
+	}
+
+	50% {
+		transform: translate(0, 10%);
+	}
+
+	100% {
+		transform: translate(0, 0);
+	}
+}
+
 /* ----------------------- EXPORTED VARIABLES ----------------------------- */
 
 /* stylelint-disable */
@@ -706,7 +720,7 @@
 	height: 100%;
 	top: 0;
 	left: 0;
-	z-index: 200;
+	z-index: 2000;
 	background-color: rgba(0 0 0 / 0%);
 	overlay: 0.0;
 }
@@ -753,7 +767,7 @@
 
 	padding: {
 		top: 20px;
-		bottom: 10px;
+		bottom: 20px;
 		left: 15px;
 		right: 15px;
 	}
@@ -765,6 +779,10 @@
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+
+	@include common.responsive-landscape-phone-only() {
+		max-height: 300px;
+	}
 }
 
 .modal-body-text {
@@ -772,6 +790,43 @@
 		top: 10px;
 		bottom: 10px;
 	}	
+}
+
+.modal-body-markdown {
+	max-height: 400px;
+
+	@include common.responsive-landscape-phone-only() {
+		max-height: 300px;
+	}
+
+	& > p {
+		margin: {
+			top: 10px;
+			bottom: 10px;
+		}
+	}
+}
+
+.modal-scroll-down-notice {
+	@include common.animations-transition-settings($property: height);
+	@include common.fonts-define-font($size: common.$fonts-secondary) {
+		color: common.$colors-white;
+	};
+
+	padding: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	background-color: common.$colors-slate-gray;
+	text-align: center;
+	cursor: pointer;
+}
+
+.modal-scroll-down-icon {
+	@include common.animations-animation-settings($keyframeSet: scroll-down-arrow, $duration: 0.5s, $timing: ease-in-out, $iterations: infinite);
+
+	margin-left: 5px;
 }
 
 .modal-button-row {
@@ -789,6 +844,8 @@
 	padding: {
 		top: 10px;
 		bottom: 10px;
+		left: 25px;
+		right: 25px;
 	}
 
 	background-color: common.$colors-gray;
@@ -798,16 +855,15 @@
 }
 
 .modal-confirm-button {
-	@include form.small-button($bgColor: common.$colors-success, $width: 150px);
+	@include form.small-button($bgColor: common.$colors-success, $width: 125px);
 
 	margin: {
-		left: 25px;
 		right: 25px;
 	}
 }
 
 .modal-cancel-button {
-	@include form.small-button($bgColor: common.$colors-indian-red, $width: 150px);
+	@include form.small-button($bgColor: common.$colors-indian-red, $width: 125px);
 
 	margin: {
 		left: 25px;

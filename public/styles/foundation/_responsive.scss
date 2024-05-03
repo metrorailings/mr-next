@@ -81,6 +81,18 @@ $desktop-only: 1201px;
 }
 
 /*
+ * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * a mobile environment
+ *
+ * @author kinsho
+ */
+@mixin landscape-mobile-only() {
+	@media only screen and (max-device-width: $tablet-max) and (orientation: landscape) {
+		@content;
+	}
+}
+
+/*
  * Mix-in is responsible for enforcing CSS stylings only on phones that are currently displaying content
  * in portrait mode
  *
@@ -93,13 +105,13 @@ $desktop-only: 1201px;
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
- * a mobile environment
+ * Mix-in is responsible for enforcing CSS stylings only on phones that are currently displaying content
+ * in landscape mode
  *
  * @author kinsho
  */
-@mixin landscape-mobile-only() {
-	@media only screen and (max-device-width: $tablet-max) and (orientation: landscape) {
+@mixin landscape-phone-only() {
+	@media only screen and (max-device-width: $phone-portrait-max) and (orientation: landscape) {
 		@content;
 	}
 }

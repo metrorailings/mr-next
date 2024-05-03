@@ -1,6 +1,10 @@
 'use server'
 
+import { readFileSync } from 'node:fs';
 import { redirect } from 'next/navigation'
+import Image from 'next/image';
+
+import FinalizeSection from 'app/(public)/quote/finalize';
 
 import { translateDesignCode, fetchDesignMetadata } from 'lib/designs/translator';
 import { decryptNumber } from 'lib/utils';
@@ -8,18 +12,21 @@ import { getOrderById } from 'lib/http/ordersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
-import Image from 'next/image';
 
 const QuoteServer = async ({ searchParams }) => {
 	const orderHash = searchParams?.id || '';
 	const orderId = decryptNumber(orderHash);
-	let order, designs;
-	if (orderId) {
-		order = await getOrderById(orderId);
-		designs = Object.keys(order.design);
-	} else {
+
+	if (!(orderId))
+	{
 		redirect('/');
 	}
+	
+	const order = await getOrderById(orderId);
+	const designs = Object.keys(order.design);
+
+	// Pull the 'Terms and Conditions' from the file system
+	const termsRawText = readFileSync('assets/text/terms.txt', { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>
@@ -70,8 +77,8 @@ const QuoteServer = async ({ searchParams }) => {
 			</div>
 			
 			<div className={ styles.quoteContainer }>
-
 				<div className={ styles.quoteBody }>
+
 					{ /* SUMMARY */ }
 					{ order?.text?.additionalDescription ? (
 						<div className={ styles.quoteMemo } dangerouslySetInnerHTML={{ __html: order.text.additionalDescription }} />
@@ -112,6 +119,8 @@ const QuoteServer = async ({ searchParams }) => {
 				</div>
 
 			</div>
+
+			<FinalizeSection termsText={ termsRawText } jsonOrder={ JSON.stringify(order) } />
 		</div>
 	);
 };

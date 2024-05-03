@@ -5,11 +5,35 @@ import { put } from '@vercel/blob';
 import randomStr from 'randomstring';
 import { cookies } from 'next/headers'
 
-import { getOrderById, attachNewCard, attachNewPayment } from 'lib/http/ordersDAO';
+import { getOrderById, attachNewCard, attachNewPayment, attachStripeCustomerProfileData } from 'lib/http/ordersDAO';
 
 const striper = stripe(process.env.STRIPE_SECRET_KEY);
 
-const addCreditCard = async (data) => {
+const addCustomer = async (order) => {
+	try {
+		// Create a new Customer in Stripe so that we can store and reuse credit cards for a given order
+		const stripeCustomer = await striper.customers.create({
+			description: order._id,
+			email: order.customer.email[0] || '',
+			name: order.customer.company || order.customer.name
+		});
+
+		const processedCustomer = {
+			id: stripeCustomer.id,
+			createdOn: new Date(stripeCustomer.created)
+		};
+
+		// Associate the Stripe customer with the order in our system
+		await attachStripeCustomerProfileData(order._id, processedCustomer);
+
+		return processedCustomer;
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+}
+
+const addCreditCard = async (data, order) => {
 	try {
 		// Use Stripe to register the credit card
 		const paymentCharge = await striper.paymentMethods.create({
@@ -31,7 +55,7 @@ const addCreditCard = async (data) => {
 		};
 
 		// Record the card in our own database
-		await attachNewCard(data.orderId, processedCard);
+		await attachNewCard(order._id, processedCard);
 
 		return processedCard;
 	} catch (error) {
@@ -40,20 +64,24 @@ const addCreditCard = async (data) => {
 	}
 };
 
-const chargeCard = async (data) => {
+const chargeCard = async (data, order) => {
 	try {
-		const order = await getOrderById(data.orderId);
-
 		if (order?._id) {
 			// Use Stripe to process the payment using the credit card specified in the parameters
 			const paymentIntent = await striper.paymentIntents.create({
-				amount: parseFloat(data.paymentAmount),
+				amount: parseInt(data.paymentAmount * 100),
 				currency: 'usd',
 				confirm: true,
+				customer: order.payments.customer.id,
 				payment_method: data.card,
 				metadata: { orderId: order._id, customer: order.customer?.name, company: order.customer?.company || 'N/A' },
 				receipt_email: order.customer?.email[0] || process.env.NEXT_PUBLIC_SUPPORT_MAILBOX,
-				statement_descriptor: ('Metro Railings - Order ' + order._id)
+				statement_descriptor: ('Metro Railings ' + order._id),
+				setup_future_usage: 'off_session',
+				automatic_payment_methods: {
+					allow_redirects: 'never',
+					enabled: true
+				}
 			});
 			if (paymentIntent.status === 'succeeded') {
 				try {
@@ -78,18 +106,27 @@ const chargeCard = async (data) => {
 };
 
 export async function addCardAndPayByCard(data) {
-	const registeredCard = await addCreditCard(data);
+	const order = await getOrderById(data.orderId);
+	// Define a customer in Stripe if one hasn't been created yet for this order
+	if (!(order.payments.customer)) {
+		order.payments.customer = await addCustomer(order);
+	}
+	const registeredCard = await addCreditCard(data, order);
 	if (registeredCard) {
 		data.card = registeredCard.id;
-		const paymentMade = await chargeCard(data);
-		return { success: paymentMade };
+		const paymentMade = await chargeCard(data, order);
+		return { success: paymentMade, card: registeredCard };
 	} else {
 		return { success: false };
 	}
 }
 
 export async function payByCard(data) {
-	const paymentMade = await chargeCard(data);
+	const order = await getOrderById(data.orderId);
+	if (order.payments.customer === null) {
+		order.payments.customer = await addCustomer(order);
+	}
+	const paymentMade = await chargeCard(data, order);
 	return { success: paymentMade };
 }
 
