@@ -1,25 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
-import { getGalleryImages, addGalleryImage, deleteGalleryImage, deleteFromVercel, updateGalleryImageData } from 'lib/http/galleryDAO';
-
-/**
- * Function to retrieve all gallery-related metadata from the database
- *
- * @param request
- * @returns {Promise<NextResponse>}
- */
-export async function GET(request) {
-	const params = request.nextUrl.searchParams;
-
-	try {
-		const images = await getGalleryImages(params?.start || 0, params?.end);
-		return NextResponse.json(images, { status: 200 });
-	} catch (error) {
-		console.error(error);
-		return NextResponse.json( { error: 'Server issue' }, { status: 500 });
-	}
-}
+import { addGalleryImage, deleteGalleryImage, deleteFromVercel, updateGalleryImageData } from 'lib/http/galleryDAO';
 
 /**
  * Function to upload metadata regarding a new gallery picture into our database

@@ -20,10 +20,12 @@ export async function addGalleryImage(formData) {
 			tags: [],
 			category: ''
 		};
-		await addGalleryImageServer(metadata);
+		const processedImage = await addGalleryImageServer(metadata);
 
 		revalidatePath('/admin/gallery');
+		return { success: true, data: processedImage };
 	} catch (error) {
 		console.error(error);
+		return { success: false };
 	}
 }

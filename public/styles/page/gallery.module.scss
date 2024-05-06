@@ -10,6 +10,10 @@
 	@extend %page-header;
 }
 
+.page-container {
+	margin-bottom: 125px;
+}
+
 .gallery-pictures {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
@@ -56,7 +60,7 @@
 		radius: 10px;
 	}
 
-	margin: 1vw;
+	margin: 10px;
 	padding: 3px;
 	display: flex;
 	align-items: center;
@@ -115,7 +119,9 @@
 }
 
 .image-data-field {
-	@extend %medium-input-control;
+	@extend %input-control;
+
+	width: 275px;
 }
 
 .photo-delete-icon {

@@ -1,0 +1,101 @@
+/* ----------------------- IMPORTS ----------------------------- */
+
+@use 'public/styles/foundation/common';
+@use 'public/styles/page/lib/base';
+
+/* ----------------------- STYLES ----------------------------- */
+
+.page-container {
+	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-subsection);
+
+	padding: {
+		bottom: 90px;
+	}
+
+	background-color: common.$colors-white;
+}
+
+.product-banner {
+	position: relative;
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 25px;
+
+	@include common.responsive-desktop-only() {
+		height: 50vh;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 40vh;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 40vh;
+	}
+}
+
+.product-banner-image {
+	object-fit: cover;
+	opacity: 0.65;
+}
+
+.product-banner-name {
+	@include common.fonts-define-font($size: common.$fonts-subheader) {
+		letter-spacing: 5px;
+		color: common.$colors-white;
+		text-transform: uppercase;
+		text-shadow: 2px 2px 1px black;
+	}
+
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.product-block {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	@include common.responsive-phone-only() {
+		flex-direction: column;
+	}
+}
+
+.product-block-image-container {
+	position: relative;
+	flex: 1;
+	min-height: 400px;
+
+	@include common.responsive-phone-only() {
+		width: 90%;
+	}
+}
+
+.product-block-image {
+	object-fit: cover;
+}
+
+.product-block-text {
+	margin: 15px;
+	flex: 1;
+	text-align: center;
+}
+
+.galleria-title {
+	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subheader) {
+		letter-spacing: 2px;
+		text-transform: uppercase;
+	};
+
+	margin: {
+		top: 35px;
+		bottom: 35px;
+	}
+
+	width: 100%;
+	text-align: center;
+}

@@ -1,6 +1,6 @@
 'use server'
 
-import { saveNewOrder, attachFileToOrder, deleteFileFromOrder as deleteOrderFile } from 'lib/http/ordersDAO';
+import { saveNewOrder, attachFileToOrder, deleteFileFromOrder as deleteOrderFile, updateStatus } from 'lib/http/ordersDAO';
 import { saveNewFile, deleteFile, uploadFileToVercel, uploadImageToVercel, deleteFromVercel } from 'lib/http/filesDAO';
 import { validateEmail, validateEmpty, runValidators } from 'lib/validators/inputValidators';
 import { acceptableImageExtensions } from 'lib/dictionary';
@@ -72,7 +72,6 @@ export async function addFileToOrder(formData) {
 }
 
 export async function deleteFileFromOrder(data) {
-
 	try {
 		// Delete references of the file from the order
 		await deleteOrderFile(data.orderId, data.fileId);
@@ -87,6 +86,16 @@ export async function deleteFileFromOrder(data) {
 			console.error(error);
 		}
 
+		return { success: true };
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+}
+
+export async function moveOrderIntoProduction(data) {
+	try {
+		await updateStatus(data.id, 'planning');
 		return { success: true };
 	} catch (error) {
 		console.error(error);

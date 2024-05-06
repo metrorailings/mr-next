@@ -73,7 +73,7 @@ const Gallery = ({ jsonImages }) => {
 								src={ photo.galleriaUrl }
 								alt={ photo.alt || 'Railing' }
 								fill={ true }
-								sizes='50vw'
+								sizes='15vw'
 								onClick={ () => viewImage(index) }
 							/>
 							<FontAwesomeIcon
@@ -112,9 +112,8 @@ const Gallery = ({ jsonImages }) => {
 							</div>
 						</div>
 					</div>
-				)
-					;
-			}) }
+				);
+			})}
 		</div>
 	);
 }
