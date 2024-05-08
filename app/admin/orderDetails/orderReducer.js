@@ -18,6 +18,18 @@ export default function orderReducer(order, action) {
 
 			return updatedOrder;
 		}
+		case 'genericOrderUpdateNum': {
+			const updatedOrder = { ...order };
+			let propPath = updatedOrder;
+			let i = 0;
+
+			for (i = 0; i < action.properties.length - 1; i += 1) {
+				propPath = propPath[action.properties[i]];
+			}
+			propPath[action.properties[i]] = parseFloat(action.value || 0);
+
+			return updatedOrder;
+		}
 		case 'addNewEmail': {
 			let emails = order.customer.email ? order.customer.email.split(',') : [];
 			emails.push(action.email);

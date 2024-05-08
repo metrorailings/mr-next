@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 
 import styles from 'public/styles/page/orderDetails.module.scss';
 
 import Multitext from 'components/multitext'; 
+import OptionSet from 'components/admin/optionSet';
 import PaymentForms from 'components/paymentForms';
 import Notes from 'components/admin/notes';
 import FileUpload from 'components/admin/fileUpload';
@@ -101,10 +102,13 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		},
 
 		pricing: {
-			pricePerFoot: order.pricing?.pricePerFoot,
-			additionalPrice: order.pricing?.additionalPrice,
-			isTaxApplied: !!(order.pricing?.isTaxApplied),
-			isTariffApplied: false,
+			pricePerFoot: order.pricing?.pricePerFoot || 0,
+			additionalPrice: order.pricing?.additionalPrice || 0,
+			isTaxApplied: order.pricing?.isTaxApplied || false,
+			tax: order.pricing?.tax || 0,
+			isFeeApplied: order.pricing?.isFeeApplied || false,
+			fee: order.pricing?.fee || 0,
+			subtotal: order.pricing?.subtotal || 0,
 			orderTotal: order.pricing?.orderTotal || 0,
 			depositAmount: order.pricing?.depositAmount || 0,
 			shopBonus: order.pricing?.shopBonus || 0
@@ -137,6 +141,22 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		});
 	};
 
+	const handleOrderUpdateNum = (event) => {
+		orderDispatch({
+			type: 'genericOrderUpdateNum',
+			properties: event.currentTarget.name.split('.'),
+			value: event.currentTarget.value
+		});
+	};
+
+	const setOptionSetValue = (prop, value) => {
+		orderDispatch({
+			type: 'genericOrderUpdate',
+			properties: prop.split('.'),
+			value: value
+		});
+	};
+
 	const addNewEmail = (newEmail) => {
 		orderDispatch({
 			type: 'addNewEmail',
@@ -151,9 +171,70 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		});
 	};
 
+	const calculateTotal = () => {
+		let runningTotal = 0;
+
+		if (orderDetails.dimensions.length && orderDetails.pricing.pricePerFoot) {
+			runningTotal += orderDetails.dimensions.length * orderDetails.pricing.pricePerFoot;
+		}
+		runningTotal += orderDetails.pricing.additionalPrice || 0;
+
+		orderDispatch({
+			type: 'genericOrderUpdateNum',
+			properties: ['pricing', 'subtotal'],
+			value: runningTotal
+		});
+	}
+
+	const calculateTotalsTaxesAndFees = () => {
+		const subtotal = orderDetails.pricing.subtotal || 0;
+		let taxes = 0;
+		let fees = 0;
+
+		// Check to make sure taxes are explicitly charged and eligible to be charged in the first place before calculating the tax liability
+		if (orderDetails.customer.state === 'NJ' && orderDetails.pricing.isTaxApplied) {
+			taxes = Math.round(subtotal * 6.625) / 100;
+		}	
+		// Check to make sure fees can be explicitly charged before calculating the credit card surcharge
+		if (orderDetails.pricing.isFeeApplied) {
+			fees = Math.round(subtotal * 1.75) / 100;
+		}
+
+		// Finally, Update the tax, fee, and order total within our order modal
+		orderDispatch({
+			type: 'genericOrderUpdateNum',
+			properties: ['pricing', 'tax'],
+			value: taxes
+		});
+		orderDispatch({
+			type: 'genericOrderUpdateNum',
+			properties: ['pricing', 'fee'],
+			value: fees
+		});
+		orderDispatch({
+			type: 'genericOrderUpdateNum',
+			properties: ['pricing', 'orderTotal'],
+			value: subtotal + taxes + fees
+		});
+	}
+
+	const calculateDeposit = () => {
+		orderDispatch({
+			type: 'genericOrderUpdateNum',
+			properties: ['pricing', 'depositAmount'],
+			value: Math.round(orderDetails.pricing.orderTotal * 50) / 100
+		});
+	}
+
+	useEffect(() => {
+		calculateTotalsTaxesAndFees();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [orderDetails.pricing.subtotal, orderDetails.pricing.isTaxApplied, orderDetails.pricing.isFeeApplied, orderDetails.customer.state]);
+
 	return (
 		<>
 			<div className={ styles.pageContainer }>
+
 				<h3 className={ styles.pageHeader }>CLIENT ORDER</h3>
 				{ orderDetails._id ? (
 					<div className={ styles.orderIdBox }>
@@ -165,7 +246,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 				{/* ---------- CUSTOMER SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.name' className={ styles.orderFormLabel }>Customer Name</label>
 						<input
 							type='text'
@@ -176,7 +257,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							value={ orderDetails.customer.name }
 						/>
 					</span>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.company' className={ styles.orderFormLabel }>Company</label>
 						<input
 							type='text'
@@ -187,7 +268,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							value={ orderDetails.customer.company }
 						/>
 					</span>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.email' className={ styles.orderFormLabel }>E-mail Addresses</label>
 						<Multitext
 							values={ orderDetails.customer?.email ? orderDetails.customer.email.split(',') : [] }
@@ -197,7 +278,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							id='customer.email'
 						/>
 					</span>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.areaCode' className={ styles.orderFormLabel }>Phone Number</label>
 						<span className={ styles.inputSubGroup }>
 							<input
@@ -236,7 +317,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 				{/* ---------- ADDRESS SECTION ---------- */ }
 
 				<div className={ styles.orderFormSection }>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.address' className={ styles.orderFormLabel }>Street Address</label>
 						<input
 							type='text'
@@ -247,7 +328,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							value={ orderDetails.customer.address }
 						/>
 					</span>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.city' className={ styles.orderFormLabel }>City</label>
 						<input
 							type='text'
@@ -258,7 +339,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							value={ orderDetails.customer.city }
 						/>
 					</span>
-					<span className={ styles.mediumInputGroup }>
+					<span className={ styles.inputGroup }>
 						<label htmlFor='customer.state' className={ styles.orderFormLabel }>State</label>
 						<select
 							name='customer.state'
@@ -267,11 +348,58 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							onChange={ handleOrderUpdate }
 							value={ orderDetails.customer.state }
 						>
-							<option value='' disabled>Select a state...</option>
-							<option value='NJ'>New Jersey</option>
-							<option value='NY'>New York</option>
-							<option value='PA'>Pennsylvania</option>
-							<option value='other'>Other</option>
+							<option value='' disabled>Pick a State</option>
+							<option value="NJ">New Jersey</option>
+							<option value="NY">New York</option>
+							<option value="PA">Pennsylvania</option>
+							<option value="AL">Alabama</option>
+							<option value="AK">Alaska</option>
+							<option value="AZ">Arizona</option>
+							<option value="AR">Arkansas</option>
+							<option value="CA">California</option>
+							<option value="CO">Colorado</option>
+							<option value="CT">Connecticut</option>
+							<option value="DE">Delaware</option>
+							<option value="DC">Washington DC</option>
+							<option value="FL">Florida</option>
+							<option value="GA">Georgia</option>
+							<option value="HI">Hawaii</option>
+							<option value="ID">Idaho</option>
+							<option value="IL">Illinois</option>
+							<option value="IN">Indiana</option>
+							<option value="IA">Iowa</option>
+							<option value="KS">Kansas</option>
+							<option value="KY">Kentucky</option>
+							<option value="LA">Louisiana</option>
+							<option value="ME">Maine</option>
+							<option value="MD">Maryland</option>
+							<option value="MA">Massachusetts</option>
+							<option value="MI">Michigan</option>
+							<option value="MN">Minnesota</option>
+							<option value="MS">Mississippi</option>
+							<option value="MO">Missouri</option>
+							<option value="MT">Montana</option>
+							<option value="NE">Nebraska</option>
+							<option value="NV">Nevada</option>
+							<option value="NH">New Hampshire</option>
+							<option value="NM">New Mexico</option>
+							<option value="NC">North Carolina</option>
+							<option value="ND">North Dakota</option>
+							<option value="OH">Ohio</option>
+							<option value="OK">Oklahoma</option>
+							<option value="OR">Oregon</option>
+							<option value="RI">Rhode Island</option>
+							<option value="SC">South Carolina</option>
+							<option value="SD">South Dakota</option>
+							<option value="TN">Tennessee</option>
+							<option value="TX">Texas</option>
+							<option value="UT">Utah</option>
+							<option value="VT">Vermont</option>
+							<option value="VA">Virginia</option>
+							<option value="WA">Washington</option>
+							<option value="WV">West Virginia</option>
+							<option value="WI">Wisconsin</option>
+							<option value="WY">Wyoming</option>
 						</select>
 					</span>
 				</div>
@@ -281,32 +409,36 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 				{/* ---------- NOTES SECTION ---------- */ }
 
 				{ orderDetails._id ? (
-					<div className={ styles.orderFormSection }>
-						<Notes
-							orderId={ orderDetails._id }
-							existingNotes={ orderDetails.notes || [] }
-							lazyLoad={ false }
-							inSpanish={ false }
-							users={ users }
-						/>
-					</div>
-				) : null }
+					<>
+						<div className={ styles.orderFormSection }>
+							<Notes
+								orderId={ orderDetails._id }
+								existingNotes={ orderDetails.notes || [] }
+								lazyLoad={ false }
+								inSpanish={ false }
+								users={ users }
+							/>
+						</div>
 
-				<hr className={ styles.sectionDivider }></hr>
+						<hr className={ styles.sectionDivider }></hr>
+					</>
+				) : null }
 
 				{/* ---------- FILE SECTION ---------- */ }
 
 				{ orderDetails._id ? (
-					<div className={ styles.orderFormSection }>
-						<FileUpload
-							orderId={ orderDetails._id }
-							existingFiles={ orderDetails.files }
-							lazyLoad={ false }
-						/>
-					</div>
-				) : null }
+					<>
+						<div className={ styles.orderFormSection }>
+							<FileUpload
+								orderId={ orderDetails._id }
+								existingFiles={ orderDetails.files }
+								lazyLoad={ false }
+							/>
+						</div>
 
-				<hr className={ styles.sectionDivider } />
+						<hr className={ styles.sectionDivider }/>
+					</>
+				) : null }
 
 				{/* ---------- DESIGN TYPE SECTION ---------- */ }
 
@@ -319,7 +451,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 					/>
 				</div>
 
-				<hr className={ styles.sectionDivider } />
+				<hr className={ styles.sectionDivider }/>
 
 				{/* ---------- BASE DESIGN SECTION ---------- */ }
 
@@ -448,21 +580,176 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 
 				{/* ---------- PAYMENTS SECTION ---------- */ }
 
-				<div className={ styles.orderPaymentSection }>
-					<PaymentForms
-						orderId={ orderDetails._id }
-						acceptCard={ true }
-						acceptAlternate={ true }
-						cards={ orderDetails.payments?.cards }
-						balanceRemaining={ orderDetails.payments?.balanceRemaining }
-						postFunc={ () => {
-							console.log('In post func');
-						} }
-					/>
+				{ orderDetails?.status ? (
+					<>
+						<div className={ styles.orderPaymentSection }>
+							<PaymentForms
+								orderId={ orderDetails._id }
+								acceptCard={ true }
+								acceptAlternate={ true }
+								cards={ orderDetails.payments?.cards }
+								balanceRemaining={ orderDetails.payments?.balanceRemaining }
+								orderState={ orderDetails.customer?.state || '' }
+								postFunc={ () => {
+									console.log('In post func');
+								} }
+							/>
+						</div>
+
+						<span className={ styles.test }>
+							<span className={ styles.test }>
+								<div className={ styles.test }>Amount</div>
+								<div className={ styles.test }></div>
+							</span>
+						</span>
+
+						<hr className={ styles.sectionDivider }></hr>
+					</>
+				) : null }
+
+				{/* ---------- PRICING SECTION ---------- */ }
+				<div className={ styles.orderFormSection }>
+					<span className={ styles.inputGroup }>
+						<label htmlFor='dimensions.length' className={ styles.orderFormLabel }>Length</label>
+						<span className={ styles.orderDetailsInputRow }>
+							<input
+								type='text'
+								name='dimensions.length'
+								id='dimensions.length'
+								className={ styles.smallInputControl }
+								onChange={ handleOrderUpdateNum }
+								value={ orderDetails.dimensions.length }
+							/>
+							<span className={ styles.orderInputNeighboringText }>linear feet</span>
+						</span>
+					</span>
+
+					<span className={ styles.inputGroup }>
+						<label htmlFor='pricing.pricePerFoot' className={ styles.orderFormLabel }>Price Per Foot</label>
+						<span className={ styles.orderDetailsInputRow }>
+							<span className={ styles.orderInputNeighboringText }>$</span>
+							<input
+								type='text'
+								name='pricing.pricePerFoot'
+								id='pricing.pricePerFoot'
+								className={ styles.smallInputControl }
+								onChange={ handleOrderUpdateNum }
+								value={ orderDetails.pricing.pricePerFoot }
+							/>
+							<span className={ styles.orderInputNeighboringText }>per linear foot</span>
+						</span>
+					</span>
+
+					<span className={ styles.inputGroup }>
+						<label htmlFor='pricing.additionalPrice' className={ styles.orderFormLabel }>Additional Price</label>
+						<span className={ styles.orderDetailsInputRow }>
+							<span className={ styles.orderInputNeighboringText }>$</span>
+							<input
+								type='text'
+								name='pricing.additionalPrice'
+								id='pricing.additionalPrice'
+								className={ styles.smallInputControl }
+								onChange={ handleOrderUpdateNum }
+								value={ orderDetails.pricing.additionalPrice }
+							/>
+							<span className={ styles.orderInputNeighboringText }>per linear foot</span>
+						</span>
+					</span>
+
+					<span className={ styles.inputGroup }>
+						<label htmlFor='pricing.isTaxApplied' className={ styles.orderFormLabel }>Apply Tax?</label>
+						<OptionSet
+							labels={ ['Yes', 'No'] }
+							values={ [true, false] }
+							currentValue={ orderDetails.pricing.isTaxApplied }
+							isDisabled={ orderDetails.customer.state !== 'NJ' }
+							setter={ (value) => setOptionSetValue('pricing.isTaxApplied', value) }
+						/>
+					</span>
+
+					<span className={ styles.inputGroup }>
+						<label htmlFor='pricing.isFeeApplied' className={ styles.orderFormLabel }>Apply CC Fee?</label>
+						<OptionSet
+							labels={ ['Yes', 'No'] }
+							values={ [true, false] }
+							currentValue={ orderDetails.pricing.isFeeApplied }
+							isDisabled={ false }
+							setter={ (value) => setOptionSetValue('pricing.isFeeApplied', value) }
+						/>
+					</span>
 				</div>
+
+				<div className={ styles.orderFormSection }>
+					<span className={ styles.inputGroup }>
+						<label htmlFor='pricing.subtotal' className={ styles.orderFormLabel }>Order Subtotal</label>
+						<span className={ styles.orderDetailsInputRow }>
+							<span className={ styles.orderInputNeighboringText }>$</span>
+							<input
+								type='text'
+								name='pricing.subtotal'
+								id='pricing.subtotal'
+								className={ styles.smallInputControl }
+								onChange={ handleOrderUpdateNum }
+								value={ orderDetails.pricing.subtotal }
+							/>
+							<button className={ styles.orderDetailsSectionActionButton } onClick={ calculateTotal }>Auto-Calculate</button>
+						</span>
+					</span>
+
+					<span className={ styles.inputGroup }>
+						<label htmlFor='pricing.depositAmount' className={ styles.orderFormLabel }>Deposit Amount</label>
+						<span className={ styles.orderDetailsInputRow }>
+							<span className={ styles.orderInputNeighboringText }>$</span>
+							<input
+								type='text'
+								name='pricing.depositAmount'
+								id='pricing.depositAmount'
+								className={ styles.smallInputControl }
+								onChange={ handleOrderUpdateNum }
+								value={ orderDetails.pricing.depositAmount }
+							/>
+							<button className={ styles.orderDetailsSectionActionButton } onClick={ calculateDeposit }>Auto-Calculate</button>
+						</span>
+					</span>
+				</div>
+
+				<div className={ styles.orderPricesSection }>
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>Subtotal</label>
+						<span className={ styles.priceText }>${ orderDetails.pricing.subtotal.toFixed(2) }</span>
+					</span>
+
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>+</label>
+					</span>
+
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>Taxes</label>
+						<span className={ styles.priceText }>${ orderDetails.pricing.tax.toFixed(2) }</span>
+					</span>
+
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>+</label>
+					</span>
+
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>Fees</label>
+						<span className={ styles.priceText }>${ orderDetails.pricing.fee.toFixed(2) }</span>
+					</span>
+
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>=</label>
+					</span>
+
+					<span className={ styles.priceGroup }>
+						<label className={ styles.priceLabel }>ORDER TOTAL</label>
+						<span className={ styles.priceText }>${ orderDetails.pricing.orderTotal.toFixed(2) }</span>
+					</span>
+				</div>
+
 			</div>
 		</>
-	)
+	);
 };
 
 export default OrderDetailsPage;

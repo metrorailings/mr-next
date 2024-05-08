@@ -6,18 +6,6 @@
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
-%input-group {
-	margin: {
-		top: 5px;
-		left: 10px;
-		right: 10px;
-		bottom: 10px;
-	}
-
-	display: flex;
-	flex-direction: column;
-}
-
 /* ----------------------- STYLES ----------------------------- */
 
 .page-container {
@@ -50,7 +38,7 @@
 }
 
 .order-id-box {
-	@include common.fonts-define-font($size: common.$fonts-subsection, $family: 'Comfortaa') {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Comfortaa) {
 		font-style: italic;
 	};
 
@@ -71,47 +59,76 @@
 	margin: {
 		top: 10px;
 		bottom: 10px;
-		left: 20px;
-		right: auto;
+		left: 25px;
+		right: 25px;
 	}
 
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
+	box-sizing: border-box;
+}
+
+.order-prices-section {
+	margin: {
+		top: 35px;
+		bottom: 10px;
+		left: auto;
+		right: auto;
+	}
+
+	border: {
+		radius: 10px;
+		width: 1px;
+		style: solid;
+		color: common.$colors-silver;
+	}
+
+	display: flex;
+	flex-wrap: wrap;
+	box-sizing: border-box;
 }
 
 .input-group {
-	@extend %input-group;
+	margin: {
+		top: 5px;
+		left: 20px;
+		right: 20px;
+		bottom: 10px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 }
 
-.input-control {
-	@extend %input-control;
+.price-group {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+		left: 15px;
+		right: 15px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 }
 
-.small-input-group {
-	@extend %input-group;
-
-	flex: 1;
+.order-details-input-row {
+	display: flex;
+	align-items: center;
+	flex-wrap: nowrap;
 }
 
 .small-input-control {
 	@extend %small-input-control;
 }
 
-.medium-input-group {
-	@extend %input-group;
-
-	flex: 2;
-}
-
 .medium-input-control {
 	@extend %medium-input-control;
-}
-
-.large-input-group {
-	@extend %input-group;
-
-	flex: 3;
 }
 
 .large-input-control {
@@ -158,4 +175,35 @@
 
 	display: flex;
 	flex-wrap: wrap;
+	width: 100%;
+}
+
+.order-input-neighboring-text {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
+		font-style: italic;
+	};
+
+	margin: {
+		left: 5px;
+		right: 5px;
+	}
+}
+
+.price-label {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
+		letter-spacing: 0.3px;
+		color: common.$colors-low-black;
+	}
+}
+
+.price-text {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa);
+}
+
+.order-details-section-action-button {
+	@include form.small-button($bgColor: common.$colors-slate-gray, $width: 150px);
+
+	margin: {
+		left: 10px;
+	}
 }

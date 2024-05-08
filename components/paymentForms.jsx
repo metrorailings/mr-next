@@ -185,7 +185,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 				error: 'Something went wrong when trying to validate and charge the credit card. Please check your credit card details and try again.'
 			});
 
-			if (serverResult?.success) {
+			if (serverResult?.success && serverResult?.card) {
 				setExistingCards([...existingCards, serverResult.card]);
 			}
 		} else {

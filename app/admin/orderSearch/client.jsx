@@ -199,7 +199,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 											<div className={ styles.orderBoxDatum }>
 												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faSquareEnvelope } />
 												<span>
-													{ order.customer.email.split(',').map((email, index) => {
+													{ order.customer.email.map((email, index) => {
 														return (
 															<div key={index}>{ email }</div>
 														)

@@ -50,7 +50,7 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 				<label htmlFor={ 'design.' + propName } className={ styles.orderFormLabel }>{ data.technicalLabel }</label>
 				<span className={ styles.designInputGroup }>
 					<select
-						className={ styles.inputControl }
+						className={ styles.mediumInputControl }
 						onChange={ handleDesignUpdate }
 						value={ order.design[propName] }
 						disabled={ disabled }
@@ -69,7 +69,7 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 						className={ styles.largeInputControl }
 						disabled={ disabled }
 						id={ 'designDesc.' + propName }
-					></textarea>
+					/>
 				</span>
 			</span>
 		</>

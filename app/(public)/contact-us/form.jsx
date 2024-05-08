@@ -193,6 +193,9 @@ const ContactUsForm = () => {
 					autoComplete='address-level1'
 				>
 					<option value='' disabled>Pick a State</option>
+					<option value="NJ">New Jersey</option>
+					<option value="NY">New York</option>
+					<option value="PA">Pennsylvania</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>
@@ -223,15 +226,12 @@ const ContactUsForm = () => {
 					<option value="NE">Nebraska</option>
 					<option value="NV">Nevada</option>
 					<option value="NH">New Hampshire</option>
-					<option value="NJ">New Jersey</option>
 					<option value="NM">New Mexico</option>
-					<option value="NY">New York</option>
 					<option value="NC">North Carolina</option>
 					<option value="ND">North Dakota</option>
 					<option value="OH">Ohio</option>
 					<option value="OK">Oklahoma</option>
 					<option value="OR">Oregon</option>
-					<option value="PA">Pennsylvania</option>
 					<option value="RI">Rhode Island</option>
 					<option value="SC">South Carolina</option>
 					<option value="SD">South Dakota</option>

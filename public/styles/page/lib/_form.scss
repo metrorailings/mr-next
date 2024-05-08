@@ -169,47 +169,6 @@
 	}
 }
 
-// Styling for customized button sets
-%buttonset {
-	& > label, & > a {
-		@include common.animations-transition-settings($property: all, $duration: 0.5s);
-
-		border: {
-			width: 1px;
-			style: solid;
-			color: common.$colors-black;
-		}
-
-		padding: 10px;
-		cursor: pointer;
-		background-color: common.$colors-silver;
-		color: common.$colors-black;
-
-		&:first-of-type {
-			border-top-left-radius: 10px;
-			border-bottom-left-radius: 10px;
-		}
-
-		&:last-of-type {
-			border-top-right-radius: 10px;
-			border-bottom-right-radius: 10px;
-		}
-
-		&.selected {
-			background-color: common.$colors-slate-gray;
-			color: common.$colors-white;
-		}
-	}
-
-	& > input {
-		display: none;
-	}
-
-	&.disabled {
-		opacity: 0.4;
-	}
-}
-
 // Custom checkbox
 %input-checkbox {
 	// Hide the browser's native checkbox as it's quite ugly 
@@ -311,16 +270,19 @@
 	@extend %input-control;
 
 	width: 20vw;
+	max-width: 150px;
 }
 
 %medium-input-control {
 	@extend %input-control;
 
 	width: 35vw;
+	max-width: 260px;
 }
 
 %large-input-control {
 	@extend %input-control;
 
 	width: 50vw;
+	max-width: 375px;
 }

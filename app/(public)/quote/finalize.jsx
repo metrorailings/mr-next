@@ -68,6 +68,7 @@ const FinalizeSection = ({ termsText, jsonOrder }) => {
 					postFunc={ finalizeOrder }
 					balanceRemaining={ order.payments?.balanceRemaining }
 					presetPaymentAmount={ order.pricing?.depositAmount }
+					orderState={ order.customer?.state || '' }
 				/>
 			</div>
 		</>

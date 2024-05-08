@@ -1,155 +1,69 @@
 'use server'
 
-import stripe from 'stripe';
-import { put } from '@vercel/blob';
-import randomStr from 'randomstring';
-import { cookies } from 'next/headers'
-
 import { getOrderById, attachNewCard, attachNewPayment, attachStripeCustomerProfileData } from 'lib/http/ordersDAO';
-
-const striper = stripe(process.env.STRIPE_SECRET_KEY);
-
-const addCustomer = async (order) => {
-	try {
-		// Create a new Customer in Stripe so that we can store and reuse credit cards for a given order
-		const stripeCustomer = await striper.customers.create({
-			description: order._id,
-			email: order.customer.email[0] || '',
-			name: order.customer.company || order.customer.name
-		});
-
-		const processedCustomer = {
-			id: stripeCustomer.id,
-			createdOn: new Date(stripeCustomer.created)
-		};
-
-		// Associate the Stripe customer with the order in our system
-		await attachStripeCustomerProfileData(order._id, processedCustomer);
-
-		return processedCustomer;
-	} catch (error) {
-		console.error(error);
-		return false;
-	}
-}
-
-const addCreditCard = async (data, order) => {
-	try {
-		// Use Stripe to register the credit card
-		const paymentCharge = await striper.paymentMethods.create({
-			type: 'card',
-			card: {
-				number: data.cardNumber.split(' ').join(''),
-				exp_month: data.expiration.split('/')[0],
-				exp_year: data.expiration.split('/')[1],
-				cvc: data.cardCode
-			}
-		});
-
-		const processedCard = {
-			id: paymentCharge.id,
-			brand: paymentCharge.card.brand,
-			exp_month: paymentCharge.card.exp_month,
-			exp_year: paymentCharge.card.exp_year,
-			last4: paymentCharge.card.last4
-		};
-
-		// Record the card in our own database
-		await attachNewCard(order._id, processedCard);
-
-		return processedCard;
-	} catch (error) {
-		console.error(error);
-		return false;
-	}
-};
-
-const chargeCard = async (data, order) => {
-	try {
-		if (order?._id) {
-			// Use Stripe to process the payment using the credit card specified in the parameters
-			const paymentIntent = await striper.paymentIntents.create({
-				amount: parseInt(data.paymentAmount * 100),
-				currency: 'usd',
-				confirm: true,
-				customer: order.payments.customer.id,
-				payment_method: data.card,
-				metadata: { orderId: order._id, customer: order.customer?.name, company: order.customer?.company || 'N/A' },
-				receipt_email: order.customer?.email[0] || process.env.NEXT_PUBLIC_SUPPORT_MAILBOX,
-				statement_descriptor: ('Metro Railings ' + order._id),
-				setup_future_usage: 'off_session',
-				automatic_payment_methods: {
-					allow_redirects: 'never',
-					enabled: true
-				}
-			});
-			if (paymentIntent.status === 'succeeded') {
-				try {
-					await attachNewPayment(order._id, paymentIntent);
-				} catch (error) {
-					console.error('Weird error updating the database after a successful Stripe transaction...');
-					console.error(error);
-				}
-
-				return true;
-			} else {
-				console.error(paymentIntent.status);
-				console.error(paymentIntent.last_payment_error);
-			}
-		}
-
-		return false;
-	} catch (error) {
-		console.error(error);
-		return false;
-	}
-};
+import { stripeAddCustomer, stripeAddCreditCard, stripeChargeCard, recordNewCardPayment, uploadPaymentImage, recordNewImagePayment } from 'lib/http/paymentsDAO';
 
 export async function addCardAndPayByCard(data) {
-	const order = await getOrderById(data.orderId);
-	// Define a customer in Stripe if one hasn't been created yet for this order
-	if (!(order.payments.customer)) {
-		order.payments.customer = await addCustomer(order);
+	let paymentIntent = false;
+	let registeredCard = false;
+
+	try {
+		const order = await getOrderById(data.orderId);
+		// Define a customer in Stripe if one hasn't been created yet for this order
+		// Make sure to link the Stripe customer with the order in our system
+		if (!(order.payments.customer)) {
+			order.payments.customer = await stripeAddCustomer(order);
+			await attachStripeCustomerProfileData(order._id, order.payments.customer);
+		}
+		// Register the card in stripe
+		// Make sure to note the registration details inside our database so that it can be charged again if needed
+		registeredCard = await stripeAddCreditCard(data, order);
+		if (registeredCard) {
+			await attachNewCard(order._id, registeredCard);
+			const paymentIntent = await stripeChargeCard({
+				card: registeredCard.id,
+				...data
+			}, order);
+			if (paymentIntent) {
+				const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, order.customer.state);
+				await attachNewPayment(order._id, paymentRecord._id);
+			}
+		}
+	} catch (error) {
+		console.error(error);
 	}
-	const registeredCard = await addCreditCard(data, order);
-	if (registeredCard) {
-		data.card = registeredCard.id;
-		const paymentMade = await chargeCard(data, order);
-		return { success: paymentMade, card: registeredCard };
-	} else {
-		return { success: false };
-	}
+
+	return { success: paymentIntent ? true : false, card: registeredCard || null };
 }
 
 export async function payByCard(data) {
-	const order = await getOrderById(data.orderId);
-	if (order.payments.customer === null) {
-		order.payments.customer = await addCustomer(order);
+	let paymentIntent = false;
+
+	try {
+		const order = await getOrderById(data.orderId);
+		if (order.payments.customer === null) {
+			order.payments.customer = await stripeAddCustomer(order);
+		}
+		paymentIntent = await stripeChargeCard(data, order);
+		if (paymentIntent) {
+			const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, order.customer.state, order.customer.state);
+			await attachNewPayment(order._id, paymentRecord._id);
+		}
+	} catch (error) {
+		console.error(error);
 	}
-	const paymentMade = await chargeCard(data, order);
-	return { success: paymentMade };
+
+	return { success: paymentIntent ? true : false };
 }
 
 export async function payByImage(data) {
-	// Generate a random name for the new check image prior to upload
-	const paymentImage = data.paymentImage;
-	const generatedName = randomStr.generate({ length : 9 }) + '.' + paymentImage.name.split('.').pop();
-	const user = cookies().get('user')?.value ? JSON.parse(cookies().get('user')).username : 'Public';
-
 	try {
-		// Upload to Vercel using the blob API
-		const paymentBlob = await put('payments/' + generatedName, paymentImage, { access: 'public' });
+		const order = await getOrderById(data.orderId);
 
-		// Store the uploaded image in our database
-		const paymentImageMetadata = {
-			url: paymentBlob.url,
-			name: paymentBlob.pathname.split('/').pop(),
-			alt: paymentBlob.pathname.split('/').pop(),
-			uploader: user,
-			uploadDate: new Date()
-		};
-		await attachNewPayment(data.orderId, paymentImageMetadata);
-
+		// Upload the check image to storage first before noting it inside the database
+		const uploadedPaymentImage = await uploadPaymentImage(data.paymentImage);
+		const paymentRecord = await recordNewImagePayment(uploadedPaymentImage, data.orderId, data.paymentAmount, order.customer.state);
+		await attachNewPayment(data.orderId, paymentRecord._id);
 		return { success: true };
 	} catch (error) {
 		console.error(error);

@@ -88,7 +88,6 @@
 
 .filter-values {
 	@include common.fonts-define-font($family: Avenir Light);
-	@extend %buttonset;
 
 	flex-grow: 1;
 }
