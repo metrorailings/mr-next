@@ -31,10 +31,10 @@ const PrintButton = () => {
 	);
 };
 
-const FinalizeSection = ({ termsText, jsonOrder }) => {
+const FinalizeSection = ({ termsText, jsonQuote }) => {
 	const [termsAccepted, setTermsAccepted] = useState(false);
 
-	const order = JSON.parse(jsonOrder);
+	const quote = JSON.parse(jsonQuote);
 
 	const openModal = () => {
 		publish('open-info-modal', {
@@ -61,10 +61,10 @@ const FinalizeSection = ({ termsText, jsonOrder }) => {
 					</div>
 				) : null }
 				<PaymentForms
-					orderId={ order._id }
+					orderId={ quote.orderId }
 					acceptCard={ true }
 					acceptAlternate={ false }
-					cards={ order.payments?.cards }
+					cards={ false }
 					postFunc={ finalizeOrder }
 					balanceRemaining={ order.payments?.balanceRemaining }
 					presetPaymentAmount={ order.pricing?.depositAmount }

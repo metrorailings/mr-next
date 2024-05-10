@@ -4,8 +4,7 @@
 
 // ----------------- CONSTANTS --------------------------
 
-const designValidationRules =
-{
+const designValidationRules= {
 	type: {},
 	post: { type: ['T-TRA', 'T-MOD', 'T-IRON', 'T-FENCE', 'T-GATE', 'T-SAMPLE', 'T-CABLE', 'T-GLASS'] },
 	handrailing: { type: ['T-TRA', 'T-MOD', 'T-IRON', 'T-FENCE', 'T-GATE', 'T-SAMPLE', 'T-CABLE', 'T-GLASS'] },

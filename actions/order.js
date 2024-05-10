@@ -1,9 +1,29 @@
 'use server'
 
-import { saveNewOrder, attachFileToOrder, deleteFileFromOrder as deleteOrderFile, updateStatus } from 'lib/http/ordersDAO';
-import { saveNewFile, deleteFile, uploadFileToVercel, uploadImageToVercel, deleteFromVercel } from 'lib/http/filesDAO';
+import {
+	saveNewOrder,
+	saveChangesToOrder,
+	attachFileToOrder,
+	deleteFileFromOrder as deleteOrderFile,
+	updateStatus,
+	recordNewQuoteDraft,
+	updateModHistory
+} from 'lib/http/ordersDAO';
+
+import {
+	saveNewFile,
+	deleteFile,
+	uploadFileToVercel,
+	uploadImageToVercel,
+	deleteFromVercel
+} from 'lib/http/filesDAO';
+
+import {
+	createNewQuote
+} from 'lib/http/quotesDAO';
+
 import { validateEmail, validateEmpty, runValidators } from 'lib/validators/inputValidators';
-import { acceptableImageExtensions } from 'lib/dictionary';
+import { acceptableImageExtensions, shopStatuses } from 'lib/dictionary';
 import { sendLeadEmail } from 'lib/loopMailer';
 
 export async function createProspectFromContactUs(data) {
@@ -36,6 +56,58 @@ export async function createProspectFromContactUs(data) {
 			await sendLeadEmail(data);
 			return { success: true };
 		}
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+}
+
+export async function saveOrder(data) {
+	let order;
+
+	try {
+		if (data._id) {
+			order = await saveChangesToOrder(data);
+		} else {
+			order = await saveNewOrder(data);
+		}
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+
+	return { success: true, order: order };
+}
+
+/**
+ * Server action designed to generate a new quote for a given order
+ *
+ * @param data - the order object to model the quote off
+ */
+export async function generateQuote(data) {
+	let order;
+
+	try {
+		// Save the order first before 
+		if (data._id) {
+			order = await saveChangesToOrder(data, updateModHistory('Quote Generated'));
+		} else {
+			order = await saveNewOrder(data);
+		}
+
+		await createNewQuote(order);
+		const processedOrder = await recordNewQuoteDraft(order);
+		return { success: true, order: processedOrder };
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+}
+
+export async function moveOrderIntoProduction(data) {
+	try {
+		await updateStatus(data.id, shopStatuses[0].key);
+		return { success: true };
 	} catch (error) {
 		console.error(error);
 		return { success: false };
@@ -86,16 +158,6 @@ export async function deleteFileFromOrder(data) {
 			console.error(error);
 		}
 
-		return { success: true };
-	} catch (error) {
-		console.error(error);
-		return { success: false };
-	}
-}
-
-export async function moveOrderIntoProduction(data) {
-	try {
-		await updateStatus(data.id, 'planning');
 		return { success: true };
 	} catch (error) {
 		console.error(error);

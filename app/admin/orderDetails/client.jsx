@@ -2,16 +2,20 @@
 
 import React, { useReducer, useEffect } from "react";
 
-import styles from 'public/styles/page/orderDetails.module.scss';
+import { saveOrder, generateQuote } from 'actions/order';
 
 import Multitext from 'components/multitext'; 
 import OptionSet from 'components/admin/optionSet';
 import PaymentForms from 'components/paymentForms';
 import Notes from 'components/admin/notes';
 import FileUpload from 'components/admin/fileUpload';
+import { toastValidationError } from 'components/customToaster';
 
 import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
+
+import { validateEmpty, runValidators } from 'lib/validators/inputValidators';
+import { serverActionCall } from 'lib/http/clientHttpRequester';
 
 import types from 'lib/designs/types';
 import posts from 'lib/designs/posts';
@@ -30,6 +34,8 @@ import cableSizes from 'lib/designs/cableSizes';
 import glassTypes from 'lib/designs/glassTypes';
 import glassCharacteristics from 'lib/designs/glassCharacteristics';
 
+import styles from 'public/styles/page/orderDetails.module.scss';
+
 const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 
 	const order = JSON.parse(jsonOrder);
@@ -38,6 +44,12 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
 		version: order.version || 1,
+
+		sales: {
+			header: order.sales?.header || '',
+			assignees: order.sales?.assignee || [],
+			quoteSeq: order.sales?.quoteSeq || 0
+		},
 
 		customer: {
 			name: order.customer?.name || '',
@@ -225,6 +237,42 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 			value: Math.round(orderDetails.pricing.orderTotal * 50) / 100
 		});
 	}
+
+	const testDescriptionProvidedIfMisc = () => {
+		if ((orderDetails.design.type === 'T-MISC') && (validateEmpty(orderDetails.text.additionalDescription) === false)) {
+			return false;
+		}
+
+		return true;
+	}
+	const quoteValidationFields = [
+		{ prop: orderDetails.customer.name, validator: validateEmpty, errorMsg: 'A name is required for this prospect.'},
+		{ prop: orderDetails.design.type, validator: validateEmpty, errorMsg: 'A product type has to be selected here.' },
+		{ prop: orderDetails.sales.header, validator: validateEmpty, errorMsg: 'The quote header cannot be empty.' },
+		{ prop: orderDetails.text.additionalDescription, validator: testDescriptionProvidedIfMisc, errorMsg: 'If a miscellaneous product type is specified, than a description has to be provided.' }
+	];
+
+	const submitForQuote = async () => {
+		const errors = runValidators(quoteValidationFields);
+
+		if (errors.length === 0) {
+			const processedOrder = await serverActionCall(generateQuote, orderDetails, {
+				loading: 'Drafting a new quote...',
+				success: 'A new quote has been drafted and sent out!',
+				error: 'Something went wrong when trying to generate a new quote. Please try again. If it doesn\'t work, consult Rickin.'
+			});
+
+			orderDispatch({
+				type: 'overwriteOrder',
+				value: processedOrder
+			});
+		} else {
+			toastValidationError(errors);
+		}
+	};
+
+	const saveOrder = () => {
+	};
 
 	useEffect(() => {
 		calculateTotalsTaxesAndFees();
@@ -449,8 +497,19 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 						propName={ 'type' }
 						dispatch={ orderDispatch }
 					/>
-				</div>
 
+					<span className={ styles.inputGroup }>
+						<label htmlFor='sales.header' className={ styles.orderFormLabel }>Quote Header</label>
+						<input
+							type='text'
+							name='sales.header'
+							id='sales.header'
+							className={ styles.mediumInputControl }
+							onChange={ handleOrderUpdate }
+							value={ orderDetails.sales.header }
+						/>
+					</span>
+				</div>
 				<hr className={ styles.sectionDivider }/>
 
 				{/* ---------- BASE DESIGN SECTION ---------- */ }

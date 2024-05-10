@@ -9,8 +9,8 @@ export default function orderReducer(order, action) {
 		case 'genericOrderUpdate': {
 			const updatedOrder = { ...order };
 			let propPath = updatedOrder;
-			let i = 0;
 
+			let i = 0;
 			for (i = 0; i < action.properties.length - 1; i += 1) {
 				propPath = propPath[action.properties[i]];
 			}
@@ -21,8 +21,8 @@ export default function orderReducer(order, action) {
 		case 'genericOrderUpdateNum': {
 			const updatedOrder = { ...order };
 			let propPath = updatedOrder;
-			let i = 0;
 
+			let i = 0;
 			for (i = 0; i < action.properties.length - 1; i += 1) {
 				propPath = propPath[action.properties[i]];
 			}
@@ -79,6 +79,12 @@ export default function orderReducer(order, action) {
 					[action.propName]: action.designDesc
 				}
 			}
+		}
+		case 'overwriteOrder': {
+			return {
+				...order,
+				...(action.value)
+			};
 		}
 		default: {
 			throw Error('Unknown action: ' + action.type);

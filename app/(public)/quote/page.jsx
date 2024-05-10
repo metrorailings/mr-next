@@ -8,25 +8,26 @@ import FinalizeSection from 'app/(public)/quote/finalize';
 
 import { translateDesignCode, fetchDesignMetadata } from 'lib/designs/translator';
 import { decryptNumber } from 'lib/utils';
-import { getOrderById } from 'lib/http/ordersDAO';
+import { getQuote } from 'lib/http/quotesDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
 
 const QuoteServer = async ({ searchParams }) => {
 	const orderHash = searchParams?.id || '';
+	const quoteSeq = searchParams?.seq || '';
 	const orderId = decryptNumber(orderHash);
+	const quote = await getQuote(orderId, quoteSeq);
 
-	if (!(orderId))
-	{
+	if (quote === null) {
 		redirect('/');
 	}
-	
-	const order = await getOrderById(orderId);
-	const designs = Object.keys(order.design);
+
+	// Grab a list of all selected design options
+	const designs = Object.keys(quote.design);
 
 	// Pull the 'Terms and Conditions' from the file system
-	const termsRawText = readFileSync('assets/text/terms.txt', { encoding: 'utf-8' });
+	const termsRawText = readFileSync(quote.termsFileHandle, { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>
@@ -51,28 +52,27 @@ const QuoteServer = async ({ searchParams }) => {
 
 				{ /* ORDER ID */ }
 				<span className={ styles.infoColumnOrder }>
-					<span className={ styles.infoColumnHeader }>ORDER #{ order._id }</span>
+					<span className={ styles.infoColumnHeader }>ORDER #{ quote.orderId }</span>
 					<br />
-					Drafted on { order.dates?.quoted || '--' }
+					Drafted on { quote.dates.created || '--' }
 					<br />
-					Status: <i>{ order.status === 'pending' ? 'Open' : 'Finalized' }</i>
+					Status: <i>{ quote.status === 'open' ? 'Open' : 'Finalized' }</i>
 				</span>
 
 				{ /* BILL TO INFO */ }
 				<span className={ styles.infoColumnCustomer }>
 					<span className={ styles.infoColumnHeader }>Customer</span>
 					<br />
-					{ order?.customer?.name || '--' }
+					{ quote.customer.name || '--' }
 					<br/>
-					{ order?.customer?.address || '--' }
+					{ quote.customer.address || '--' }
 					<br/>
-					{ order?.customer?.city || '--' }, { order?.customer?.state || '--' }, { order?.customer?.zipCode || '--' }
+					{ quote.customer.city || '--' }, { quote.customer.state || '--' }, { quote.customer.zipCode || '--' }
 					<br/>
-					{ order?.customer?.email || '--' }
+					{ quote.customer.email || '--' }
 					<br/>
-					{ order?.customer?.areaCode && order?.customer?.phoneOne && order?.customer?.phoneTwo ?
-						order.customer.areaCode + '-' + order.customer.phoneOne + '-' + order.customer.phoneTwo :
-						'--' }
+					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ?
+						quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo : '--' }
 				</span>
 			</div>
 			
@@ -80,23 +80,23 @@ const QuoteServer = async ({ searchParams }) => {
 				<div className={ styles.quoteBody }>
 
 					{ /* SUMMARY */ }
-					{ order?.text?.additionalDescription ? (
-						<div className={ styles.quoteMemo } dangerouslySetInnerHTML={{ __html: order.text.additionalDescription }} />
+					{ quote.text.additionalDescription ? (
+						<div className={ styles.quoteMemo } dangerouslySetInnerHTML={{ __html: quote.text.additionalDescription }} />
 					) : null }
 
 					{ /* DESIGN DETAILS */ }
-					{ order?.design?.type !== 'T-MISC' ? (
+					{ quote.design.type !== 'T-MISC' ? (
 						<div className={ styles.quoteDesignDetails }>
 							{ designs.map((design, index) => {
-								let designSpecifics = translateDesignCode(order.design[design]);
-								let designMetadata = fetchDesignMetadata(order.design[design]);
+								let designSpecifics = translateDesignCode(quote.design[design]);
+								let designMetadata = fetchDesignMetadata(quote.design[design]);
 								return (
 									<div className={ styles.quoteDesignRow } key={ index }>
 										<span className={ styles.quoteDesignRowLabel }>
 											<div className={ styles.quoteDesignRowCategory }>{ designMetadata.technicalLabel }</div>
 											<div className={ styles.quoteDesignRowSelection }>{ designSpecifics.label }</div>
 										</span>
-										<span className={ styles.quoteDesignRowDescriptor }>{ order.designDescription[design] }</span>
+										<span className={ styles.quoteDesignRowDescriptor }>{ quote.designDescription[design] }</span>
 									</div>
 								);
 							})}
@@ -107,20 +107,20 @@ const QuoteServer = async ({ searchParams }) => {
 				{ /* PRICE */ }
 				<div className={ styles.quotePriceLine }>
 					<span className={ styles.quotePriceHeader }>Subtotal</span>
-					<span className={ styles.quotePriceListing }>${ order?.pricing?.subtotal?.toFixed(2) || '--' }</span>
+					<span className={ styles.quotePriceListing }>${ quote.pricing.subtotal?.toFixed(2) || '--' }</span>
 				</div>
 				<div className={ styles.quotePriceLine }>
 					<span className={ styles.quotePriceHeader }>Tax</span>
-					<span className={ styles.quotePriceListing }>${ order?.pricing?.tax?.toFixed(2) || '--' }</span>
+					<span className={ styles.quotePriceListing }>${ quote.pricing.tax?.toFixed(2) || '--' }</span>
 				</div>
 				<div className={ styles.quotePriceLine }>
 					<span className={ styles.quotePriceHeader }>AMOUNT DUE</span>
-					<span className={ styles.quotePriceListing }>${ order?.pricing?.orderTotal?.toFixed(2) || '--' }</span>
+					<span className={ styles.quotePriceListing }>${ quote.pricing.orderTotal?.toFixed(2) || '--' }</span>
 				</div>
 
 			</div>
 
-			<FinalizeSection termsText={ termsRawText } jsonOrder={ JSON.stringify(order) } />
+			<FinalizeSection termsText={ termsRawText } jsonQuote={ JSON.stringify(quote) } />
 		</div>
 	);
 };
