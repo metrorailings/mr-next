@@ -103,6 +103,10 @@
 	}
 }
 
+.quote-status-text {
+	text-transform: uppercase;
+}
+
 .quote-container {
 	margin: {
 		left: auto;
@@ -359,4 +363,26 @@
 	margin-top: 20px;
 	padding: 30px;
 	background-color: common.$colors-white;
+}
+
+.modal-scroll-down-notice {
+	@include common.animations-transition-settings($property: height);
+	@include common.fonts-define-font($size: common.$fonts-secondary) {
+		color: common.$colors-white;
+	};
+
+	padding: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	background-color: common.$colors-slate-gray;
+	text-align: center;
+	cursor: pointer;
+}
+
+.modal-scroll-down-icon {
+	@include common.animations-animation-settings($keyframeSet: scroll-down-arrow, $duration: 0.5s, $timing: ease-in-out, $iterations: infinite);
+
+	margin-left: 5px;
 }

@@ -6,7 +6,7 @@ import {
 	attachFileToOrder,
 	deleteFileFromOrder as deleteOrderFile,
 	updateStatus,
-	recordNewQuoteDraft,
+	recordNewInvoice,
 	updateModHistory
 } from 'lib/http/ordersDAO';
 
@@ -19,8 +19,9 @@ import {
 } from 'lib/http/filesDAO';
 
 import {
-	createNewQuote
-} from 'lib/http/quotesDAO';
+	createNewQuoteInvoice,
+	createNewProgressInvoice
+} from 'lib/http/invoicesDAO';
 
 import { validateEmail, validateEmpty, runValidators } from 'lib/validators/inputValidators';
 import { acceptableImageExtensions, shopStatuses } from 'lib/dictionary';
@@ -80,23 +81,33 @@ export async function saveOrder(data) {
 }
 
 /**
- * Server action designed to generate a new quote for a given order
+ * Server action designed to generate a new invoice for a given order
  *
- * @param data - the order object to model the quote off
+ * @param data - the order object to model the invoice off
  */
-export async function generateQuote(data) {
+export async function generateInvoice(data) {
 	let order;
 
 	try {
 		// Save the order first before 
-		if (data._id) {
-			order = await saveChangesToOrder(data, updateModHistory('Quote Generated'));
+		order = await saveChangesToOrder(data, updateModHistory('Invoice Generated'));
+
+		// Figure out what type of invoice to create here
+		let isQuote = true;
+		for (let i = 0; i < order.sales.invoices.length; i += 1) {
+			if (order.sales.invoices[i].status === 'finalized') {
+				isQuote = false;
+			}
+		}
+		if (isQuote) {
+			await createNewQuoteInvoice(order, data.amountToPay);
 		} else {
-			order = await saveNewOrder(data);
+			await createNewProgressInvoice(order, data.amountToPay);
 		}
 
-		await createNewQuote(order);
-		const processedOrder = await recordNewQuoteDraft(order);
+		// Link the invoice to the order it's associated with
+		const processedOrder = await recordNewInvoice(order);
+
 		return { success: true, order: processedOrder };
 	} catch (error) {
 		console.error(error);

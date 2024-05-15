@@ -1,7 +1,7 @@
 import OrderDetailsPage from "app/admin/orderDetails/client";
 
 import { getOrderById } from 'lib/http/ordersDAO';
-import { getUsers } from 'lib/http/usersDAO';
+import { getPrunedUserInformation } from 'lib/http/usersDAO';
 import { sortNotes } from 'lib/utils';
 
 const OrderDetailsServer = async ({ searchParams }) => {
@@ -12,12 +12,11 @@ const OrderDetailsServer = async ({ searchParams }) => {
 		sortNotes(order.notes);
 	}
 
-	const users = await getUsers();
-	const usernames = users.map((user) => user.username);
+	const users = await getPrunedUserInformation();
 
 	return (
 		<>
-			<OrderDetailsPage jsonOrder={ JSON.stringify(order) } jsonUsers={ JSON.stringify(usernames) } />
+			<OrderDetailsPage jsonOrder={ JSON.stringify(order) } jsonUsers={ JSON.stringify(users) } />
 		</>
 	);
 };

@@ -45,6 +45,30 @@
 	}
 }
 
+@mixin minor-button($bgColor: common.$colors-faint-silver, $width: auto) {
+	@include common.animations-transition-settings($property: all, $duration: 0.25s);
+	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+
+	border: {
+		width: 0.5px;
+		style: solid;
+		color: common.$colors-slate-gray;
+		radius: 0.5px;
+	}
+
+	padding: {
+		top: 2px;
+		bottom: 2px;
+		left: 5px;
+		right: 5px;
+	};
+
+	width: $width;
+	color: common.$colors-low-black;
+	background-color: $bgColor;
+	cursor: pointer;
+}
+
 /**
  * A mix-in designed to style square buttons in the application
  *

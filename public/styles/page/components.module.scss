@@ -569,6 +569,7 @@
 	}
 
 	padding: 8px;
+	max-width: 500px;
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
@@ -588,6 +589,8 @@
 }
 
 .multitext-set-value {
+	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+
 	margin: {
 		top: 5px;
 		bottom: 5px;
@@ -610,6 +613,7 @@
 .multitext-new-value {
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins);
 
+	margin-top: 8px;
 	border: none;
 	box-shadow: none;
 	resize: none;
@@ -636,6 +640,83 @@
 	}
 
 	cursor: pointer;
+}
+
+/* ----------------------- MULTISELECT ----------------------------- */
+
+.multi-select-container {
+	display: grid;
+	width: 100%;
+
+	@include common.responsive-desktop-only() {
+		grid-template-columns: 250px 1fr;
+	}
+
+	@include common.responsive-tablet-only() {
+		grid-template-columns: 200px 1fr;
+	}
+
+	@include common.responsive-phone-only() {
+		grid-template-columns: 175px 1fr;
+	}
+}
+
+.multi-select-dropdown {
+	padding: {
+		top: 8px;
+		bottom: 8px;
+		left: 4px;
+		right: 4px;
+	}
+
+	max-height: 35px;
+}
+
+.multi-select-selected-values-container {
+	border: {
+		style: double;
+		width: 1.5px;
+		radius: 5px;
+		color: common.$colors-black;
+	}
+
+	margin-left: 10px;
+}
+
+.multi-select-selected-value-row {
+	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+
+	margin: {
+		top: 10px;
+		bottom: 10px;
+		left: 5px;
+		right: 5px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.multi-select-selected-value-text {
+	margin-right: 5px;
+	text-align: center;
+	white-space: nowrap;
+	flex: 1;
+}
+
+.multi-select-selected-value-actions {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex: 3;
+
+	& > * {
+		margin: {
+			left: 10px;
+			right: 10px;
+		}
+	}
 }
 
 /* ----------------------- FILE UPLOAD MODULE ----------------------------- */
@@ -807,28 +888,6 @@
 	}
 }
 
-.modal-scroll-down-notice {
-	@include common.animations-transition-settings($property: height);
-	@include common.fonts-define-font($size: common.$fonts-secondary) {
-		color: common.$colors-white;
-	};
-
-	padding: {
-		top: 5px;
-		bottom: 5px;
-	}
-
-	background-color: common.$colors-slate-gray;
-	text-align: center;
-	cursor: pointer;
-}
-
-.modal-scroll-down-icon {
-	@include common.animations-animation-settings($keyframeSet: scroll-down-arrow, $duration: 0.5s, $timing: ease-in-out, $iterations: infinite);
-
-	margin-left: 5px;
-}
-
 .modal-button-row {
 	border: {
 		top: {
@@ -927,10 +986,10 @@
 	}
 
 	padding: {
-		top: 3px;
-		bottom: 3px;
-		left: 18px;
-		right: 18px;
+		top: 5px;
+		bottom: 5px;
+		left: 20px;
+		right: 20px;
 	}
 
 	position: absolute;

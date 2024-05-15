@@ -4,8 +4,6 @@
 @use 'public/styles/page/lib/base';
 @use 'public/styles/page/lib/form';
 
-/* ----------------------- PLACEHOLDERS ----------------------------- */
-
 /* ----------------------- STYLES ----------------------------- */
 
 .page-container {
@@ -35,6 +33,21 @@
 
 .order-form-label {
 	@extend %label;
+
+	margin-right: 3px;
+}
+
+.order-form-input-directions {
+	@include common.fonts-define-font($size: common.$fonts-special, $family: Avenir Light) {
+		letter-spacing: 0.3px;
+		color: common.$colors-low-black;
+		font-style: italic;
+	}
+
+	margin: {
+		left: 5px;
+		right: 5px;
+	}
 }
 
 .order-id-box {
@@ -85,6 +98,7 @@
 	}
 
 	display: flex;
+	justify-content: center;
 	flex-wrap: wrap;
 	box-sizing: border-box;
 }
@@ -101,6 +115,28 @@
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+}
+
+.wide-input-group {
+	@extend .input-group;
+
+	align-items: flex-start;
+
+	@include common.responsive-desktop-only() {
+		width: 60%;
+	}
+
+	@include common.responsive-tablet-only() {
+		width: 70%;
+	}
+
+	@include common.responsive-phone-only() {
+		width: 80%;
+	}
+
+	@include common.responsive-portrait-phone-only() {
+		width: 90%;
+	}
 }
 
 .price-group {
@@ -197,13 +233,66 @@
 }
 
 .price-text {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa);
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
+		letter-spacing: 1.5px;
+	};
 }
 
 .order-details-section-action-button {
-	@include form.small-button($bgColor: common.$colors-slate-gray, $width: 150px);
+	@include form.minor-button();
 
 	margin: {
 		left: 10px;
+	}
+}
+
+.salesman-delete-button {
+	@include form.minor-button();
+
+	& > svg {
+		margin-left: 3px;
+	}
+}
+
+.order-details-footer-padding {
+	height: 100px;
+}
+
+.order-details-action-footer {
+	border-top: {
+		style: solid;
+		width: 3px;
+		color: common.$colors-slate-gray;
+	}
+
+	padding: {
+		top: 15px;
+		bottom: 15px;
+	}
+
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 40px;
+	z-index: 100;
+	background-color: common.$colors-white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow-x: scroll;
+	overflow-y: clip;
+
+	@include common.responsive-landscape-phone-only() {
+		height: 40px;
+	}
+}
+
+.order-details-action-button {
+	@include form.primary-button($bgColor: common.$colors-cadet-blue, $width: 250px);
+
+	margin: {
+		left: 20px;
+		right: 20px;
 	}
 }

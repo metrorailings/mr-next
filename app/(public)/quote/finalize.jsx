@@ -3,45 +3,21 @@
 import React, { useState } from 'react';
 
 import PaymentForms from 'components/paymentForms';
-
-import { publish } from 'lib/utils';
+import TermsModal from 'app/(public)/quote/termsModal';
 
 import styles from 'public/styles/page/quote.module.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
 
-const PrintButton = () => {
-	const printPage = () => {
-		const iframe = document.frames ? document.frames['terms'] : document.getElementById('terms');
-		const iframeWindow = iframe.contentWindow || iframe;
-
-		iframe.focus();
-		iframeWindow.print();
-
-		return false;
-	};
-
-	return (
-		<>
-			<button type='button' className={ styles.printButton } onClick={ printPage }>
-				Print <FontAwesomeIcon icon={ faPrint } className={ styles.printIcon }/>
-			</button>
-			<iframe id='terms' src='/quote/terms' className={ styles.printIframe } title='Terms and Conditions'/>
-		</>
-	);
-};
-
-const FinalizeSection = ({ termsText, jsonQuote }) => {
+const FinalizeSection = ({ termsText, orderId, amountToPay, termsFileHandle, jsonCards }) => {
+	const [showTermsModal, setShowTermsModal] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
 
-	const quote = JSON.parse(jsonQuote);
-
 	const openModal = () => {
-		publish('open-info-modal', {
-			modalMarkdown: termsText,
-			ModalJSXButtons: PrintButton
-		});
+		setShowTermsModal(true);
 	};
+
+	const closeModal = () => {
+		setShowTermsModal(false);
+	}
 
 	const finalizeOrder = () => {
 		console.log('Order finalized!');
@@ -61,16 +37,18 @@ const FinalizeSection = ({ termsText, jsonQuote }) => {
 					</div>
 				) : null }
 				<PaymentForms
-					orderId={ quote.orderId }
+					orderId={ window.parseInt(orderId) }
 					acceptCard={ true }
 					acceptAlternate={ false }
-					cards={ false }
+					cards={ JSON.parse(jsonCards) }
 					postFunc={ finalizeOrder }
-					balanceRemaining={ order.payments?.balanceRemaining }
-					presetPaymentAmount={ order.pricing?.depositAmount }
-					orderState={ order.customer?.state || '' }
+					presetPaymentAmount={ amountToPay }
 				/>
 			</div>
+
+			{ showTermsModal ? (
+				<TermsModal markdownText={ termsText } termsFileHandle={ termsFileHandle } closeFunc={ closeModal } />
+			) : null }
 		</>
 	);
 }

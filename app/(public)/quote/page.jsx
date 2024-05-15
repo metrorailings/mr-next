@@ -8,7 +8,7 @@ import FinalizeSection from 'app/(public)/quote/finalize';
 
 import { translateDesignCode, fetchDesignMetadata } from 'lib/designs/translator';
 import { decryptNumber } from 'lib/utils';
-import { getQuote } from 'lib/http/quotesDAO';
+import { getInvoice } from 'lib/http/invoicesDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
@@ -17,9 +17,9 @@ const QuoteServer = async ({ searchParams }) => {
 	const orderHash = searchParams?.id || '';
 	const quoteSeq = searchParams?.seq || '';
 	const orderId = decryptNumber(orderHash);
-	const quote = await getQuote(orderId, quoteSeq);
+	const quote = await getInvoice(orderId, quoteSeq);
 
-	if (quote === null) {
+	if (quote === null || quote.category !== 'quote' ) {
 		redirect('/');
 	}
 
@@ -56,7 +56,7 @@ const QuoteServer = async ({ searchParams }) => {
 					<br />
 					Drafted on { quote.dates.created || '--' }
 					<br />
-					Status: <i>{ quote.status === 'open' ? 'Open' : 'Finalized' }</i>
+					Status: <i className={ styles.quoteStatusText }>{ quote.status.toUpperCase() }</i>
 				</span>
 
 				{ /* BILL TO INFO */ }
@@ -69,7 +69,7 @@ const QuoteServer = async ({ searchParams }) => {
 					<br/>
 					{ quote.customer.city || '--' }, { quote.customer.state || '--' }, { quote.customer.zipCode || '--' }
 					<br/>
-					{ quote.customer.email || '--' }
+					{ quote.customer.email.length ? quote.customer.email.join(', ') : '--' }
 					<br/>
 					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ?
 						quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo : '--' }
@@ -120,7 +120,7 @@ const QuoteServer = async ({ searchParams }) => {
 
 			</div>
 
-			<FinalizeSection termsText={ termsRawText } jsonQuote={ JSON.stringify(quote) } />
+			<FinalizeSection orderId={ quote.orderId } termsText={ termsRawText } termsFileHandle={ quote.termsFileHandle } amountToPay={ quote.amount } jsonCards={ JSON.stringify(quote.payments.cards) }/>
 		</div>
 	);
 };

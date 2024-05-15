@@ -30,27 +30,45 @@ export default function orderReducer(order, action) {
 
 			return updatedOrder;
 		}
-		case 'addNewEmail': {
-			let emails = order.customer.email ? order.customer.email.split(',') : [];
-			emails.push(action.email);
-
+		case 'updateEmail': {
 			return {
 				...order,
 				customer: {
 					...(order.customer),
-					email: emails.join(',')
+					email: action.value
 				}
 			};
 		}
-		case 'removeEmail': {
-			let emails = order.customer.email.split(',');
-			emails = emails.filter(emailAddr => emailAddr !== action.email);
-
+		case 'addNewSalesAssignee': {
 			return {
 				...order,
-				customer: {
-					...(order.customer),
-					email: emails.join(',')
+				sales: {
+					...(order.sales),
+					assignees: [
+						...(order.sales.assignees),
+						{
+							username: action.value,
+							commission: 0
+						}
+					]
+				}
+			};
+		}
+		case 'removeSalesAssignee': {
+			return {
+				...order,
+				sales: {
+					...(order.sales),
+					assignees: order.sales.assignees.filter((assignee) => assignee.username !== action.value)
+				}
+			};
+		}
+		case 'updateSalesAssigneeInfo': {
+			return {
+				...order,
+				sales: {
+					...(order.sales),
+					assignees: order.sales.assignees.map((assignee) => assignee.username === action.value.username ? action.value : assignee)
 				}
 			};
 		}

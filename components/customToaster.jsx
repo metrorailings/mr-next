@@ -2,7 +2,6 @@
 
 import React, { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import classNames from 'classnames';
 
 import componentStyles from "public/styles/page/components.module.scss";
 
@@ -79,6 +78,28 @@ export function toastValidationError(errors = []) {
 		{
 			id: 'custom-error-toast',
 			duration: 50000,
+			position: 'bottom-center'
+		}
+	);
+}
+
+/**
+ * Function meant to quickly relay a message through Toast
+ *
+ * @param {String} message - the message to relay to the user
+ *
+ * @author kinsho
+ */
+export function quickToastNotice(message) {
+	toast(() => {
+			return (
+				<div>
+					<div className={ componentStyles.customErrorToastBody }>{ message }</div>
+				</div>
+			)},
+		{
+			id: 'custom-error-toast',
+			duration: 5000,
 			position: 'bottom-center'
 		}
 	);

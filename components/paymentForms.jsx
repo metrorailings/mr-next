@@ -40,10 +40,11 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 	const submitButtonRef = useRef(null);
 
 	// ---------- Validation functions for client-side error handling
+	balanceRemaining = balanceRemaining || Number.POSITIVE_INFINITY;
 	const validateCreditCardNumber = () => validateEmpty(creditCard.cardNumber) === false || (creditCard.cardNumber.split(' ').join('').length === (creditCard.brand === 'amex' ? 15 : 16));
 	const validateCreditCardExpiration = () => validateEmpty(creditCard.expiration) === false || (creditCard.expiration.split('/').join('').length === 4);
 	const validateCreditCardCVC = () => validateEmpty(creditCard.cardCode) === false || (creditCard.cardCode.length === (creditCard.brand === 'amex' ? 4 : 3));
-	const isValidAmount = () => validateEmpty(paymentAmount) === false || (parseFloat(paymentAmount) < parseFloat(balanceRemaining));
+	const isValidAmount = () => (validateEmpty(paymentAmount) === false) || (parseFloat(paymentAmount) < parseFloat(balanceRemaining));
 
 	// ---------- Client-side error tests
 	const paymentValidationFields = [
