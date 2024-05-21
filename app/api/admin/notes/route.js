@@ -4,11 +4,9 @@ import { getNotes, updateNoteTask, addNote, addTask } from 'lib/http/notesDAO';
 import { addNewNoteToOrder } from 'lib/http/ordersDAO';
 
 /**
- * Method to retrieve all the notes in the system
+ * Method to retrieve any note(s) from the database
  *
  * @param request
- * @param payload
- * @returns {Promise<NextResponse>}
  */
 export async function GET(request) {
 	const params = request.nextUrl.searchParams;

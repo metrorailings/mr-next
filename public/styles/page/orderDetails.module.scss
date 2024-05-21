@@ -34,7 +34,7 @@
 .order-form-label {
 	@extend %label;
 
-	margin-right: 3px;
+	margin-right: 10px;
 }
 
 .order-form-input-directions {
@@ -113,7 +113,7 @@
 
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	flex-direction: column;
 }
 
@@ -136,6 +136,28 @@
 
 	@include common.responsive-portrait-phone-only() {
 		width: 90%;
+	}
+}
+
+.modal-input-group {
+	@extend .input-group;
+
+	padding: {
+		left: 10px;
+		right: 10px;
+	}
+
+	flex: 1;
+	align-items: flex-start;
+
+	@include common.responsive-phone-only() {
+		border-bottom: {
+			style: solid;
+			width: 1px;
+			color: common.$colors-low-black;
+		}
+
+		flex-direction: column;
 	}
 }
 
@@ -169,6 +191,13 @@
 
 .large-input-control {
 	@extend %large-input-control;
+}
+
+.description-textarea {
+	@extend %input-control;
+
+	height: 100px;
+	width: 100%;
 }
 
 .input-sub-group {
@@ -210,8 +239,70 @@
 	}
 
 	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
+	flex: 1;
+}
+
+.past-payments-section {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.past-payments-header {
+	@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-subsection);
+
+	border: {
+		width: 1px;
+		style: solid;
+		color: common.$colors-silver;
+
+		top-left-radius: 10px;
+		top-right-radius: 10px;
+		bottom: none;
+	}
+
+	margin: {
+		left: auto;
+		right: auto;
+	}
+
+	padding: {
+		top: 10px;
+		bottom: 20px;
+	}
+
+	background-color: common.$colors-white;
+	width: 70%;
+	text-align: center;
+}
+
+.past-payments-record {
+	border: {
+		width: 1px;
+		style: solid;
+		color: common.$colors-silver;
+	}
+
+	display: grid;
+	grid-template-rows: 2fr 2fr 1fr;
+	width: 70%;
+}
+
+.past-payment-significant-data {
+	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
+
+	padding: 10px;
+}
+
+.past-payment-minor-data {
+	@include common.fonts-define-font($family: Avenir Light);
+
+	padding: {
+		top: 20px;
+		bottom: 20px;
+		left: 10px;
+		right: 10px;
+	}
 }
 
 .order-input-neighboring-text {
@@ -220,8 +311,8 @@
 	};
 
 	margin: {
-		left: 5px;
-		right: 5px;
+		left: 3.5px;
+		right: 3.5px;
 	}
 }
 
@@ -238,20 +329,21 @@
 	};
 }
 
-.order-details-section-action-button {
-	@include form.minor-button();
+.invoice-amount-modal-form {
+	display: flex;
+	margin-top: 15px;
 
-	margin: {
-		left: 10px;
+	@include common.responsive-phone-only() {
+		flex-direction: column;
 	}
 }
 
-.salesman-delete-button {
-	@include form.minor-button();
-
-	& > svg {
-		margin-left: 3px;
-	}
+.invoice-amount-modal-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .order-details-footer-padding {
@@ -285,6 +377,25 @@
 
 	@include common.responsive-landscape-phone-only() {
 		height: 40px;
+	}
+}
+
+.order-details-section-action-button {
+	@include form.minor-button();
+
+	margin: {
+		top: 5px;
+		bottom: 5px;
+		left: 10px;
+		right: 10px;
+	}
+}
+
+.salesman-delete-button {
+	@include form.minor-button();
+
+	& > svg {
+		margin-left: 3px;
 	}
 }
 

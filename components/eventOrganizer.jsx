@@ -7,6 +7,7 @@ import { subscribe, unsubscribe } from 'lib/utils';
 import PhotoViewer from 'components/photoViewer';
 import ConfirmModal from 'components/confirmModal';
 import InfoModal from 'components/infoModal';
+import ContentModal from 'components/contentModal';
 
 const EventOrganizer = () => {
 
@@ -17,11 +18,12 @@ const EventOrganizer = () => {
 
 	const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 	const [infoModalOpen, setInfoModalOpen] = useState(false);
+	const [contentModalOpen, setContentModalOpen] = useState(false);
 	const [modalText, setModalText] = useState('');
-	const [modalMarkdown, setModalMarkdown] = useState('');
-	const [ModalJSXButtons, setModalJSXButtons] = useState('');
 	const [modalBoldText, setModalBoldText] = useState('');
 	const [modalImage, setModalImage] = useState(null);
+	const [ContentJSX, setContentJSX] = useState(null);
+	const [contentData, setContentData] = useState({});
 	const [postModalFunc, setPostModalFunc] = useState(null);
 
 	const openViewer = (event) => {
@@ -45,25 +47,27 @@ const EventOrganizer = () => {
 		setInfoModalOpen(true);
 		openModal(event);
 	}
+	const openContentModal = (event) => {
+		setContentModalOpen(true);
+		openModal(event);
+	}
 	const openModal = (event) => {
 		setModalText(event.detail.text);
-		setModalMarkdown(event.detail.modalMarkdown);
 		setModalBoldText(event.detail.boldText);
 		setModalImage(event.detail.image);
+		setContentJSX(event.detail.ContextJSX);
+		setContentData(event.detail.contentData || {});
 		setPostModalFunc(() => event.detail.confirmFunction);
-
-		if (event.detail.ModalJSXButtons) {
-			setModalJSXButtons(() => event.detail.ModalJSXButtons);
-		}
 	}
 	const closeModal = () => {
 		setConfirmModalOpen(false);
 		setInfoModalOpen(false);
+		setContentModalOpen(false);
 		setModalText('');
-		setModalMarkdown('');
 		setModalBoldText('');
-		setModalJSXButtons(null);
 		setModalImage(null);
+		setContentJSX(null);
+		setContentData({});
 		setPostModalFunc(null);
 	}
 
@@ -71,11 +75,13 @@ const EventOrganizer = () => {
 		subscribe('open-photo-viewer', openViewer);
 		subscribe('open-info-modal', openInfoModal);
 		subscribe('open-confirm-modal', openConfirmModal);
+		subscribe('open-content-modal', openContentModal);
 
 		return () => {
 			unsubscribe('open-photo-viewer', openViewer);
 			unsubscribe('open-info-modal', openInfoModal);
 			unsubscribe('open-confirm-modal', openConfirmModal);
+			unsubscribe('open-content-modal', openContentModal);
 		}
 	});
 
@@ -90,7 +96,11 @@ const EventOrganizer = () => {
 			) : null }
 
 			{ infoModalOpen ? (
-				<InfoModal modalMarkdown={ modalMarkdown } ModalJSXButtons={ ModalJSXButtons } closeFunc={ closeModal } />
+				<InfoModal text={ modalText } closeFunc={ closeModal } />
+			) : null }
+
+			{ contentModalOpen ? (
+				<ContentModal ContentJSX={ ContentJSX } data={ contentData } closeFunc={ closeModal } />
 			) : null }
 		</>
 	);

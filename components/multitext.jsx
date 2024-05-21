@@ -4,7 +4,7 @@ import { quickToastNotice } from 'components/customToaster';
 
 import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 const Multitext = ({ values, placeholder, updateFunc, validator, validatorFailMessage }) => {
 
@@ -64,7 +64,7 @@ const Multitext = ({ values, placeholder, updateFunc, validator, validatorFailMe
 						return (
 							<span className={ styles.multitextSetValue } key={ index }>
 								{ each }
-								<FontAwesomeIcon icon={ faTimes } className={ styles.multitextRemoveMark } onClick={() => removeValue(each) } />
+								<FontAwesomeIcon icon={ faTimesCircle } className={ styles.multitextRemoveMark } onClick={() => removeValue(each) } />
 							</span>
 						)
 					})}

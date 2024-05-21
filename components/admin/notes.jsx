@@ -1,20 +1,22 @@
 'use client'
 
-import React, { useState } from 'react';
+// @TODO - Make this component look pretty on mobile
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+
+import NoteRecord from 'components/admin/noteRecord';
 
 import { NOTE_API } from 'lib/http/apiEndpoints';
 import { httpRequest } from 'lib/http/clientHttpRequester';
 import { sortNotes } from 'lib/utils';
-
-import NoteRecord from 'components/admin/noteRecord';
-
+import { buildUserMap } from 'lib/userInfo';
 import { validateEmpty, runValidators } from 'lib/validators/inputValidators';
+
 import { toastValidationError } from 'components/customToaster';
 
 import styles from 'public/styles/page/notes.module.scss';
 
-const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => {
+const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish }) => {
 
 	const [newNote, setNewNote] = useState({
 		text: '',
@@ -25,6 +27,7 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 	});
 	const [notes, setNotes] = useState(existingNotes || []);
 	const [notesLoaded, setNotesLoaded] = useState(lazyLoad);
+	const [userMap, setUserMap] = useState({});
 
 	// ---------- Validation functions
 	const validateNoteText = () => validateEmpty(newNote.text);
@@ -89,6 +92,19 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 		}
 	};
 
+	useEffect(() => {
+
+		const userLoader = async () => {
+			if (Object.keys(userMap).length === 0) {
+				const users = await buildUserMap();
+				setUserMap(users);
+			}
+		}
+		userLoader();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<>
 			<div className={ styles.noteListing }>
@@ -125,9 +141,9 @@ const NoteManager = ({ orderId, existingNotes, lazyLoad, inSpanish, users }) => 
 							disabled={ newNote.type !== 'task' }
 						>
 							<option value=''>Select a username...</option>
-							{ users.map((username, index) => {
+							{ Object.keys(userMap).map((username, index) => {
 								return (
-									<option key={ index } value={ username }>{ username }</option>
+									<option key={ index } value={ username }>{ userMap[username] }</option>
 								);
 							})}
 						</select>

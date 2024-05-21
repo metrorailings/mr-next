@@ -1,6 +1,10 @@
 'use client'
 
-import React, { useReducer, useEffect } from "react";
+// @TODO - Beautify this component on mobile
+
+import React, { useState, useReducer, useEffect } from 'react';
+import Image from 'next/image';
+import dayjs from 'dayjs';
 
 import { saveOrder, generateInvoice } from 'actions/order';
 
@@ -16,9 +20,12 @@ import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
 import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/orderContext';
 import SalesAssigneeActions from 'app/admin/orderDetails/SalesAssigneeActions';
+import InvoiceAmountModal from 'app/admin/orderDetails/InvoiceAmountModal';
 
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';
 import { serverActionCall } from 'lib/http/clientHttpRequester';
+import { buildUserMap } from 'lib/userInfo';
+import { publish } from 'lib/utils';
 
 import types from 'lib/designs/types';
 import posts from 'lib/designs/posts';
@@ -37,19 +44,17 @@ import cableSizes from 'lib/designs/cableSizes';
 import glassTypes from 'lib/designs/glassTypes';
 import glassCharacteristics from 'lib/designs/glassCharacteristics';
 
+import visaLogo from 'assets/images/logos/visa.svg';
+import amexLogo from 'assets/images/logos/amex.svg';
+import mastercardLogo from 'assets/images/logos/mastercard.svg';
+import discoverLogo from 'assets/images/logos/discover.svg';
 import styles from 'public/styles/page/orderDetails.module.scss';
 
-const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
+const OrderDetailsPage = ({ jsonOrder }) => {
 
 	const order = JSON.parse(jsonOrder);
-	const users = JSON.parse(jsonUsers);
 
-	let userMap = {};
-	users.forEach((user) => {
-		userMap[user.username] = user.fullName || user.lastName;
-	});
-
-	
+	const [userMap, setUserMap] = useState({});
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
 		version: order.version || 1,
@@ -134,8 +139,8 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		status: order.status || '',
 
 		text: {
-			additionalDescription: order.text?.additionalDescription || '',
-			agreement: order.text?.agreement || []
+			additionalDescription: order.text.additionalDescription || '',
+			agreement: order.text.agreement || []
 		},
 
 		payments: {
@@ -238,6 +243,21 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		});
 	}
 
+	const determineCardBrandToShow = (brand) => {
+		switch (brand) {
+			case 'visa':
+				return visaLogo;
+			case 'amex':
+				return amexLogo;
+			case 'discover':
+				return discoverLogo;
+			case 'mastercard':
+				return mastercardLogo;
+			default:
+				return '';
+		}
+	};
+
 	// ------- -Validation Logic
 	const testAreaCode = () => orderDetails.customer.areaCode.length === 3 && validateNumberOnly(orderDetails.customer.areaCode);
 	const testPhoneOne = () => orderDetails.customer.phoneOne.length === 3 && validateNumberOnly(orderDetails.customer.phoneOne);
@@ -249,42 +269,27 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 		return ((orderDetails.customer.email.length) || testPhoneNumber());
 	}
 
-	const testDescriptionProvidedIfMisc = () => {
-		if ((orderDetails.design.type === 'T-MISC') && (validateEmpty(orderDetails.text.additionalDescription) === false)) {
-			return false;
-		}
-
-		return true;
-	}
-
 	const saveValidationFields = [
-		{ prop: orderDetails.customer.name, validator: validateEmpty, errorMsg: 'A name is required to be filled in before saving an order.'},
-		{ prop: orderDetails.customer, validator: testContactInfoProvided, errorMsg: 'We need some way to be able to reach this customer. Put in a valid phone number or at least one e-mail address.' },
+		{ prop: orderDetails.customer.name, validator: validateEmpty, errorMsg: 'The customer\'s name is needed before anything about this order can be saved.'},
+		{ prop: orderDetails.customer, validator: testContactInfoProvided, errorMsg: 'Put in a valid phone number or at least one e-mail address for this order.' },
 	];
-	const quoteValidationFields = [
-		{ prop: orderDetails.customer.name, validator: validateEmpty, errorMsg: 'A name is required for this prospect.'},
-		{ prop: orderDetails.design.type, validator: validateEmpty, errorMsg: 'A product type has to be selected here.' },
-		{ prop: orderDetails.sales.header, validator: validateEmpty, errorMsg: 'The quote header cannot be empty.' },
-		{ prop: orderDetails.text.additionalDescription, validator: testDescriptionProvidedIfMisc, errorMsg: 'If a miscellaneous product type is specified, than a description has to be provided.' }
+	const invoiceValidationFields = [
+		{ prop: orderDetails.design.type, validator: validateEmpty, errorMsg: 'A product type has to be specified here before a quote/invoice is electronically sent out.' },
+		{ prop: orderDetails.sales.header, validator: validateEmpty, errorMsg: 'The order header cannot be empty, as it would differentiate this order from other orders made for the same customer.' },
+		{ prop: orderDetails.text.additionalDescription, validator: validateEmpty, errorMsg: 'A description of the order needs to be provided, even if it\'s only one basic line.' }
 	];
 
 	const issueInvoice = async () => {
-		const errors = runValidators(quoteValidationFields);
+		const processedOrder = await serverActionCall(generateInvoice, orderDetails, {
+			loading: 'Drafting a new quote...',
+			success: 'A new quote has been drafted and sent out!',
+			error: 'Something went wrong when trying to generate a new quote. Please try again. If it doesn\'t work, consult Rickin.'
+		});
 
-		if (errors.length === 0) {
-			const processedOrder = await serverActionCall(generateInvoice, orderDetails, {
-				loading: 'Drafting a new quote...',
-				success: 'A new quote has been drafted and sent out!',
-				error: 'Something went wrong when trying to generate a new quote. Please try again. If it doesn\'t work, consult Rickin.'
-			});
-
-			orderDispatch({
-				type: 'overwriteOrder',
-				value: processedOrder.order
-			});
-		} else {
-			toastValidationError(errors);
-		}
+		orderDispatch({
+			type: 'overwriteOrder',
+			value: JSON.parse(processedOrder.order)
+		});
 	};
 
 	const saveAllProps = async () => {
@@ -299,15 +304,34 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 
 			orderDispatch({
 				type: 'overwriteOrder',
-				value: processedOrder.order
+				value: JSON.parse(processedOrder.order)
 			});
 		} else {
 			toastValidationError(errors);
 		}
 	};
 
+	const openInvoiceAmountModal = () => {
+		const errors = [...(runValidators(saveValidationFields)), ...(runValidators(invoiceValidationFields))];
+
+		if (errors.length === 0) {
+			publish('open-content-modal', { ContextJSX: () => InvoiceAmountModal, contentData: orderDetails, confirmFunction: issueInvoice });
+		} else {
+			toastValidationError(errors);
+		}
+	}
+
 	useEffect(() => {
 		calculateTotalsTaxesAndFees();
+
+		const userLoader = async () => {
+			if (Object.keys(userMap).length === 0) {
+				const users = await buildUserMap();
+				setUserMap(users);
+			}
+		}
+		userLoader();
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [orderDetails.pricing.subtotal, orderDetails.pricing.isTaxApplied, orderDetails.pricing.isFeeApplied, orderDetails.customer.state]);
 
@@ -316,7 +340,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 			<OrdersContext.Provider value={ orderDetails }>
 				<OrdersDispatchContext.Provider value={ orderDispatch }>
 					<div className={ styles.pageContainer }>
-		
+
 						<h3 className={ styles.pageHeader }>CLIENT ORDER</h3>
 						{ orderDetails._id ? (
 							<div className={ styles.orderIdBox }>
@@ -324,9 +348,9 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 							</div>
 						) : null }
 						<hr className={ styles.firstPageDivider }></hr>
-		
+
 						{/* ---------- CUSTOMER SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<span className={ styles.inputGroup }>
 								<label htmlFor='customer.name' className={ styles.orderFormLabel }>Customer Name</label>
@@ -396,11 +420,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								</span>
 							</span>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- ADDRESS SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<span className={ styles.inputGroup }>
 								<label htmlFor='customer.address' className={ styles.orderFormLabel }>Street Address</label>
@@ -488,11 +512,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								</select>
 							</span>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- NOTES SECTION ---------- */ }
-		
+
 						{ orderDetails._id ? (
 							<>
 								<div className={ styles.orderFormSection }>
@@ -501,16 +525,15 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 										existingNotes={ orderDetails.notes || [] }
 										lazyLoad={ false }
 										inSpanish={ false }
-										users={ users }
 									/>
 								</div>
-		
+
 								<hr className={ styles.sectionDivider }></hr>
 							</>
 						) : null }
-		
+
 						{/* ---------- FILE SECTION ---------- */ }
-		
+
 						{ orderDetails._id ? (
 							<>
 								<div className={ styles.orderFormSection }>
@@ -520,13 +543,13 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 										lazyLoad={ false }
 									/>
 								</div>
-		
+
 								<hr className={ styles.sectionDivider }/>
 							</>
 						) : null }
-		
+
 						{/* ---------- DESIGN TYPE SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<DesignField
 								data={ types }
@@ -534,7 +557,13 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								propName={ 'type' }
 								dispatch={ orderDispatch }
 							/>
-		
+						</div>
+
+						<hr className={ styles.sectionDivider }/>
+
+						{/* ---------- DESCRIPTION/HEADER SECTION ---------- */ }
+
+						<div className={ styles.orderFormSection }>
 							<span className={ styles.inputGroup }>
 								<label htmlFor='sales.header' className={ styles.orderFormLabel }>Quote Header</label>
 								<input
@@ -546,11 +575,24 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 									value={ orderDetails.sales.header }
 								/>
 							</span>
+
+							<span className={ styles.wideInputGroup }>
+								<label htmlFor='text.additionalDescription' className={ styles.orderFormLabel }>Order Description</label>
+								<textarea
+									type='text'
+									name='text.additionalDescription'
+									id='text.additionalDescription'
+									className={ styles.descriptionTextarea }
+									onChange={ handleOrderUpdate }
+									value={ orderDetails.text.additionalDescription }
+								/>
+							</span>
 						</div>
+
 						<hr className={ styles.sectionDivider }/>
-		
+
 						{/* ---------- BASE DESIGN SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<DesignField
 								data={ posts }
@@ -589,11 +631,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								dispatch={ orderDispatch }
 							/>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- PICKET SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<DesignField
 								data={ picketSizes }
@@ -608,11 +650,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								dispatch={ orderDispatch }
 							/>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- TRADITIONAL OPTIONS SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<DesignField
 								data={ centerDesigns }
@@ -639,11 +681,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								dispatch={ orderDispatch }
 							/>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- CABLE OPTIONS SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<DesignField
 								data={ cableSizes }
@@ -652,11 +694,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								dispatch={ orderDispatch }
 							/>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- GLASS OPTIONS SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<DesignField
 								data={ glassTypes }
@@ -671,11 +713,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								dispatch={ orderDispatch }
 							/>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- SALESMEN SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<span className={ styles.wideInputGroup }>
 								<label htmlFor='sales.assignees' className={ styles.orderFormLabel }>
@@ -692,40 +734,62 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								/>
 							</span>
 						</div>
-		
+
 						<hr className={ styles.sectionDivider }></hr>
-		
+
 						{/* ---------- PAYMENTS SECTION ---------- */ }
-		
-						{ orderDetails?.status ? (
-							<>
+
+						<div className={ styles.orderFormSection }>
+							{ orderDetails.payments.balanceRemaining > 0 ? (
 								<div className={ styles.orderPaymentSection }>
 									<PaymentForms
 										orderId={ orderDetails._id }
 										acceptCard={ true }
 										acceptAlternate={ true }
-										cards={ orderDetails.payments?.cards }
-										balanceRemaining={ orderDetails.payments?.balanceRemaining }
-										orderState={ orderDetails.customer?.state || '' }
+										cards={ orderDetails.payments.cards }
+										balanceRemaining={ orderDetails.payments.balanceRemaining || 0 }
+										orderState={ orderDetails.customer.state || '' }
 										postFunc={ () => {
 											console.log('In post func');
 										} }
 									/>
 								</div>
-		
-								<span className={ styles.test }>
-									<span className={ styles.test }>
-										<div className={ styles.test }>Amount</div>
-										<div className={ styles.test }></div>
-									</span>
+							) : null }
+
+							{ orderDetails?.payments.charges.length ? (
+								<span className={ styles.pastPaymentsSection }>
+										<div className={ styles.pastPaymentsHeader }>Past Payments</div>
+									{ orderDetails.payments.charges.map((payment) => {
+										return (
+											<div className={ styles.pastPaymentsRecord } key={ payment._id }>
+												<div className={ styles.pastPaymentSignificantData }>{ payment.amount }</div>
+												<div className={ styles.pastPaymentSignificantData }>
+													{ payment.type === 'stripe' ? (
+														<>
+															<Image
+																src={ determineCardBrandToShow(payment.stripeMetadata.card.brand) }
+																width={ 64 }
+																height={ 64 }
+																alt={ payment.stripeMetadata.card.brand }
+															/>
+															<span>(...{ payment.stripeMetadata.card.last4 })</span>
+														</>
+													) : (
+														<Image src={ payment.imageMetadata.url } width={ 160 } height={ 90 } alt='Image payment'/>
+													) }
+												</div>
+												<div className={ styles.pastPaymentMinorData }>Processed On { dayjs(payment.date).format('MMM DD, YYYY') }</div>
+											</div>
+										);
+									}) }
 								</span>
-		
-								<hr className={ styles.sectionDivider }></hr>
-							</>
-						) : null }
-		
+							) : null }
+
+							<hr className={ styles.sectionDivider }></hr>
+						</div>
+
 						{/* ---------- PRICING SECTION ---------- */ }
-		
+
 						<div className={ styles.orderFormSection }>
 							<span className={ styles.inputGroup }>
 								<label htmlFor='dimensions.length' className={ styles.orderFormLabel }>Length</label>
@@ -741,7 +805,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 									<span className={ styles.orderInputNeighboringText }>linear feet</span>
 								</span>
 							</span>
-		
+
 							<span className={ styles.inputGroup }>
 								<label htmlFor='pricing.pricePerFoot' className={ styles.orderFormLabel }>Price Per Foot</label>
 								<span className={ styles.orderDetailsInputRow }>
@@ -757,7 +821,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 									<span className={ styles.orderInputNeighboringText }>per linear foot</span>
 								</span>
 							</span>
-		
+
 							<span className={ styles.inputGroup }>
 								<label htmlFor='pricing.additionalPrice' className={ styles.orderFormLabel }>Additional Price</label>
 								<span className={ styles.orderDetailsInputRow }>
@@ -773,7 +837,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 									<span className={ styles.orderInputNeighboringText }>per linear foot</span>
 								</span>
 							</span>
-		
+
 							<span className={ styles.inputGroup }>
 								<label htmlFor='pricing.isTaxApplied' className={ styles.orderFormLabel }>Apply Tax?</label>
 								<OptionSet
@@ -784,7 +848,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 									setter={ (value) => handleOptionSetUpdate('pricing.isTaxApplied', value) }
 								/>
 							</span>
-		
+
 							<span className={ styles.inputGroup }>
 								<label htmlFor='pricing.isFeeApplied' className={ styles.orderFormLabel }>Apply CC Fee?</label>
 								<OptionSet
@@ -796,7 +860,7 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								/>
 							</span>
 						</div>
-		
+
 						<div className={ styles.orderFormSection }>
 							<span className={ styles.inputGroup }>
 								<label htmlFor='pricing.subtotal' className={ styles.orderFormLabel }>Order Subtotal</label>
@@ -814,51 +878,51 @@ const OrderDetailsPage = ({ jsonOrder, jsonUsers }) => {
 								</span>
 							</span>
 						</div>
-		
+
 						<div className={ styles.orderPricesSection }>
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>Subtotal</label>
 								<span className={ styles.priceText }>${ orderDetails.pricing.subtotal.toFixed(2) }</span>
 							</span>
-		
+
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>+</label>
 							</span>
-		
+
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>Taxes</label>
 								<span className={ styles.priceText }>${ orderDetails.pricing.tax.toFixed(2) }</span>
 							</span>
-		
+
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>+</label>
 							</span>
-		
+
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>Fees</label>
 								<span className={ styles.priceText }>${ orderDetails.pricing.fee.toFixed(2) }</span>
 							</span>
-		
+
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>=</label>
 							</span>
-		
+
 							<span className={ styles.priceGroup }>
 								<label className={ styles.priceLabel }>ORDER TOTAL</label>
 								<span className={ styles.priceText }>${ orderDetails.pricing.orderTotal.toFixed(2) }</span>
 							</span>
 						</div>
-		
+
 					</div>
-		
+
 					<div className={ styles.orderDetailsFooterPadding }/>
 					<div className={ styles.orderDetailsActionFooter }>
 						<button type='button' className={ styles.orderDetailsActionButton } onClick={ saveAllProps }>Save</button>
 						{ orderDetails._id ? (
 							approvedInvoices === 0 ? (
-								<button type='button' className={ styles.orderDetailsActionButton } onClick={ issueInvoice }>Send a Quote</button>
+								<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal }>Send a Quote</button>
 							) : (
-								<button type='button' className={ styles.orderDetailsActionButton } onClick={ issueInvoice }>Send An Invoice</button>
+								<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal }>Send An Invoice</button>
 							)
 						) : null }
 					</div>

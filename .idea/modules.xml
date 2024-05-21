@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../MetroRailingsCopy/MetroRailingsCopy.iml" filepath="$PROJECT_DIR$/../MetroRailingsCopy/MetroRailingsCopy.iml" />
       <module fileurl="file://$PROJECT_DIR$/MetroRailingsNext.iml" filepath="$PROJECT_DIR$/MetroRailingsNext.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../nfl-blog/owl-blog-2/owl-blog-2.iml" filepath="$PROJECT_DIR$/../nfl-blog/owl-blog-2/owl-blog-2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../service/service.iml" filepath="$PROJECT_DIR$/../service/service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../userapp/userapp.iml" filepath="$PROJECT_DIR$/../userapp/userapp.iml" />
     </modules>
   </component>
 </project>

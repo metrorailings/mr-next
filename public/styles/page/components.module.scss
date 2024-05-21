@@ -640,6 +640,7 @@
 	}
 
 	cursor: pointer;
+	background-color: common.$colors-slate-gray;
 }
 
 /* ----------------------- MULTISELECT ----------------------------- */
@@ -674,9 +675,8 @@
 
 .multi-select-selected-values-container {
 	border: {
-		style: double;
-		width: 1.5px;
-		radius: 5px;
+		style: solid;
+		width: 0.5px;
 		color: common.$colors-black;
 	}
 
@@ -686,28 +686,41 @@
 .multi-select-selected-value-row {
 	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
 
-	margin: {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&:nth-of-type(even) {
+		background-color: common.$colors-white;
+	}
+
+	&:nth-of-type(odd) {
+		background-color: common.$colors-faint-silver;
+	}
+}
+
+.multi-select-selected-value-text {
+	border-right: {
+		style: solid;
+		width: 0.5px;
+		color: common.$colors-black;
+	}
+
+	padding: {
 		top: 10px;
 		bottom: 10px;
 		left: 5px;
 		right: 5px;
 	}
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.multi-select-selected-value-text {
-	margin-right: 5px;
-	text-align: center;
+	text-align: left;
 	white-space: nowrap;
 	flex: 1;
 }
 
 .multi-select-selected-value-actions {
 	display: flex;
-	justify-content: flex-start;
+	justify-content: flex-end;
 	align-items: center;
 	flex: 3;
 
@@ -917,6 +930,7 @@
 	@include form.small-button($bgColor: common.$colors-success, $width: 125px);
 
 	margin: {
+		left: 25px;
 		right: 25px;
 	}
 }

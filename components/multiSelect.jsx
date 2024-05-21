@@ -17,7 +17,7 @@ const MultiSelect = ({ keyValueMap, placeholder, selectedValues, maxSelectionsAl
 
 	const addNewSelection = (event) => {
 		setDropdownValue('');
-		updateFunc([...selectedValues, event.currentTarget.value]);
+		updateFunc(event.currentTarget.value);
 	}
 
 	return (

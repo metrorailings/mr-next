@@ -25,7 +25,7 @@ export async function addCardAndPayByCard(data) {
 				...data
 			}, order);
 			if (paymentIntent) {
-				const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, order.customer.state);
+				const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, registeredCard, order.customer.state);
 				await attachNewPayment(order._id, paymentRecord._id);
 			}
 		}
@@ -46,7 +46,9 @@ export async function payByCard(data) {
 		}
 		paymentIntent = await stripeChargeCard(data, order);
 		if (paymentIntent) {
-			const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, order.customer.state, order.customer.state);
+			// Isolate the credit card responsible for the charge
+			const card = order.payments.cards.find((card) => card.id === paymentIntent.payment_method);
+			const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, card, order.customer.state);
 			await attachNewPayment(order._id, paymentRecord._id);
 		}
 	} catch (error) {

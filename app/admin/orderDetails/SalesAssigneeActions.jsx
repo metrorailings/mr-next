@@ -4,6 +4,10 @@ import React, { useContext } from "react";
 
 import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/orderContext';
 
+import { validateFloat } from 'lib/validators/inputValidators';
+
+import { quickToastNotice } from 'components/customToaster';
+
 import styles from 'public/styles/page/orderDetails.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEraser } from '@fortawesome/free-solid-svg-icons'
@@ -12,38 +16,56 @@ const SalesAssigneeActions = ({ valueInContext }) => {
 
 	const orderDetails = useContext(OrdersContext);
 	const orderDispatch = useContext(OrdersDispatchContext);
-	let assignee = orderDetails.sales.assignees.find((assignee) => assignee.username === valueInContext);
 
-	const removeValue = () => {
+	const assignee = orderDetails.sales.assignees.find((assignee) => assignee.username === valueInContext);
+
+	const removeSalesman = () => {
 		orderDispatch({
 			type: 'removeSalesAssignee',
 			value: valueInContext
 		});
 	};
 
-	const updateSalesCommission = (event) => {
-		assignee.commission = parseFloat(event.currentTarget.value);
-
+	const updateOrder = (updatedCommission) => {
 		orderDispatch({
 			type: 'updateSalesAssigneeInfo',
-			value: assignee
+			value: {
+				...assignee,
+				commission: updatedCommission
+			}
 		});
+	}
+
+	const updateSalesCommission = (event) => {
+		updateOrder(event.currentTarget.value);
+	}
+
+	const validateSalesCommission = () => {
+		if (assignee.commission) {
+			if ((validateFloat(assignee.commission)) === false || (window.parseFloat(assignee.commission) < 0) || (window.parseFloat(assignee.commission) > 100)) {
+				quickToastNotice('You\'ve typed in an invalid commission rate.');
+				updateOrder(0);
+			} else {
+				updateOrder(parseFloat(assignee.commission));
+			}
+		}
 	}
 
 	return (
 		<>
 			<span>
-				<button type='button' className={ styles.salesmanDeleteButton } onClick={ removeValue }>Delete<FontAwesomeIcon icon={ faEraser } /></button>
-			</span>
-			<span>
-				<label class={ styles.orderFormLabel }>Commission Percentage</label>
+				<label className={ styles.orderFormLabel }>Commission Percentage</label>
 				<input
 					type='tel'
 					className={ styles.smallInputControl }
-					onChange={ updateSalesCommission }
 					value={ assignee.commission }
+					onChange={ updateSalesCommission }
+					onBlur={ validateSalesCommission }
 				/>
 				<span className={ styles.orderInputNeighboringText }>%</span>
+			</span>
+			<span>
+				<button type='button' className={ styles.salesmanDeleteButton } onClick={ removeSalesman }>Delete<FontAwesomeIcon icon={ faEraser }/></button>
 			</span>
 		</>
 	);

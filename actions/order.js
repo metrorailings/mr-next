@@ -7,7 +7,7 @@ import {
 	deleteFileFromOrder as deleteOrderFile,
 	updateStatus,
 	recordNewInvoice,
-	updateModHistory
+	updateModHistory, getOrderById
 } from 'lib/http/ordersDAO';
 
 import {
@@ -77,7 +77,7 @@ export async function saveOrder(data) {
 		return { success: false };
 	}
 
-	return { success: true, order: order };
+	return { success: true, order: JSON.stringify(order) };
 }
 
 /**
@@ -108,7 +108,7 @@ export async function generateInvoice(data) {
 		// Link the invoice to the order it's associated with
 		const processedOrder = await recordNewInvoice(order);
 
-		return { success: true, order: processedOrder };
+		return { success: true, order: JSON.stringify(processedOrder) };
 	} catch (error) {
 		console.error(error);
 		return { success: false };
