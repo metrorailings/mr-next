@@ -1,6 +1,7 @@
 import "public/styles/foundation/global.scss";
 import 'react-loading-skeleton/dist/skeleton.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import 'react-tooltip/dist/react-tooltip.css'
 
 export default function RootLayout({ children }) {
 

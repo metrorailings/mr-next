@@ -1,5 +1,7 @@
 import { validateAllDesignFields } from 'app/admin/orderDetails/designValidation';
 
+import { validateFloat } from 'lib/validators/inputValidators';
+
 /**
  * Reducer function meant to govern all changes to the order object.
  * Only applies to Order General v1
@@ -26,7 +28,7 @@ export default function orderReducer(order, action) {
 			for (i = 0; i < action.properties.length - 1; i += 1) {
 				propPath = propPath[action.properties[i]];
 			}
-			propPath[action.properties[i]] = parseFloat(action.value || 0);
+			propPath[action.properties[i]] = validateFloat(action.value) ? parseFloat(action.value) : 0;
 
 			return updatedOrder;
 		}

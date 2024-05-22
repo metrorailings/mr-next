@@ -56,7 +56,7 @@ const DesignField = ({ data, order, propName, dispatch }) => {
 						disabled={ disabled }
 						id={ 'design.' + propName }
 					>
-						<option value='' disabled>Select...</option>
+						<option value=''>Select...</option>
 						{ data.options.map((each, index) => {
 							return (
 								<option key={ index } value={ each.id }>{ each.label }</option>

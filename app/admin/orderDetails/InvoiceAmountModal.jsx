@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { quickToastNotice } from 'components/customToaster';
 
 import { validateFloat } from 'lib/validators/inputValidators';
+import { formatUSDAmount } from 'lib/utils';
 
 import styles from 'public/styles/page/orderDetails.module.scss';
 import componentStyles from 'public/styles/page/components.module.scss';
@@ -14,7 +15,7 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 	const [invoiceAmount, setInvoiceAmount] = useState(0);
 
 	const calculatePaymentAmount = (percentage) => {
-		setInvoiceAmount(contentData.payments.balanceRemaining * percentage / 100);
+		setInvoiceAmount(Math.round(contentData.payments.balanceRemaining * percentage) / 100);
 	}
 
 	const setPaymentAmount = (event) => {
@@ -66,11 +67,11 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 					<span className={ styles.invoiceAmountModalInfo }>
 						<span className={ styles.priceGroup }>
 							<label className={ styles.priceLabel }>Order Total</label>
-							<div className={ styles.priceText }>${ contentData.pricing.subtotal }</div>
+							<div className={ styles.priceText }>${ formatUSDAmount(contentData.pricing.orderTotal) }</div>
 						</span>
 						<span className={ styles.priceGroup }>
 							<label className={ styles.priceLabel }>Balance Remaining</label>
-							<div className={ styles.priceText }>${ contentData.payments.balanceRemaining }</div>
+							<div className={ styles.priceText }>${ formatUSDAmount(contentData.payments.balanceRemaining) }</div>
 						</span>
 					</span>
 				</div>

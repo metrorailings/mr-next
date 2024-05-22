@@ -89,9 +89,6 @@ export async function generateInvoice(data) {
 	let order;
 
 	try {
-		// Save the order first before 
-		order = await saveChangesToOrder(data, updateModHistory('Invoice Generated'));
-
 		// Figure out what type of invoice to create here
 		let isQuote = true;
 		for (let i = 0; i < order.sales.invoices.length; i += 1) {

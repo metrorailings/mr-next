@@ -65,7 +65,7 @@ const SalesAssigneeActions = ({ valueInContext }) => {
 				<span className={ styles.orderInputNeighboringText }>%</span>
 			</span>
 			<span>
-				<button type='button' className={ styles.salesmanDeleteButton } onClick={ removeSalesman }>Delete<FontAwesomeIcon icon={ faEraser }/></button>
+				<button type='button' className={ styles.salesmanDeleteButton } onClick={ removeSalesman }>Delete<FontAwesomeIcon icon={ faEraser } /></button>
 			</span>
 		</>
 	);

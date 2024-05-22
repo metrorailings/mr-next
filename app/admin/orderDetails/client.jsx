@@ -1,10 +1,12 @@
 'use client'
 
 // @TODO - Beautify this component on mobile
+// @TODO - Split the code out into multiple files wherever possible
 
 import React, { useState, useReducer, useEffect } from 'react';
 import Image from 'next/image';
 import dayjs from 'dayjs';
+import _ from 'lodash';
 
 import { saveOrder, generateInvoice } from 'actions/order';
 
@@ -15,6 +17,7 @@ import PaymentForms from 'components/paymentForms';
 import Notes from 'components/admin/notes';
 import FileUpload from 'components/admin/fileUpload';
 import { toastValidationError } from 'components/customToaster';
+import MRToolTip from 'components/tooltip';
 
 import DesignField from 'app/admin/orderDetails/DesignField';
 import orderReducer from 'app/admin/orderDetails/orderReducer';
@@ -25,7 +28,7 @@ import InvoiceAmountModal from 'app/admin/orderDetails/InvoiceAmountModal';
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';
 import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { buildUserMap } from 'lib/userInfo';
-import { publish } from 'lib/utils';
+import { publish, calculateOrderTotal, formatUSDAmount } from 'lib/utils';
 
 import types from 'lib/designs/types';
 import posts from 'lib/designs/posts';
@@ -53,7 +56,8 @@ import styles from 'public/styles/page/orderDetails.module.scss';
 const OrderDetailsPage = ({ jsonOrder }) => {
 
 	const order = JSON.parse(jsonOrder);
-
+	
+	const [isDirty, setIsDirty] = useState(false);
 	const [userMap, setUserMap] = useState({});
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
@@ -61,7 +65,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 		sales: {
 			header: order.sales?.header || '',
-			assignees: order.sales?.assignee || [],
+			assignees: order.sales?.assignees || [],
 			invoiceSeq: order.sales?.quoteSeq || 0,
 			invoices: order.sales?.invoices || []
 		},
@@ -139,8 +143,8 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		status: order.status || '',
 
 		text: {
-			additionalDescription: order.text.additionalDescription || '',
-			agreement: order.text.agreement || []
+			additionalDescription: order.text?.additionalDescription || '',
+			agreement: order.text?.agreement || []
 		},
 
 		payments: {
@@ -154,6 +158,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		notes: order.notes || [],
 		files: order.files || []
 	});
+	const [cleanOrderDetails, setCleanOrderDetails] = useState(structuredClone(orderDetails));
 
 	const approvedInvoices = orderDetails.sales.invoices.reduce((accumulator, invoice) => accumulator + (invoice.status === 'finalized' ? 1 : 0), 0);
 	const assignedUsers = orderDetails.sales.assignees.map((assignee) => assignee.username);
@@ -196,7 +201,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		});
 	};
 
-	const calculateTotal = () => {
+	const calculateSubtotal = () => {
 		let runningTotal = 0;
 
 		if (orderDetails.dimensions.length && orderDetails.pricing.pricePerFoot) {
@@ -212,35 +217,32 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 	}
 
 	const calculateTotalsTaxesAndFees = () => {
-		const subtotal = orderDetails.pricing.subtotal || 0;
-		let taxes = 0;
-		let fees = 0;
 
-		// Check to make sure taxes are explicitly charged and eligible to be charged in the first place before calculating the tax liability
-		if (orderDetails.customer.state === 'NJ' && orderDetails.pricing.isTaxApplied) {
-			taxes = Math.round(subtotal * 6.625) / 100;
-		}	
-		// Check to make sure fees can be explicitly charged before calculating the credit card surcharge
-		if (orderDetails.pricing.isFeeApplied) {
-			fees = Math.round(subtotal * 1.75) / 100;
+		const { tax, fee, totalPrice } = calculateOrderTotal(orderDetails.pricing.subtotal, orderDetails.pricing.isTaxApplied, orderDetails.pricing.isFeeApplied, orderDetails.customer.state);
+
+		// Finally, update the tax, fee, and order total within our order modal, but only if the values are different from what's currently stored
+		// We want to minimize the number of hard updates made to the orderDetails object as that in turn would trigger additional logic that would slow down processing on the page
+		if (orderDetails.pricing.tax !== tax) {
+			orderDispatch({
+				type: 'genericOrderUpdateNum',
+				properties: ['pricing', 'tax'],
+				value: tax
+			});
 		}
-
-		// Finally, Update the tax, fee, and order total within our order modal
-		orderDispatch({
-			type: 'genericOrderUpdateNum',
-			properties: ['pricing', 'tax'],
-			value: taxes
-		});
-		orderDispatch({
-			type: 'genericOrderUpdateNum',
-			properties: ['pricing', 'fee'],
-			value: fees
-		});
-		orderDispatch({
-			type: 'genericOrderUpdateNum',
-			properties: ['pricing', 'orderTotal'],
-			value: subtotal + taxes + fees
-		});
+		if (orderDetails.pricing.fee !== fee) {
+			orderDispatch({
+				type: 'genericOrderUpdateNum',
+				properties: ['pricing', 'fee'],
+				value: fee
+			});
+		}
+		if (orderDetails.pricing.orderTotal !== totalPrice) {
+			orderDispatch({
+				type: 'genericOrderUpdateNum',
+				properties: ['pricing', 'orderTotal'],
+				value: totalPrice
+			});
+		}
 	}
 
 	const determineCardBrandToShow = (brand) => {
@@ -264,6 +266,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 	const testPhoneTwo = () => orderDetails.customer.phoneTwo.length === 4 && validateNumberOnly(orderDetails.customer.phoneTwo);
 	const testPhoneNumber = () => testAreaCode() && testPhoneOne() && testPhoneTwo();
 	const testEmail = (value) => validateEmail(value);
+	const testNonZero = (value) => value > 0;
 
 	const testContactInfoProvided = () => {
 		return ((orderDetails.customer.email.length) || testPhoneNumber());
@@ -276,36 +279,46 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 	const invoiceValidationFields = [
 		{ prop: orderDetails.design.type, validator: validateEmpty, errorMsg: 'A product type has to be specified here before a quote/invoice is electronically sent out.' },
 		{ prop: orderDetails.sales.header, validator: validateEmpty, errorMsg: 'The order header cannot be empty, as it would differentiate this order from other orders made for the same customer.' },
-		{ prop: orderDetails.text.additionalDescription, validator: validateEmpty, errorMsg: 'A description of the order needs to be provided, even if it\'s only one basic line.' }
+		{ prop: orderDetails.text.additionalDescription, validator: validateEmpty, errorMsg: 'A description of the order needs to be provided, even if it\'s only one basic line.' },
+		{ prop: orderDetails.payments.balanceRemaining, validator: testNonZero, errorMsg: (approvedInvoices ? 'No outstanding balance remains on this order.' : 'The order has to be priced first before a quote can be issued.') },
+		{ prop: orderDetails.sales.assignees, validator: validateEmpty, errorMsg: 'At least one salesman should be assigned to this order before any quotes or invoices are sent out.' },
+		{ prop: orderDetails.customer.state, validator: validateEmpty, errorMsg: 'The city and state need to be specified.' }
 	];
 
 	const issueInvoice = async () => {
-		const processedOrder = await serverActionCall(generateInvoice, orderDetails, {
+		const invoice = await serverActionCall(generateInvoice, orderDetails, {
 			loading: 'Drafting a new quote...',
 			success: 'A new quote has been drafted and sent out!',
 			error: 'Something went wrong when trying to generate a new quote. Please try again. If it doesn\'t work, consult Rickin.'
 		});
 
-		orderDispatch({
-			type: 'overwriteOrder',
-			value: JSON.parse(processedOrder.order)
-		});
+		if (invoice.success) {
+			// Add new invoice to the order here
+		}
 	};
 
 	const saveAllProps = async () => {
 		const errors = runValidators(saveValidationFields);
 
 		if (errors.length === 0) {
-			const processedOrder = await serverActionCall(saveOrder, orderDetails, {
+			let processedOrder = await serverActionCall(saveOrder, orderDetails, {
 				loading: 'Saving data...',
 				success: 'All updates here have been saved!',
 				error: 'Something went wrong when trying to save details. Please try again. If it doesn\'t work, consult Rickin.'
 			});
 
-			orderDispatch({
-				type: 'overwriteOrder',
-				value: JSON.parse(processedOrder.order)
-			});
+			if (processedOrder.success) {
+				processedOrder = JSON.parse(processedOrder.order);
+
+				setCleanOrderDetails(structuredClone({
+					...orderDetails,
+					...processedOrder
+				}));
+				orderDispatch({
+					type: 'overwriteOrder',
+					value: processedOrder
+				});
+			}
 		} else {
 			toastValidationError(errors);
 		}
@@ -321,9 +334,17 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		}
 	}
 
+	const resetOrder = () => {
+		orderDispatch({
+			type: 'overwriteOrder',
+			value: structuredClone(cleanOrderDetails)
+		});
+	}
+
 	useEffect(() => {
 		calculateTotalsTaxesAndFees();
 
+		// Load all the users if it hasn't been done yet
 		const userLoader = async () => {
 			if (Object.keys(userMap).length === 0) {
 				const users = await buildUserMap();
@@ -332,8 +353,11 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		}
 		userLoader();
 
+		// Find out if any part of the order has been modified
+		setIsDirty(_.isEqual(cleanOrderDetails, orderDetails) === false);
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [orderDetails.pricing.subtotal, orderDetails.pricing.isTaxApplied, orderDetails.pricing.isFeeApplied, orderDetails.customer.state]);
+	}, [orderDetails]);
 
 	return (
 		<>
@@ -737,6 +761,134 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 						<hr className={ styles.sectionDivider }></hr>
 
+						{/* ---------- PRICING SECTION ---------- */ }
+
+						<div className={ styles.orderFormSection }>
+							<span className={ styles.inputGroup }>
+								<label htmlFor='dimensions.length' className={ styles.orderFormLabel }>Length</label>
+								<span className={ styles.orderDetailsInputRow }>
+									<input
+										type='tel'
+										name='dimensions.length'
+										id='dimensions.length'
+										className={ styles.smallInputControl }
+										onChange={ handleOrderUpdate }
+										onBlur={ handleOrderUpdateNum }
+										value={ orderDetails.dimensions.length }
+									/>
+									<span className={ styles.orderInputNeighboringText }>linear feet</span>
+								</span>
+							</span>
+
+							<span className={ styles.inputGroup }>
+								<label htmlFor='pricing.pricePerFoot' className={ styles.orderFormLabel }>Price Per Foot</label>
+								<span className={ styles.orderDetailsInputRow }>
+									<span className={ styles.orderInputNeighboringText }>$</span>
+									<input
+										type='tel'
+										name='pricing.pricePerFoot'
+										id='pricing.pricePerFoot'
+										className={ styles.smallInputControl }
+										onChange={ handleOrderUpdate }
+										onBlur={ handleOrderUpdateNum }
+										value={ orderDetails.pricing.pricePerFoot }
+									/>
+									<span className={ styles.orderInputNeighboringText }>per linear foot</span>
+								</span>
+							</span>
+
+							<span className={ styles.inputGroup }>
+								<label htmlFor='pricing.additionalPrice' className={ styles.orderFormLabel }>Additional Price</label>
+								<span className={ styles.orderDetailsInputRow }>
+									<span className={ styles.orderInputNeighboringText }>$</span>
+									<input
+										type='tel'
+										name='pricing.additionalPrice'
+										id='pricing.additionalPrice'
+										className={ styles.smallInputControl }
+										onChange={ handleOrderUpdate }
+										onBlur={ handleOrderUpdateNum }
+										value={ orderDetails.pricing.additionalPrice }
+									/>
+								</span>
+							</span>
+
+							<span className={ styles.inputGroup }>
+								<label htmlFor='pricing.isTaxApplied' className={ styles.orderFormLabel }>Apply Tax?</label>
+								<OptionSet
+									labels={ ['Yes', 'No'] }
+									values={ [true, false] }
+									currentValue={ orderDetails.pricing.isTaxApplied }
+									isDisabled={ orderDetails.customer.state !== 'NJ' }
+									setter={ (value) => handleOptionSetUpdate('pricing.isTaxApplied', value) }
+								/>
+							</span>
+
+							<span className={ styles.inputGroup }>
+								<label htmlFor='pricing.isFeeApplied' className={ styles.orderFormLabel }>Apply CC Fee?</label>
+								<OptionSet
+									labels={ ['Yes', 'No'] }
+									values={ [true, false] }
+									currentValue={ orderDetails.pricing.isFeeApplied }
+									isDisabled={ false }
+									setter={ (value) => handleOptionSetUpdate('pricing.isFeeApplied', value) }
+								/>
+							</span>
+						</div>
+
+						<div className={ styles.orderFormSection }>
+							<span className={ styles.inputGroup }>
+								<label htmlFor='pricing.subtotal' className={ styles.orderFormLabel }>Order Subtotal</label>
+								<span className={ styles.orderDetailsInputRow }>
+									<span className={ styles.orderInputNeighboringText }>$</span>
+									<input
+										type='tel'
+										name='pricing.subtotal'
+										id='pricing.subtotal'
+										className={ styles.smallInputControl }
+										onChange={ handleOrderUpdate }
+										onBlur={ handleOrderUpdateNum }
+										value={ orderDetails.pricing.subtotal }
+									/>
+									<button className={ styles.orderDetailsSectionActionButton } onClick={ calculateSubtotal }>Auto-Calculate</button>
+								</span>
+							</span>
+						</div>
+
+						<div className={ styles.orderPricesSection }>
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>Subtotal</label>
+								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.subtotal) }</span>
+							</span>
+
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>+</label>
+							</span>
+
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>Taxes</label>
+								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.tax) }</span>
+							</span>
+
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>+</label>
+							</span>
+
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>Fees</label>
+								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.fee) }</span>
+							</span>
+
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>=</label>
+							</span>
+
+							<span className={ styles.priceGroup }>
+								<label className={ styles.priceLabel }>ORDER TOTAL</label>
+								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.orderTotal) }</span>
+							</span>
+						</div>
+
 						{/* ---------- PAYMENTS SECTION ---------- */ }
 
 						<div className={ styles.orderFormSection }>
@@ -788,144 +940,27 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 							<hr className={ styles.sectionDivider }></hr>
 						</div>
 
-						{/* ---------- PRICING SECTION ---------- */ }
-
-						<div className={ styles.orderFormSection }>
-							<span className={ styles.inputGroup }>
-								<label htmlFor='dimensions.length' className={ styles.orderFormLabel }>Length</label>
-								<span className={ styles.orderDetailsInputRow }>
-									<input
-										type='text'
-										name='dimensions.length'
-										id='dimensions.length'
-										className={ styles.smallInputControl }
-										onChange={ handleOrderUpdateNum }
-										value={ orderDetails.dimensions.length }
-									/>
-									<span className={ styles.orderInputNeighboringText }>linear feet</span>
-								</span>
-							</span>
-
-							<span className={ styles.inputGroup }>
-								<label htmlFor='pricing.pricePerFoot' className={ styles.orderFormLabel }>Price Per Foot</label>
-								<span className={ styles.orderDetailsInputRow }>
-									<span className={ styles.orderInputNeighboringText }>$</span>
-									<input
-										type='text'
-										name='pricing.pricePerFoot'
-										id='pricing.pricePerFoot'
-										className={ styles.smallInputControl }
-										onChange={ handleOrderUpdateNum }
-										value={ orderDetails.pricing.pricePerFoot }
-									/>
-									<span className={ styles.orderInputNeighboringText }>per linear foot</span>
-								</span>
-							</span>
-
-							<span className={ styles.inputGroup }>
-								<label htmlFor='pricing.additionalPrice' className={ styles.orderFormLabel }>Additional Price</label>
-								<span className={ styles.orderDetailsInputRow }>
-									<span className={ styles.orderInputNeighboringText }>$</span>
-									<input
-										type='text'
-										name='pricing.additionalPrice'
-										id='pricing.additionalPrice'
-										className={ styles.smallInputControl }
-										onChange={ handleOrderUpdateNum }
-										value={ orderDetails.pricing.additionalPrice }
-									/>
-									<span className={ styles.orderInputNeighboringText }>per linear foot</span>
-								</span>
-							</span>
-
-							<span className={ styles.inputGroup }>
-								<label htmlFor='pricing.isTaxApplied' className={ styles.orderFormLabel }>Apply Tax?</label>
-								<OptionSet
-									labels={ ['Yes', 'No'] }
-									values={ [true, false] }
-									currentValue={ orderDetails.pricing.isTaxApplied }
-									isDisabled={ orderDetails.customer.state !== 'NJ' }
-									setter={ (value) => handleOptionSetUpdate('pricing.isTaxApplied', value) }
-								/>
-							</span>
-
-							<span className={ styles.inputGroup }>
-								<label htmlFor='pricing.isFeeApplied' className={ styles.orderFormLabel }>Apply CC Fee?</label>
-								<OptionSet
-									labels={ ['Yes', 'No'] }
-									values={ [true, false] }
-									currentValue={ orderDetails.pricing.isFeeApplied }
-									isDisabled={ false }
-									setter={ (value) => handleOptionSetUpdate('pricing.isFeeApplied', value) }
-								/>
-							</span>
-						</div>
-
-						<div className={ styles.orderFormSection }>
-							<span className={ styles.inputGroup }>
-								<label htmlFor='pricing.subtotal' className={ styles.orderFormLabel }>Order Subtotal</label>
-								<span className={ styles.orderDetailsInputRow }>
-									<span className={ styles.orderInputNeighboringText }>$</span>
-									<input
-										type='text'
-										name='pricing.subtotal'
-										id='pricing.subtotal'
-										className={ styles.smallInputControl }
-										onChange={ handleOrderUpdateNum }
-										value={ orderDetails.pricing.subtotal }
-									/>
-									<button className={ styles.orderDetailsSectionActionButton } onClick={ calculateTotal }>Auto-Calculate</button>
-								</span>
-							</span>
-						</div>
-
-						<div className={ styles.orderPricesSection }>
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>Subtotal</label>
-								<span className={ styles.priceText }>${ orderDetails.pricing.subtotal.toFixed(2) }</span>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>+</label>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>Taxes</label>
-								<span className={ styles.priceText }>${ orderDetails.pricing.tax.toFixed(2) }</span>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>+</label>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>Fees</label>
-								<span className={ styles.priceText }>${ orderDetails.pricing.fee.toFixed(2) }</span>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>=</label>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>ORDER TOTAL</label>
-								<span className={ styles.priceText }>${ orderDetails.pricing.orderTotal.toFixed(2) }</span>
-							</span>
-						</div>
-
 					</div>
 
+
 					<div className={ styles.orderDetailsFooterPadding }/>
+
 					<div className={ styles.orderDetailsActionFooter }>
 						<button type='button' className={ styles.orderDetailsActionButton } onClick={ saveAllProps }>Save</button>
 						{ orderDetails._id ? (
-							approvedInvoices === 0 ? (
-								<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal }>Send a Quote</button>
-							) : (
-								<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal }>Send An Invoice</button>
-							)
+							<>
+								<MRToolTip tooltipMessage='Please save or reset any changes you have made to the order prior to sending out a quote or invoice' turnOffTooltip={ !(isDirty) }>
+									{ approvedInvoices === 0 ? (
+										<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal } disabled={ isDirty }>Send a Quote</button>
+										) : (
+										<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal } disabled={ isDirty }>Send An Invoice</button>
+									)}
+								</MRToolTip>
+								<button type='button' className={ styles.orderDetailsResetButton } onClick={ resetOrder } disabled={ !(isDirty) }>Reset</button>
+							</>
 						) : null }
 					</div>
+
 				</OrdersDispatchContext.Provider>
 			</OrdersContext.Provider>
 		</>

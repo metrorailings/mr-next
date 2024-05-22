@@ -230,6 +230,12 @@
 	}
 }
 
+.order-details-hint-icon {
+	margin-left: 5px;
+	font-size: common.$fonts-subsection;
+	color: common.$colors-logo-blue;
+}
+
 .order-payment-section {
 	margin: {
 		top: 10px;
@@ -318,14 +324,14 @@
 
 .price-label {
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
-		letter-spacing: 0.3px;
+		letter-spacing: 1px;
 		color: common.$colors-low-black;
 	}
 }
 
 .price-text {
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
-		letter-spacing: 1.5px;
+		letter-spacing: 0.5px;
 	};
 }
 
@@ -401,6 +407,15 @@
 
 .order-details-action-button {
 	@include form.primary-button($bgColor: common.$colors-cadet-blue, $width: 250px);
+
+	margin: {
+		left: 20px;
+		right: 20px;
+	}
+}
+
+.order-details-reset-button {
+	@include form.primary-button($bgColor: common.$colors-indian-red, $width: 100px);
 
 	margin: {
 		left: 20px;
