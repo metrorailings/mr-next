@@ -14,8 +14,11 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 
 	const [invoiceAmount, setInvoiceAmount] = useState(0);
 
+	const orderDetails = contentData.order;
+	const modalData = contentData.modalData;
+
 	const calculatePaymentAmount = (percentage) => {
-		setInvoiceAmount(Math.round(contentData.payments.balanceRemaining * percentage) / 100);
+		setInvoiceAmount(Math.round(orderDetails.payments.balanceRemaining * percentage) / 100);
 	}
 
 	const setPaymentAmount = (event) => {
@@ -27,13 +30,13 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 
 		if (validateFloat(invoiceAmount)) {
 			const amount = parseFloat(invoiceAmount);
-			if (amount > 0 && amount < contentData.payments.balanceRemaining) {
-				return true;
+			if (amount > 0 && amount < orderDetails.payments.balanceRemaining) {
+				modalData.amount = amount;
+				closeFunc(true);
 			}
+		} else {
+			quickToastNotice('Enter a valid amount to charge. Make sure the amount is less than the balance outstanding on this order.')
 		}
-
-		quickToastNotice('Enter a valid amount to charge. Make sure the amount is less than the balance outstanding on this order.')
-		return false;
 	}
 
 	return (
@@ -67,11 +70,11 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 					<span className={ styles.invoiceAmountModalInfo }>
 						<span className={ styles.priceGroup }>
 							<label className={ styles.priceLabel }>Order Total</label>
-							<div className={ styles.priceText }>${ formatUSDAmount(contentData.pricing.orderTotal) }</div>
+							<div className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.orderTotal) }</div>
 						</span>
 						<span className={ styles.priceGroup }>
 							<label className={ styles.priceLabel }>Balance Remaining</label>
-							<div className={ styles.priceText }>${ formatUSDAmount(contentData.payments.balanceRemaining) }</div>
+							<div className={ styles.priceText }>${ formatUSDAmount(orderDetails.payments.balanceRemaining) }</div>
 						</span>
 					</span>
 				</div>

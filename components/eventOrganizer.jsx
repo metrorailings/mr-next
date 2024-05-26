@@ -100,7 +100,7 @@ const EventOrganizer = () => {
 			) : null }
 
 			{ contentModalOpen ? (
-				<ContentModal ContentJSX={ ContentJSX } data={ contentData } closeFunc={ closeModal } />
+				<ContentModal ContentJSX={ ContentJSX } data={ contentData } confirmFunc={ postModalFunc } closeFunc={ closeModal } />
 			) : null }
 		</>
 	);

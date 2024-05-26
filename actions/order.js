@@ -7,7 +7,6 @@ import {
 	deleteFileFromOrder as deleteOrderFile,
 	updateStatus,
 	recordNewInvoice,
-	updateModHistory, getOrderById
 } from 'lib/http/ordersDAO';
 
 import {
@@ -64,20 +63,13 @@ export async function createProspectFromContactUs(data) {
 }
 
 export async function saveOrder(data) {
-	let order;
-
 	try {
-		if (data._id) {
-			order = await saveChangesToOrder(data);
-		} else {
-			order = await saveNewOrder(data);
-		}
+		const order = data._id ? await saveChangesToOrder(data) : await saveNewOrder(data);
+		return { success: true, order: JSON.stringify(order) };
 	} catch (error) {
 		console.error(error);
 		return { success: false };
 	}
-
-	return { success: true, order: JSON.stringify(order) };
 }
 
 /**
@@ -86,26 +78,23 @@ export async function saveOrder(data) {
  * @param data - the order object to model the invoice off
  */
 export async function generateInvoice(data) {
-	let order;
+	const order = data.order;
 
 	try {
 		// Figure out what type of invoice to create here
 		let isQuote = true;
-		for (let i = 0; i < order.sales.invoices.length; i += 1) {
-			if (order.sales.invoices[i].status === 'finalized') {
+		for (let i = 0; i < order.invoices.length; i += 1) {
+			if (order.invoices[i].status === 'finalized') {
 				isQuote = false;
 			}
 		}
-		if (isQuote) {
-			await createNewQuoteInvoice(order, data.amountToPay);
-		} else {
-			await createNewProgressInvoice(order, data.amountToPay);
-		}
+
+		const processedInvoice = isQuote ? await createNewQuoteInvoice(order, data.amountToPay) : await createNewProgressInvoice(order, data.amountToPay);
 
 		// Link the invoice to the order it's associated with
-		const processedOrder = await recordNewInvoice(order);
+		await recordNewInvoice(order, processedInvoice._id);
 
-		return { success: true, order: JSON.stringify(processedOrder) };
+		return { success: true, invoice: JSON.stringify(processedInvoice) };
 	} catch (error) {
 		console.error(error);
 		return { success: false };
@@ -124,15 +113,10 @@ export async function moveOrderIntoProduction(data) {
 
 export async function addFileToOrder(formData) {
 	const uploadedFile = formData.get('newFile');
-	let fileBlob;
 
 	try {
 		// Upload the file first to Vercel's blob service
-		if (acceptableImageExtensions[uploadedFile.type]) {
-			fileBlob = await uploadImageToVercel(uploadedFile);
-		} else {
-			fileBlob = await uploadFileToVercel(uploadedFile);
-		}
+		const fileBlob = acceptableImageExtensions[uploadedFile.type] ? await uploadImageToVercel(uploadedFile) : await uploadFileToVercel(uploadedFile);
 
 		// Save the new file into our database
 		// Make sure to notate which order the file is to be associated with

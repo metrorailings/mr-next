@@ -336,7 +336,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 							<div className={ classNames({
 								[styles.paymentRegularRowCenter]: true,
 								[styles.paymentRegularRowDisabled]: !!selectedCard
-							}) }>
+							})}>
 								<input
 									name='cardNumber'
 									type='tel'

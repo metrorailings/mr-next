@@ -100,6 +100,18 @@ export default function orderReducer(order, action) {
 				}
 			}
 		}
+		case 'addInvoice': {
+			return {
+				...order,
+				invoices: [...order.invoices, action.invoice]
+			};
+		}
+		case 'updateInvoice': {
+			return {
+				...order,
+				invoices: action.invoices
+			};
+		}
 		case 'overwriteOrder': {
 			return {
 				...order,

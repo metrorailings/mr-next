@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 
 import styles from "public/styles/page/components.module.scss";
 
-const ContentModal = ({ ContentJSX, data, closeFunc }) => {
+const ContentModal = ({ ContentJSX, data, confirmFunc, closeFunc }) => {
 
 	const overlayRef = useRef(null);
 	const modalRef = useRef(null);
@@ -13,7 +13,7 @@ const ContentModal = ({ ContentJSX, data, closeFunc }) => {
 		return (modalRef.current.classList.contains(styles.modalShiftDownOut));
 	}
 
-	const closeModal = () => {
+	const closeModal = (runConfirmFunction) => {
 		event.preventDefault();
 
 		if (isCurrentlyAnimating() === false) {
@@ -22,6 +22,7 @@ const ContentModal = ({ ContentJSX, data, closeFunc }) => {
 			window.setTimeout(() => {
 				modalRef.current.classList.remove(styles.modalOverlayShow);
 				window.setTimeout(() => {
+					if (runConfirmFunction) { confirmFunc() }
 					closeFunc();
 				}, 100);
 			}, 275);

@@ -86,8 +86,6 @@
 	margin: {
 		top: 35px;
 		bottom: 10px;
-		left: auto;
-		right: auto;
 	}
 
 	border: {
@@ -236,6 +234,17 @@
 	color: common.$colors-logo-blue;
 }
 
+.order-input-neighboring-text {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
+		font-style: italic;
+	};
+
+	margin: {
+		left: 3.5px;
+		right: 3.5px;
+	}
+}
+
 .order-payment-section {
 	margin: {
 		top: 10px;
@@ -245,6 +254,7 @@
 	}
 
 	display: flex;
+	flex-direction: column;
 	flex: 1;
 }
 
@@ -311,17 +321,6 @@
 	}
 }
 
-.order-input-neighboring-text {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
-		font-style: italic;
-	};
-
-	margin: {
-		left: 3.5px;
-		right: 3.5px;
-	}
-}
-
 .price-label {
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
 		letter-spacing: 1px;
@@ -350,6 +349,96 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+.invoice-table {
+	border: {
+		style: solid;
+		width: 0.5px;
+		color: common.$colors-black;
+	}
+
+	margin: {
+		right: 20px;
+	}
+}
+
+.invoice-table-header-row {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
+		letter-spacing: 0.5px;
+		color: common.$colors-white;
+	}
+
+	padding: {
+		left: 15px;
+		right: 15px;
+		top: 10px;
+		bottom: 10px;
+	}
+
+	background-color: common.$colors-slate-gray;
+	display: grid;
+	grid-template-columns: 1fr 2fr 2fr 2fr 2fr 3fr;
+}
+
+.invoice-table-row {
+	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+
+	padding: {
+		left: 15px;
+		right: 15px;
+		top: 10px;
+		bottom: 10px;
+	}
+
+	display: grid;
+	grid-template-columns: 1fr 2fr 2fr 2fr 2fr 3fr;
+
+	&:nth-of-type(even) {
+		background-color: common.$colors-white;
+	}
+
+	&:nth-of-type(odd) {
+		background-color: common.$colors-faint-silver;
+	}
+}
+
+.invoice-table-header-cell {
+	padding: {
+		left: 5px;
+		right: 5px;
+	}
+
+	text-align: center;
+}
+
+.invoice-table-cell {
+	padding: {
+		left: 5px;
+		right: 5px;
+	}
+
+	text-align: center;
+}
+
+.invoice-status-cancelled {
+	color: common.$colors-slate-gray;
+}
+
+.invoice-status-finalized {
+	color: common.$colors-success;
+}
+
+.invoice-status-open {
+	color: common.$colors-indian-red;
+}
+
+.invoice-table-link {
+	@extend .invoice-table-cell;
+
+	text-decoration: underline;
+	color: common.$colors-cadet-blue;
+	cursor: pointer;
 }
 
 .order-details-footer-padding {
@@ -397,11 +486,11 @@
 	}
 }
 
-.salesman-delete-button {
+.salesman-delete-button, .invoice-cancel-button {
 	@include form.minor-button();
 
 	& > svg {
-		margin-left: 3px;
+		margin-left: 5px;
 	}
 }
 

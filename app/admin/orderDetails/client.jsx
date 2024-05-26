@@ -24,6 +24,7 @@ import orderReducer from 'app/admin/orderDetails/orderReducer';
 import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/orderContext';
 import SalesAssigneeActions from 'app/admin/orderDetails/SalesAssigneeActions';
 import InvoiceAmountModal from 'app/admin/orderDetails/InvoiceAmountModal';
+import InvoiceList from 'app/admin/orderDetails/InvoiceList';
 
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';
 import { serverActionCall } from 'lib/http/clientHttpRequester';
@@ -59,6 +60,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 	
 	const [isDirty, setIsDirty] = useState(false);
 	const [userMap, setUserMap] = useState({});
+	const invoiceModalData = { amount: 0 };
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
 		version: order.version || 1,
@@ -67,7 +69,6 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 			header: order.sales?.header || '',
 			assignees: order.sales?.assignees || [],
 			invoiceSeq: order.sales?.quoteSeq || 0,
-			invoices: order.sales?.invoices || []
 		},
 
 		customer: {
@@ -156,11 +157,12 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		modHistory: order.modHistory || [],
 		dates: order.dates || {},
 		notes: order.notes || [],
-		files: order.files || []
+		files: order.files || [],
+		invoices: order.invoices || []
 	});
 	const [cleanOrderDetails, setCleanOrderDetails] = useState(structuredClone(orderDetails));
 
-	const approvedInvoices = orderDetails.sales.invoices.reduce((accumulator, invoice) => accumulator + (invoice.status === 'finalized' ? 1 : 0), 0);
+	const approvedInvoices = orderDetails.invoices.reduce((accumulator, invoice) => accumulator + (invoice.status === 'finalized' ? 1 : 0), 0);
 	const assignedUsers = orderDetails.sales.assignees.map((assignee) => assignee.username);
 
 	const handleOrderUpdate = (event) => {
@@ -286,14 +288,17 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 	];
 
 	const issueInvoice = async () => {
-		const invoice = await serverActionCall(generateInvoice, orderDetails, {
+		const serverResponse = await serverActionCall(generateInvoice, { order: orderDetails, amountToPay: invoiceModalData.amount }, {
 			loading: 'Drafting a new quote...',
 			success: 'A new quote has been drafted and sent out!',
 			error: 'Something went wrong when trying to generate a new quote. Please try again. If it doesn\'t work, consult Rickin.'
 		});
 
-		if (invoice.success) {
-			// Add new invoice to the order here
+		if (serverResponse.success) {
+			orderDispatch({
+				type: 'addInvoice',
+				invoice: JSON.parse(serverResponse.invoice)
+			});
 		}
 	};
 
@@ -301,23 +306,14 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		const errors = runValidators(saveValidationFields);
 
 		if (errors.length === 0) {
-			let processedOrder = await serverActionCall(saveOrder, orderDetails, {
+			const serverResponse = await serverActionCall(saveOrder, orderDetails, {
 				loading: 'Saving data...',
 				success: 'All updates here have been saved!',
 				error: 'Something went wrong when trying to save details. Please try again. If it doesn\'t work, consult Rickin.'
 			});
 
-			if (processedOrder.success) {
-				processedOrder = JSON.parse(processedOrder.order);
-
-				setCleanOrderDetails(structuredClone({
-					...orderDetails,
-					...processedOrder
-				}));
-				orderDispatch({
-					type: 'overwriteOrder',
-					value: processedOrder
-				});
+			if (serverResponse.success) {
+				resetOrder(JSON.parse(serverResponse.order));
 			}
 		} else {
 			toastValidationError(errors);
@@ -328,23 +324,63 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		const errors = [...(runValidators(saveValidationFields)), ...(runValidators(invoiceValidationFields))];
 
 		if (errors.length === 0) {
-			publish('open-content-modal', { ContextJSX: () => InvoiceAmountModal, contentData: orderDetails, confirmFunction: issueInvoice });
+			publish('open-content-modal', { ContextJSX: () => InvoiceAmountModal, contentData: { order: orderDetails, modalData: invoiceModalData }, confirmFunction: issueInvoice });
 		} else {
 			toastValidationError(errors);
 		}
 	}
 
-	const resetOrder = () => {
+	const resetOrder = (dbModel) => {
+		// If an order object has been passed into this object, it can be assumed that the order has been updated in the database
+		// and that we need to update our local copy of the order to be consistent with the model in our database 
+		if (dbModel) {
+			setCleanOrderDetails(structuredClone({
+				...orderDetails,
+				modHistory: [...(dbModel.modHistory)],
+				dates: { ...(dbModel.dates) },
+				payments: { ...(dbModel.payments) }
+			}));
+		}
+
 		orderDispatch({
 			type: 'overwriteOrder',
 			value: structuredClone(cleanOrderDetails)
 		});
 	}
 
+	// Note that this hook is invoked every time the order is updated
+	// Ensure that all logic inside this hook has been written in a way so that the hook will not be triggered over and over again
+	useEffect(() => {
+		// Find out if any part of the order has been modified
+		const orderPropsToEvaluate = ['sales', 'customer', 'design', 'designDescription', 'dimensions', 'pricing', 'status', 'text', 'dates']
+
+		let isEqual = true;
+		orderPropsToEvaluate.forEach((prop) => {
+			isEqual = (_.isEqual(orderDetails[prop], cleanOrderDetails[prop]) ? isEqual : false);
+		})
+		setIsDirty(!(isEqual));
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [orderDetails]);
+
+	useEffect(() => {
+		orderDispatch({
+			type: 'overwriteOrder',
+			value: structuredClone(cleanOrderDetails)
+		})
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cleanOrderDetails]);
+
+
 	useEffect(() => {
 		calculateTotalsTaxesAndFees();
 
-		// Load all the users if it hasn't been done yet
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [orderDetails.pricing.subtotal, orderDetails.pricing.isTaxApplied, orderDetails.pricing.isFeeApplied, orderDetails.customer.state]);
+
+	// Load all the users when the page loads
+	useEffect(() => {
 		const userLoader = async () => {
 			if (Object.keys(userMap).length === 0) {
 				const users = await buildUserMap();
@@ -353,11 +389,8 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		}
 		userLoader();
 
-		// Find out if any part of the order has been modified
-		setIsDirty(_.isEqual(cleanOrderDetails, orderDetails) === false);
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [orderDetails]);
+	}, []);
 
 	return (
 		<>
@@ -853,40 +886,42 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 									<button className={ styles.orderDetailsSectionActionButton } onClick={ calculateSubtotal }>Auto-Calculate</button>
 								</span>
 							</span>
-						</div>
 
-						<div className={ styles.orderPricesSection }>
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>Subtotal</label>
-								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.subtotal) }</span>
-							</span>
+							<div className={ styles.orderPricesSection }>
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>Subtotal</label>
+									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.subtotal) }</span>
+								</span>
+	
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>+</label>
+								</span>
+	
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>Taxes</label>
+									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.tax) }</span>
+								</span>
+	
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>+</label>
+								</span>
+	
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>Fees</label>
+									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.fee) }</span>
+								</span>
+	
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>=</label>
+								</span>
 
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>+</label>
-							</span>
+								<span className={ styles.priceGroup }>
+									<label className={ styles.priceLabel }>ORDER TOTAL</label>
+									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.orderTotal) }</span>
+								</span>
+							</div>
 
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>Taxes</label>
-								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.tax) }</span>
-							</span>
 
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>+</label>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>Fees</label>
-								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.fee) }</span>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>=</label>
-							</span>
-
-							<span className={ styles.priceGroup }>
-								<label className={ styles.priceLabel }>ORDER TOTAL</label>
-								<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.orderTotal) }</span>
-							</span>
 						</div>
 
 						{/* ---------- PAYMENTS SECTION ---------- */ }
@@ -908,9 +943,9 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 								</div>
 							) : null }
 
-							{ orderDetails?.payments.charges.length ? (
+							{ orderDetails.payments.charges?.length ? (
 								<span className={ styles.pastPaymentsSection }>
-										<div className={ styles.pastPaymentsHeader }>Past Payments</div>
+									<div className={ styles.pastPaymentsHeader }>Past Payments</div>
 									{ orderDetails.payments.charges.map((payment) => {
 										return (
 											<div className={ styles.pastPaymentsRecord } key={ payment._id }>
@@ -933,11 +968,17 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 												<div className={ styles.pastPaymentMinorData }>Processed On { dayjs(payment.date).format('MMM DD, YYYY') }</div>
 											</div>
 										);
-									}) }
+									})}
 								</span>
 							) : null }
 
-							<hr className={ styles.sectionDivider }></hr>
+							{ orderDetails.invoices.length ? (
+								<div className={ styles.orderPaymentSection }>
+									<label htmlFor='invoices' className={ styles.orderFormLabel }>Invoice History</label>
+									<InvoiceList />
+								</div>
+							) : null }
+
 						</div>
 
 					</div>
@@ -956,7 +997,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 										<button type='button' className={ styles.orderDetailsActionButton } onClick={ openInvoiceAmountModal } disabled={ isDirty }>Send An Invoice</button>
 									)}
 								</MRToolTip>
-								<button type='button' className={ styles.orderDetailsResetButton } onClick={ resetOrder } disabled={ !(isDirty) }>Reset</button>
+								<button type='button' className={ styles.orderDetailsResetButton } onClick={ () => resetOrder() } disabled={ !(isDirty) }>Reset</button>
 							</>
 						) : null }
 					</div>

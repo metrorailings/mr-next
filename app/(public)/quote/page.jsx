@@ -14,8 +14,8 @@ import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
 
 const QuoteServer = async ({ searchParams }) => {
-	const orderHash = searchParams?.id || '';
-	const quoteSeq = searchParams?.seq || '';
+	const orderHash = searchParams?.oid || '';
+	const quoteSeq = searchParams?.iid || '';
 	const orderId = decryptNumber(orderHash);
 	const quote = await getInvoice(orderId, quoteSeq);
 
