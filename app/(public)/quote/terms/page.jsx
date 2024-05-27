@@ -9,11 +9,13 @@ const TermsServer = ({ searchParams }) => {
 	const fileHandle = searchParams?.fileHandle || '';
 
 	// Pull the 'Terms and Conditions' from the file system
-	const termsRawText = fileHandle ? readFileSync(fileHandle, { encoding: 'utf-8' }) : '';
+	const termsRawText = fileHandle.startsWith('assets/text/terms') ?
+		readFileSync(process.cwd() + '/' + fileHandle, { encoding: 'utf-8' }) :
+		readFileSync(process.cwd() + '/' + process.env.CURRENT_TERMS_AND_CONDITIONS_FOR_INSTALL_ORDER);
 
 	return (
 		<div className={ styles.termsAndConditions }>
-			<Markdown>{ termsRawText }</Markdown>
+			<Markdown>{ termsRawText + '' }</Markdown>
 		</div>
 	);
 };

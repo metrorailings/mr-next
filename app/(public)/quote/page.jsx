@@ -3,6 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { redirect } from 'next/navigation'
 import Image from 'next/image';
+import dayjs from 'dayjs';
 
 import FinalizeSection from 'app/(public)/quote/finalize';
 
@@ -14,10 +15,10 @@ import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
 
 const QuoteServer = async ({ searchParams }) => {
-	const orderHash = searchParams?.oid || '';
-	const quoteSeq = searchParams?.iid || '';
-	const orderId = decryptNumber(orderHash);
-	const quote = await getInvoice(orderId, quoteSeq);
+	const orderId = decryptNumber(searchParams?.oid || '');
+	const invoiceId = decryptNumber(searchParams?.iid || '');
+
+	const quote = await getInvoice(orderId, invoiceId);
 
 	if (quote === null || quote.category !== 'quote' ) {
 		redirect('/');
@@ -27,7 +28,7 @@ const QuoteServer = async ({ searchParams }) => {
 	const designs = Object.keys(quote.design);
 
 	// Pull the 'Terms and Conditions' from the file system
-	const termsRawText = readFileSync(quote.termsFileHandle, { encoding: 'utf-8' });
+	const termsRawText = readFileSync( process.cwd() + '/' + quote.termsFileHandle, { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>
@@ -35,7 +36,7 @@ const QuoteServer = async ({ searchParams }) => {
 				<Image src={ logo } alt="Logo" className={ styles.logoHeader } priority />
 			</div>
 			<div className={ styles.pageHeader }>QUOTE</div>
-			
+
 			<div className={ styles.infoSection }>
 				{ /* COMPANY INFO */ }
 				<span className={ styles.infoColumnCompany }>
@@ -54,7 +55,7 @@ const QuoteServer = async ({ searchParams }) => {
 				<span className={ styles.infoColumnOrder }>
 					<span className={ styles.infoColumnHeader }>ORDER #{ quote.orderId }</span>
 					<br />
-					Drafted on { quote.dates.created || '--' }
+					{ quote?.dates?.created ? 'Drafted on ' + dayjs(quote.dates.created).format('MMM DD, YYYY') : null }
 					<br />
 					Status: <i className={ styles.quoteStatusText }>{ quote.status.toUpperCase() }</i>
 				</span>

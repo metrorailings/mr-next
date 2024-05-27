@@ -4,6 +4,22 @@
 @use 'public/styles/page/lib/base';
 @use 'public/styles/page/lib/form';
 
+/* ------------------ ANIMATIONS ----------------------- */
+
+@include common.animations-keyframes($name: scroll-down-arrow) {
+	0% {
+		transform: translate(0, 0);
+	}
+
+	50% {
+		transform: translate(0, 10%);
+	}
+
+	100% {
+		transform: translate(0, 0);
+	}
+}
+
 /* ----------------------- STYLES ----------------------------- */
 
 .page-container {
@@ -123,6 +139,12 @@
 
 .quote-body {
 	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-default);
+
+	border-top: {
+		style: solid;
+		width: 0.5px;
+		color: common.$colors-slate-gray;
+	}
 
 	display: grid;
 	grid-template-columns: 1fr 1fr;

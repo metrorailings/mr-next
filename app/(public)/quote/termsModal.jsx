@@ -22,10 +22,10 @@ const TermsModal = ({ markdownText, termsFileHandle, closeFunc }) => {
 		event.preventDefault();
 
 		if (isCurrentlyAnimating() === false) {
-			modalRef.current.classList.add(styles.modalShiftDownOut);
+			modalRef.current.classList.add(componentStyles.modalShiftDownOut);
 
 			window.setTimeout(() => {
-				modalRef.current.classList.remove(styles.modalOverlayShow);
+				modalRef.current.classList.remove(componentStyles.modalOverlayShow);
 				window.setTimeout(() => {
 					closeFunc();
 				}, 100);
@@ -42,8 +42,8 @@ const TermsModal = ({ markdownText, termsFileHandle, closeFunc }) => {
 
 	useEffect(() => {
 		window.setTimeout(() => {
-			overlayRef.current.classList.add(styles.modalOverlayShow);
-			modalRef.current.classList.add(styles.modalShiftDownIn);
+			overlayRef.current.classList.add(componentStyles.modalOverlayShow);
+			modalRef.current.classList.add(componentStyles.modalShiftDownIn);
 		}, 100);
 	}, []);
 
@@ -73,7 +73,7 @@ const TermsModal = ({ markdownText, termsFileHandle, closeFunc }) => {
 					<button type='button' className={ styles.printButton } onClick={ printPage }>
 						Print <FontAwesomeIcon icon={ faPrint } className={ styles.printIcon }/>
 					</button>
-					<iframe id='terms' src={ termsFileHandle } className={ styles.printIframe } title='Terms and Conditions'/>
+					<iframe id='terms' src={ ' /quote/terms?fileHandle=' + termsFileHandle } className={ styles.printIframe } title='Terms and Conditions'/>
 				</div>
 			</div>
 		</div>

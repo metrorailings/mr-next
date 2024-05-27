@@ -37,7 +37,7 @@ const FinalizeSection = ({ termsText, orderId, amountToPay, termsFileHandle, jso
 					</div>
 				) : null }
 				<PaymentForms
-					orderId={ window.parseInt(orderId) }
+					orderId={ orderId }
 					acceptCard={ true }
 					acceptAlternate={ false }
 					cards={ JSON.parse(jsonCards) }
