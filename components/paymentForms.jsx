@@ -6,6 +6,8 @@ import classNames from 'classnames';
 
 import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { validateEmpty, validateDefined, validateNumberOnly, validateCurrency, runValidators } from 'lib/validators/inputValidators';
+import { formatUSDAmount } from 'lib/utils';
+
 import { toastValidationError } from 'components/customToaster';
 
 import { addCardAndPayByCard, payByCard, payByImage } from 'actions/payment';
@@ -19,7 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCreditCard, faImage } from '@fortawesome/free-solid-svg-icons';
 import { faCcVisa, faCcDiscover, faCcMastercard, faCcAmex } from '@fortawesome/free-brands-svg-icons';
 
-const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPaymentAmount, postFunc, balanceRemaining }) => {
+const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, presetPaymentAmount, postFunc, balanceRemaining }) => {
 
 	// ---------- State Variables
 	const [paymentAmount, setPaymentAmount] = useState(presetPaymentAmount || '');
@@ -179,16 +181,19 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 			const serverResult = await serverActionCall(addCardAndPayByCard, {
 				...creditCard,
 				orderId: orderId,
+				invoiceId: invoiceId,
 				paymentAmount: paymentAmount
 			}, {
 				loading: 'Processing the credit card...',
-				success: 'A new payment has been successfully processed!',
+				success: 'Your credit card has been successfully processed!',
 				error: 'Something went wrong when trying to validate and charge the credit card. Please check your credit card details and try again.'
 			});
 
-			if (serverResult?.success && serverResult?.card) {
+			if (serverResult.success && serverResult?.card) {
 				setExistingCards([...existingCards, serverResult.card]);
 			}
+
+			return serverResult.success;
 		} else {
 			toastValidationError(errors);
 		}
@@ -201,6 +206,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 			const serverResult = await serverActionCall(payByCard, {
 				card: selectedCard,
 				orderId: orderId,
+				invoiceId: invoiceId,
 				paymentAmount: paymentAmount
 			}, {
 				loading: 'Now processing the credit card payment...',
@@ -208,7 +214,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 				error: 'Something went wrong when trying to charge the credit card. Please try again. If you keep seeing this error message, the card is likely being declined.'
 			});
 
-			return serverResult;
+			return serverResult.success;
 		} else {
 			toastValidationError(errors);
 		}
@@ -230,7 +236,7 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 				error: 'Something went wrong when trying to process this payment. Please try again.'
 			});
 
-			return serverResult;
+			return serverResult.success;
 		} else {
 			toastValidationError(errors);
 		}
@@ -240,22 +246,20 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 
 	const submitPayment = async () => {
 		const errors = runValidators(paymentValidationFields);
+		let transactionProcessed = false;
 
 		if (errors.length === 0) {
 			submitButtonRef.current.disabled = true;
+
 			if (cardSection.current && window.parseInt(cardSection.current.style.height, 10)) {
-				if (selectedCard) {
-					await submitCardPayment();
-				} else {
-					await addCardAndSubmitPayment();
-				}
+				transactionProcessed = selectedCard ? await submitCardPayment() : await addCardAndSubmitPayment();
 			}
 			else if (alternateSection.current && window.parseInt(alternateSection.current.style.height, 10)) {
-				await submitAlternatePayment();
+				transactionProcessed = await submitAlternatePayment();
 			}
-			submitButtonRef.current.disabled = false;
 
-			if (postFunc) {
+			submitButtonRef.current.disabled = false;
+			if (transactionProcessed && postFunc) {
 				postFunc();
 			}
 		} else {
@@ -275,10 +279,15 @@ const PaymentForms = ({ orderId, cards, acceptCard, acceptAlternate, presetPayme
 		<>
 			<div className={ styles.paymentAccordion }>
 
+				{ balanceRemaining < Number.POSITIVE_INFINITY ? (
+					<div className={ styles.balanceRemainingTab }>
+						Balance Remaining: ${ formatUSDAmount(balanceRemaining) }
+					</div>
+				) : null }
 				<div className={ styles.paymentAmountSection }>
 					{ presetPaymentAmount ? (
-						<div className={ styles.paymentAmountValue }>
-							Amount to Pay: ${ presetPaymentAmount }
+						<div>
+							Amount to Pay: ${ formatUSDAmount(presetPaymentAmount) }
 						</div>
 					) : (
 						<>

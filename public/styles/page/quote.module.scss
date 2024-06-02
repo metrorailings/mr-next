@@ -327,6 +327,11 @@
 }
 
 .terms-and-conditions-link {
+	@include common.fonts-define-font($family: Avenir Heavy) {
+		letter-spacing: 0.3px;
+		color: common.$colors-low-black;
+	}
+
 	color: common.$colors-logo-blue;
 	cursor: pointer;
 	text-decoration: underline;
@@ -385,6 +390,7 @@
 	margin-top: 20px;
 	padding: 30px;
 	background-color: common.$colors-white;
+	text-align: center;
 }
 
 .modal-scroll-down-notice {
@@ -407,4 +413,28 @@
 	@include common.animations-animation-settings($keyframeSet: scroll-down-arrow, $duration: 0.5s, $timing: ease-in-out, $iterations: infinite);
 
 	margin-left: 5px;
+}
+
+.invoice-finalization-notice {
+	@include common.fonts-define-font($family: Comfortaa);
+
+	border: {
+		radius: 15px;
+		width: 0.25px;
+		style: solid;
+		color: common.$colors-slate-gray;
+	}
+
+	margin: {
+		top: 20px;
+		bottom: 20px;
+		left: auto;
+		right: auto;
+	}
+
+	padding: 15px;
+	background-color: common.$colors-white;
+	text-align: center;
+	max-width: 500px;
+	display: block;
 }

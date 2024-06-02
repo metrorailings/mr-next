@@ -13,6 +13,7 @@ import { getInvoice } from 'lib/http/invoicesDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
+import React from 'react';
 
 const QuoteServer = async ({ searchParams }) => {
 	const orderId = decryptNumber(searchParams?.oid || '');
@@ -53,7 +54,7 @@ const QuoteServer = async ({ searchParams }) => {
 
 				{ /* ORDER ID */ }
 				<span className={ styles.infoColumnOrder }>
-					<span className={ styles.infoColumnHeader }>ORDER #{ quote.orderId }</span>
+					<span className={ styles.infoColumnHeader }>ORDER #{ orderId }</span>
 					<br />
 					{ quote?.dates?.created ? 'Drafted on ' + dayjs(quote.dates.created).format('MMM DD, YYYY') : null }
 					<br />
@@ -65,18 +66,33 @@ const QuoteServer = async ({ searchParams }) => {
 					<span className={ styles.infoColumnHeader }>Customer</span>
 					<br />
 					{ quote.customer.name || '--' }
+					{ quote.customer.address ? (
+						<>
+							<br />
+							{ quote.customer.address }
+						</>
+					) : null }
 					<br/>
-					{ quote.customer.address || '--' }
-					<br/>
-					{ quote.customer.city || '--' }, { quote.customer.state || '--' }, { quote.customer.zipCode || '--' }
-					<br/>
-					{ quote.customer.email.length ? quote.customer.email.join(', ') : '--' }
-					<br/>
-					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ?
-						quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo : '--' }
+					{ quote.customer.city ? + quote.customer.city + ', ' : null }{ quote.customer.state ? quote.customer.state + ' ' : null }{ quote.customer.zipCode || null }
+					{ quote.customer.email.length ? (
+						<>
+							<br />
+							{ quote.customer.email.length ? quote.customer.email.join(', ') : null }
+						</>
+					) : null }
+					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ? (
+							<>
+								<br />
+								{ quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo }								
+							</>
+					) : null }
 				</span>
 			</div>
-			
+
+			{ quote.status !== 'open' ? (
+				<div className={ styles.invoiceFinalizationNotice }>This quote has been { quote.status }.</div>
+			) : null }
+
 			<div className={ styles.quoteContainer }>
 				<div className={ styles.quoteBody }>
 
@@ -121,7 +137,15 @@ const QuoteServer = async ({ searchParams }) => {
 
 			</div>
 
-			<FinalizeSection orderId={ quote.orderId } termsText={ termsRawText } termsFileHandle={ quote.termsFileHandle } amountToPay={ quote.amount } jsonCards={ JSON.stringify(quote.payments.cards) }/>
+			<FinalizeSection
+				orderId={ orderId }
+				invoiceId={ invoiceId }
+				termsText={ termsRawText }
+				termsFileHandle={ quote.termsFileHandle }
+				amountToPay={ quote.amount }
+				invoiceStatus={ quote.status }
+				jsonCards={ JSON.stringify(quote.payments.cards) }
+			/>
 		</div>
 	);
 };

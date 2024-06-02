@@ -2,6 +2,7 @@
 
 import { getOrderById, attachNewCard, attachNewPayment, attachStripeCustomerProfileData } from 'lib/http/ordersDAO';
 import { stripeAddCustomer, stripeAddCreditCard, stripeChargeCard, recordNewCardPayment, uploadPaymentImage, recordNewImagePayment } from 'lib/http/paymentsDAO';
+import { finalizeInvoice } from 'lib/http/invoicesDAO';
 
 export async function addCardAndPayByCard(data) {
 	let paymentIntent = false;
@@ -25,14 +26,21 @@ export async function addCardAndPayByCard(data) {
 				...data
 			}, order);
 			if (paymentIntent) {
-				const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, registeredCard, order.customer.state);
-				await attachNewPayment(order._id, paymentRecord._id);
+				// Create a payment record and attach a reference of that payment record directly to the order
+				const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, registeredCard, order.customer.state, data.invoiceId);
+				await attachNewPayment(order._id, paymentRecord._id, paymentRecord.amount);
+
+				// If this payment follows from an invoice, update the invoice to mark it as paid
+				if (data.invoiceId) {
+					await finalizeInvoice(data.invoiceId);
+				}
 			}
 		}
 	} catch (error) {
 		console.error(error);
 	}
 
+	// @TODO: Add logging here to indicate whether the payment was made, but unsuccessfully recorded in the system
 	return { success: paymentIntent ? true : false, card: registeredCard || null };
 }
 
@@ -48,13 +56,21 @@ export async function payByCard(data) {
 		if (paymentIntent) {
 			// Isolate the credit card responsible for the charge
 			const card = order.payments.cards.find((card) => card.id === paymentIntent.payment_method);
-			const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, card, order.customer.state);
-			await attachNewPayment(order._id, paymentRecord._id);
+
+			// Create a payment record and attach a reference of that payment record directly to the order
+			const paymentRecord = await recordNewCardPayment(paymentIntent, order._id, card, order.customer.state, data.invoiceId);
+			await attachNewPayment(order._id, paymentRecord._id, paymentRecord.amount);
+
+			// If this payment follows from an invoice, update the invoice to mark it as paid
+			if (data.invoiceId) {
+				await finalizeInvoice(data.invoiceId);
+			}
 		}
 	} catch (error) {
 		console.error(error);
 	}
 
+	// @TODO: Add logging here to indicate whether the payment was made, but unsuccessfully recorded in the system
 	return { success: paymentIntent ? true : false };
 }
 
@@ -65,7 +81,7 @@ export async function payByImage(data) {
 		// Upload the check image to storage first before noting it inside the database
 		const uploadedPaymentImage = await uploadPaymentImage(data.paymentImage);
 		const paymentRecord = await recordNewImagePayment(uploadedPaymentImage, data.orderId, data.paymentAmount, order.customer.state);
-		await attachNewPayment(data.orderId, paymentRecord._id);
+		await attachNewPayment(data.orderId, paymentRecord._id, paymentRecord.amount);
 		return { success: true };
 	} catch (error) {
 		console.error(error);

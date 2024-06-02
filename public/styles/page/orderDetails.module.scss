@@ -4,7 +4,7 @@
 @use 'public/styles/page/lib/base';
 @use 'public/styles/page/lib/form';
 
-/* ----------------------- STYLES ----------------------------- */
+/* ----------------------- GENERAL STYLES ----------------------------- */
 
 .page-container {
 	display: flex;
@@ -245,82 +245,6 @@
 	}
 }
 
-.order-payment-section {
-	margin: {
-		top: 10px;
-		bottom: 10px;
-		left: 20px;
-		right: auto;
-	}
-
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-}
-
-.past-payments-section {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-}
-
-.past-payments-header {
-	@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-subsection);
-
-	border: {
-		width: 1px;
-		style: solid;
-		color: common.$colors-silver;
-
-		top-left-radius: 10px;
-		top-right-radius: 10px;
-		bottom: none;
-	}
-
-	margin: {
-		left: auto;
-		right: auto;
-	}
-
-	padding: {
-		top: 10px;
-		bottom: 20px;
-	}
-
-	background-color: common.$colors-white;
-	width: 70%;
-	text-align: center;
-}
-
-.past-payments-record {
-	border: {
-		width: 1px;
-		style: solid;
-		color: common.$colors-silver;
-	}
-
-	display: grid;
-	grid-template-rows: 2fr 2fr 1fr;
-	width: 70%;
-}
-
-.past-payment-significant-data {
-	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
-
-	padding: 10px;
-}
-
-.past-payment-minor-data {
-	@include common.fonts-define-font($family: Avenir Light);
-
-	padding: {
-		top: 20px;
-		bottom: 20px;
-		left: 10px;
-		right: 10px;
-	}
-}
-
 .price-label {
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
 		letter-spacing: 1px;
@@ -332,6 +256,85 @@
 	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
 		letter-spacing: 0.5px;
 	};
+}
+
+.order-payment-section {
+	margin: {
+		top: 10px;
+		bottom: 10px;
+		left: 20px;
+		right: auto;
+	}
+
+	display: flex;
+	flex-direction: column;
+	justify-self: center;
+	min-width: 750px;
+}
+
+.past-payments-table {
+	border: {
+		style: solid;
+		width: 0.5px;
+		color: common.$colors-black;
+	}
+
+	margin: {
+		right: 20px;
+	}
+}
+
+.past-payments-record {
+	border-bottom: {
+		style: solid;
+		width: 0.25px;
+		color: common.$colors-low-black;
+	}
+
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.past-payment-data {
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	& > * {
+		margin: {
+			top: 3px;
+			bottom: 3px;
+		}
+	}
+
+	&-card {
+		@extend .past-payment-data;
+		@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-default);
+
+		flex: 1;
+	}
+
+	&-amount {
+		@extend .past-payment-data;
+		@include common.fonts-define-font($family: Roboto Mono, $size: common.$fonts-subsection);
+
+		flex: 2;
+	}
+
+	&-date {
+		@extend .past-payment-data;
+		@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-default);
+
+		flex: 1;
+	}
+}
+
+.past-payment-minor-data {
+	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-secondary);
+
+	text-align: center;
 }
 
 .invoice-amount-modal-form {
@@ -361,6 +364,8 @@
 	margin: {
 		right: 20px;
 	}
+
+	min-width: 600px;
 }
 
 .invoice-table-header-row {

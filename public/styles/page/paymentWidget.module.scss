@@ -13,6 +13,28 @@
 	width: 90%;
 }
 
+.balance-remaining-tab {
+	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+
+	border: {
+		width: 0.25px;
+		style: solid;
+		color: common.$colors-silver;
+		top-left-radius: 10px;
+		top-right-radius: 10px;
+	}
+
+	padding: {
+		top: 5px;
+		bottom: 5px;
+		left: 15px;
+		right: 15px;
+	}
+
+	text-align: center;
+	background-color: common.$colors-faint-silver;
+}
+
 .payment-amount-label {
 	@extend %label;
 

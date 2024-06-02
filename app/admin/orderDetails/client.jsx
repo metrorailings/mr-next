@@ -4,8 +4,6 @@
 // @TODO - Split the code out into multiple files wherever possible
 
 import React, { useState, useReducer, useEffect } from 'react';
-import Image from 'next/image';
-import dayjs from 'dayjs';
 import _ from 'lodash';
 
 import { saveOrder, generateInvoice } from 'actions/order';
@@ -25,10 +23,11 @@ import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/ord
 import SalesAssigneeActions from 'app/admin/orderDetails/SalesAssigneeActions';
 import InvoiceAmountModal from 'app/admin/orderDetails/InvoiceAmountModal';
 import InvoiceList from 'app/admin/orderDetails/InvoiceList';
+import PaymentHistory from 'app/admin/orderDetails/PaymentHistory';
 
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';
 import { serverActionCall } from 'lib/http/clientHttpRequester';
-import { buildUserMap } from 'lib/userInfo';
+import { getUserSession, buildUserMap } from 'lib/userInfo';
 import { publish, calculateOrderTotal, formatUSDAmount } from 'lib/utils';
 
 import types from 'lib/designs/types';
@@ -48,10 +47,6 @@ import cableSizes from 'lib/designs/cableSizes';
 import glassTypes from 'lib/designs/glassTypes';
 import glassCharacteristics from 'lib/designs/glassCharacteristics';
 
-import visaLogo from 'assets/images/logos/visa.svg';
-import amexLogo from 'assets/images/logos/amex.svg';
-import mastercardLogo from 'assets/images/logos/mastercard.svg';
-import discoverLogo from 'assets/images/logos/discover.svg';
 import styles from 'public/styles/page/orderDetails.module.scss';
 
 const OrderDetailsPage = ({ jsonOrder }) => {
@@ -60,7 +55,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 	
 	const [isDirty, setIsDirty] = useState(false);
 	const [userMap, setUserMap] = useState({});
-	const invoiceModalData = { amount: 0 };
+	const [user, setUser] = useState(null);
 	const [orderDetails, orderDispatch] = useReducer(orderReducer, {
 		_id: order._id || 0,
 		version: order.version || 1,
@@ -164,6 +159,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 	const approvedInvoices = orderDetails.invoices.reduce((accumulator, invoice) => accumulator + (invoice.status === 'finalized' ? 1 : 0), 0);
 	const assignedUsers = orderDetails.sales.assignees.map((assignee) => assignee.username);
+	const invoiceModalData = { amount: 0 };
 
 	const handleOrderUpdate = (event) => {
 		orderDispatch({
@@ -246,21 +242,6 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 			});
 		}
 	}
-
-	const determineCardBrandToShow = (brand) => {
-		switch (brand) {
-			case 'visa':
-				return visaLogo;
-			case 'amex':
-				return amexLogo;
-			case 'discover':
-				return discoverLogo;
-			case 'mastercard':
-				return mastercardLogo;
-			default:
-				return '';
-		}
-	};
 
 	// ------- -Validation Logic
 	const testAreaCode = () => orderDetails.customer.areaCode.length === 3 && validateNumberOnly(orderDetails.customer.areaCode);
@@ -389,6 +370,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		}
 		userLoader();
 
+		setUser(getUserSession());
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -892,25 +874,25 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 									<label className={ styles.priceLabel }>Subtotal</label>
 									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.subtotal) }</span>
 								</span>
-	
+
 								<span className={ styles.priceGroup }>
 									<label className={ styles.priceLabel }>+</label>
 								</span>
-	
+
 								<span className={ styles.priceGroup }>
 									<label className={ styles.priceLabel }>Taxes</label>
 									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.tax) }</span>
 								</span>
-	
+
 								<span className={ styles.priceGroup }>
 									<label className={ styles.priceLabel }>+</label>
 								</span>
-	
+
 								<span className={ styles.priceGroup }>
 									<label className={ styles.priceLabel }>Fees</label>
 									<span className={ styles.priceText }>${ formatUSDAmount(orderDetails.pricing.fee) }</span>
 								</span>
-	
+
 								<span className={ styles.priceGroup }>
 									<label className={ styles.priceLabel }>=</label>
 								</span>
@@ -927,8 +909,9 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 						{/* ---------- PAYMENTS SECTION ---------- */ }
 
 						<div className={ styles.orderFormSection }>
-							{ orderDetails.payments.balanceRemaining > 0 ? (
-								<div className={ styles.orderPaymentSection }>
+
+							{ user?.permissions?.makePayments && orderDetails.payments.balanceRemaining > 0 ? (
+								<span className={ styles.orderPaymentSection }>
 									<PaymentForms
 										orderId={ orderDetails._id }
 										acceptCard={ true }
@@ -938,45 +921,23 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 										orderState={ orderDetails.customer.state || '' }
 										postFunc={ () => {
 											console.log('In post func');
-										} }
+										}}
 									/>
-								</div>
+								</span>
 							) : null }
 
 							{ orderDetails.payments.charges?.length ? (
-								<span className={ styles.pastPaymentsSection }>
-									<div className={ styles.pastPaymentsHeader }>Past Payments</div>
-									{ orderDetails.payments.charges.map((payment) => {
-										return (
-											<div className={ styles.pastPaymentsRecord } key={ payment._id }>
-												<div className={ styles.pastPaymentSignificantData }>{ payment.amount }</div>
-												<div className={ styles.pastPaymentSignificantData }>
-													{ payment.type === 'stripe' ? (
-														<>
-															<Image
-																src={ determineCardBrandToShow(payment.stripeMetadata.card.brand) }
-																width={ 64 }
-																height={ 64 }
-																alt={ payment.stripeMetadata.card.brand }
-															/>
-															<span>(...{ payment.stripeMetadata.card.last4 })</span>
-														</>
-													) : (
-														<Image src={ payment.imageMetadata.url } width={ 160 } height={ 90 } alt='Image payment'/>
-													) }
-												</div>
-												<div className={ styles.pastPaymentMinorData }>Processed On { dayjs(payment.date).format('MMM DD, YYYY') }</div>
-											</div>
-										);
-									})}
+								<span className={ styles.orderPaymentSection }>
+									<label htmlFor='payments.charges' className={ styles.orderFormLabel }>Payment History</label>
+									<PaymentHistory/>
 								</span>
 							) : null }
 
 							{ orderDetails.invoices.length ? (
-								<div className={ styles.orderPaymentSection }>
+								<span className={ styles.orderPaymentSection }>
 									<label htmlFor='invoices' className={ styles.orderFormLabel }>Invoice History</label>
-									<InvoiceList />
-								</div>
+									<InvoiceList/>
+								</span>
 							) : null }
 
 						</div>

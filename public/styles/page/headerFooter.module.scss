@@ -49,7 +49,7 @@
 	}
 
 	@include common.responsive-portrait-mobile-only() {
-		height: 120px;
+		height: 90px;
 	}
 
 	@include common.responsive-landscape-mobile-only() {
@@ -155,7 +155,7 @@
 	}
 
 	@include common.responsive-portrait-mobile-only() {
-		height: 120px;
+		height: 90px;
 	}
 
 	@include common.responsive-landscape-mobile-only() {
