@@ -2,40 +2,38 @@
 
 import { readFileSync } from 'node:fs';
 import { redirect } from 'next/navigation'
-import Image from 'next/image';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
-import FinalizeSection from 'app/(public)/quote/finalize';
+import FinalizeSection from 'app/(public)/invoice/finalize';
 
-import { translateDesignCode, fetchDesignMetadata } from 'lib/designs/translator';
+import PaymentHistory from 'components/public/PaymentHistory';
+
 import { decryptNumber } from 'lib/utils';
 import { getInvoice } from 'lib/http/invoicesDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
 
-const QuoteServer = async ({ searchParams }) => {
+const InvoiceServer = async ({ searchParams }) => {
 	const orderId = decryptNumber(searchParams?.oid || '');
 	const invoiceId = decryptNumber(searchParams?.iid || '');
 
-	const quote = await getInvoice(orderId, invoiceId);
+	const invoice = await getInvoice(orderId, invoiceId);
 
-	if (quote === null || quote.category !== 'quote' ) {
+	if (invoice === null || invoice.category === 'quote' ) {
 		redirect('/');
 	}
 
-	// Grab a list of all selected design options
-	const designs = Object.keys(quote.design);
-
 	// Pull the 'Terms and Conditions' from the file system
-	const termsRawText = readFileSync( process.cwd() + '/' + quote.termsFileHandle, { encoding: 'utf-8' });
+	const termsRawText = readFileSync(process.cwd() + '/' + invoice.termsFileHandle, { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>
 			<div className={ styles.logoHeaderContainer }>
 				<Image src={ logo } alt="Logo" className={ styles.logoHeader } priority />
 			</div>
-			<div className={ styles.pageHeader }>QUOTE</div>
+			<div className={ styles.pageHeader }>INVOICE</div>
 
 			<div className={ styles.infoSection }>
 				{ /* COMPANY INFO */ }
@@ -90,10 +88,10 @@ const QuoteServer = async ({ searchParams }) => {
 						</>
 					) : null }
 					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ? (
-							<>
-								<br />
-								{ quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo }								
-							</>
+						<>
+							<br />
+							{ quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo }
+						</>
 					) : null }
 				</span>
 			</div>

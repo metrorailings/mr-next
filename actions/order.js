@@ -4,9 +4,7 @@ import {
 	saveNewOrder,
 	saveChangesToOrder,
 	attachFileToOrder,
-	deleteFileFromOrder as deleteOrderFile,
-	updateStatus,
-	recordNewInvoice,
+	deleteFileFromOrder as deleteOrderFile
 } from 'lib/http/ordersDAO';
 
 import {
@@ -16,11 +14,6 @@ import {
 	uploadImageToVercel,
 	deleteFromVercel
 } from 'lib/http/filesDAO';
-
-import {
-	createNewQuoteInvoice,
-	createNewProgressInvoice
-} from 'lib/http/invoicesDAO';
 
 import { validateEmail, validateEmpty, runValidators } from 'lib/validators/inputValidators';
 import { acceptableImageExtensions, shopStatuses } from 'lib/dictionary';
@@ -64,37 +57,8 @@ export async function createProspectFromContactUs(data) {
 
 export async function saveOrder(data) {
 	try {
-		const order = data._id ? await saveChangesToOrder(data) : await saveNewOrder(data);
+		const order = data._id ? await saveChangesToOrder(data._id, data) : await saveNewOrder(data);
 		return { success: true, order: JSON.stringify(order) };
-	} catch (error) {
-		console.error(error);
-		return { success: false };
-	}
-}
-
-/**
- * Server action designed to generate a new invoice for a given order
- *
- * @param data - the order object to model the invoice off
- */
-export async function generateInvoice(data) {
-	const order = data.order;
-
-	try {
-		// Figure out what type of invoice to create here
-		let isQuote = true;
-		for (let i = 0; i < order.invoices.length; i += 1) {
-			if (order.invoices[i].status === 'finalized') {
-				isQuote = false;
-			}
-		}
-
-		const processedInvoice = isQuote ? await createNewQuoteInvoice(order, data.amountToPay) : await createNewProgressInvoice(order, data.amountToPay);
-
-		// Link the invoice to the order it's associated with
-		await recordNewInvoice(order, processedInvoice._id);
-
-		return { success: true, invoice: JSON.stringify(processedInvoice) };
 	} catch (error) {
 		console.error(error);
 		return { success: false };
@@ -103,8 +67,11 @@ export async function generateInvoice(data) {
 
 export async function moveOrderIntoProduction(data) {
 	try {
-		await updateStatus(data.id, shopStatuses[0].key);
-		return { success: true };
+		const order = await saveChangesToOrder(data.orderId,{ 
+			status: shopStatuses[0].key,
+			'text.agreement': process.env.CURRENT_TERMS_AND_CONDITIONS_FOR_INSTALL_ORDER
+		});
+		return { success: true, order: order };
 	} catch (error) {
 		console.error(error);
 		return { success: false };

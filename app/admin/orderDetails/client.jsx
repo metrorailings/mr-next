@@ -6,7 +6,8 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import _ from 'lodash';
 
-import { saveOrder, generateInvoice } from 'actions/order';
+import { saveOrder } from 'actions/order';
+import { generateInvoice } from 'actions/invoice';
 
 import Multitext from 'components/multitext';
 import MultiSelect from 'components/multiSelect';
@@ -23,7 +24,7 @@ import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/ord
 import SalesAssigneeActions from 'app/admin/orderDetails/SalesAssigneeActions';
 import InvoiceAmountModal from 'app/admin/orderDetails/InvoiceAmountModal';
 import InvoiceList from 'app/admin/orderDetails/InvoiceList';
-import PaymentHistory from 'app/admin/orderDetails/PaymentHistory';
+import PaymentHistory from 'components/public/PaymentHistory';
 
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';
 import { serverActionCall } from 'lib/http/clientHttpRequester';

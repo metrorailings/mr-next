@@ -1046,3 +1046,70 @@
 		opacity: 0.4;
 	}
 }
+
+/* ----------------------- PAYMENT HISTORY ----------------------------- */
+
+.past-payments-table {
+	border: {
+		style: solid;
+		width: 0.5px;
+		color: common.$colors-black;
+	}
+
+	margin: {
+		right: 20px;
+	}
+}
+
+.past-payments-record {
+	border-bottom: {
+		style: solid;
+		width: 0.25px;
+		color: common.$colors-low-black;
+	}
+
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.past-payment-data {
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	& > * {
+		margin: {
+			top: 3px;
+			bottom: 3px;
+		}
+	}
+
+	&-card {
+		@extend .past-payment-data;
+		@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-default);
+
+		flex: 1;
+	}
+
+	&-amount {
+		@extend .past-payment-data;
+		@include common.fonts-define-font($family: Roboto Mono, $size: common.$fonts-subsection);
+
+		flex: 2;
+	}
+
+	&-date {
+		@extend .past-payment-data;
+		@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-default);
+
+		flex: 1;
+	}
+}
+
+.past-payment-minor-data {
+	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-secondary);
+
+	text-align: center;
+}

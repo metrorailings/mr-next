@@ -8,7 +8,7 @@ import { OrdersContext } from 'app/admin/orderDetails/orderContext';
 
 import { formatUSDAmount } from 'lib/utils';
 
-import styles from 'public/styles/page/orderDetails.module.scss';
+import styles from 'public/styles/page/components.module.scss';
 import visaLogo from 'assets/images/logos/visa.svg';
 import amexLogo from 'assets/images/logos/amex.svg';
 import mastercardLogo from 'assets/images/logos/mastercard.svg';
