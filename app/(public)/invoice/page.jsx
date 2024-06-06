@@ -3,14 +3,16 @@
 import { readFileSync } from 'node:fs';
 import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
+import Markdown from 'react-markdown';
 import Image from 'next/image';
 
 import FinalizeSection from 'app/(public)/invoice/finalize';
 
-import PaymentHistory from 'components/public/PaymentHistory';
-
-import { decryptNumber } from 'lib/utils';
+import { decryptNumber, formatUSDAmount } from 'lib/utils';
+import { getPaymentsByOrderId } from 'lib/http/paymentsDAO';
 import { getInvoice } from 'lib/http/invoicesDAO';
+import { getUsersByUsername } from 'lib/http/usersDAO';
+import { retrieveCards } from 'lib/http/ordersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
@@ -25,13 +27,28 @@ const InvoiceServer = async ({ searchParams }) => {
 		redirect('/');
 	}
 
+	// Fetch all salesman information as well as past payments made against the order with which this invoices is associated and the cards that were used on those past payments
+	const salesmen = await getUsersByUsername(invoice.sales.assignees.map(assignee => assignee.username));
+	const payments = await getPaymentsByOrderId(orderId);
+	const cards = await retrieveCards(orderId);
+
+	// Pull the city/state information together into one coherent string
+	let cityStateInfo = [];
+	if (invoice.customer.city) {
+		cityStateInfo.push(invoice.customer.city);
+	}
+	if (invoice.customer.state) {
+		cityStateInfo.push(invoice.customer.state);
+	}
+	cityStateInfo = cityStateInfo.join(',');
+
 	// Pull the 'Terms and Conditions' from the file system
 	const termsRawText = readFileSync(process.cwd() + '/' + invoice.termsFileHandle, { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>
 			<div className={ styles.logoHeaderContainer }>
-				<Image src={ logo } alt="Logo" className={ styles.logoHeader } priority />
+				<Image src={ logo } alt="Logo" className={ styles.logoHeader } priority/>
 			</div>
 			<div className={ styles.pageHeader }>INVOICE</div>
 
@@ -39,7 +56,7 @@ const InvoiceServer = async ({ searchParams }) => {
 				{ /* COMPANY INFO */ }
 				<span className={ styles.infoColumnCompany }>
 					<span className={ styles.infoColumnHeader }>Metro Railings</span>
-					<br />
+					<br/>
 					{ process.env.NEXT_PUBLIC_COMPANY_ADDRESS_1 }
 					<br/>
 					{ process.env.NEXT_PUBLIC_COMPANY_ADDRESS_2 }
@@ -51,110 +68,75 @@ const InvoiceServer = async ({ searchParams }) => {
 
 				{ /* ORDER ID */ }
 				<span className={ styles.infoColumnOrder }>
-					<span className={ styles.infoColumnHeader }>ORDER #{ orderId }</span>
+					<span className={ styles.infoColumnHeader }>ORDER #{ invoice.orderId }</span>
+					<br/>
+					Invoice #{ invoice._id }
 					<br />
-					{ quote?.dates?.created ? 'Drafted on ' + dayjs(quote.dates.created).format('MMM DD, YYYY') : null }
-					<br />
-					Status: <i className={ styles.quoteStatusText }>{ quote.status.toUpperCase() }</i>
-					<br />
-					<span className={ styles.infoColumnHeader }>Salespeople</span>
-					{ quote.sales.assignees.each((assignee) => {
-						return (
-							<>
-								<br/>
-								<span>{ assignee }</span>
-							</>
-						);
-					})}
+					{ 'Drafted on ' + dayjs(invoice.dates.created).format('MMMM DD, YYYY') }
+					<br/>
+					Status: <i className={ styles.quoteStatusText }>{ invoice.status.toUpperCase() }</i>
 				</span>
 
 				{ /* BILL TO INFO */ }
 				<span className={ styles.infoColumnCustomer }>
 					<span className={ styles.infoColumnHeader }>Customer</span>
-					<br />
-					{ quote.customer.name || '--' }
-					{ quote.customer.address ? (
+					<br/>
+					{ invoice.customer.name }
+					{ invoice.customer.address ? (
 						<>
-							<br />
-							{ quote.customer.address }
+							<br/>
+							{ invoice.customer.address }
 						</>
 					) : null }
 					<br/>
-					{ quote.customer.city ? + quote.customer.city + ', ' : null }{ quote.customer.state ? quote.customer.state + ' ' : null }{ quote.customer.zipCode || null }
-					{ quote.customer.email.length ? (
+					{ cityStateInfo }
+					{ invoice.customer.email.map((email) => {
 						<>
-							<br />
-							{ quote.customer.email.length ? quote.customer.email.join(', ') : null }
+							<br/>
+							{ email }
 						</>
-					) : null }
-					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ? (
+					})}
+					{ invoice.customer.areaCode && invoice.customer.phoneOne && invoice.customer.phoneTwo ? (
 						<>
-							<br />
-							{ quote.customer.areaCode + '-' + quote.customer.phoneOne + '-' + quote.customer.phoneTwo }
+							<br/>
+							{ invoice.customer.areaCode + '-' + invoice.customer.phoneOne + '-' + invoice.customer.phoneTwo }
 						</>
 					) : null }
 				</span>
-			</div>
 
-			{ quote.status !== 'open' ? (
-				<div className={ styles.invoiceFinalizationNotice }>This quote has been { quote.status }.</div>
-			) : null }
-
-			<div className={ styles.quoteContainer }>
-				<div className={ styles.quoteBody }>
-
-					{ /* SUMMARY */ }
-					{ quote.text.additionalDescription ? (
-						<div className={ styles.quoteMemo } dangerouslySetInnerHTML={{ __html: quote.text.additionalDescription }} />
-					) : null }
-
-					{ /* DESIGN DETAILS */ }
-					{ quote.design.type !== 'T-MISC' ? (
-						<div className={ styles.quoteDesignDetails }>
-							{ designs.map((design, index) => {
-								let designSpecifics = translateDesignCode(quote.design[design]);
-								let designMetadata = fetchDesignMetadata(quote.design[design]);
-								return (
-									<div className={ styles.quoteDesignRow } key={ index }>
-										<span className={ styles.quoteDesignRowLabel }>
-											<div className={ styles.quoteDesignRowCategory }>{ designMetadata.technicalLabel }</div>
-											<div className={ styles.quoteDesignRowSelection }>{ designSpecifics.label }</div>
-										</span>
-										<span className={ styles.quoteDesignRowDescriptor }>{ quote.designDescription[design] }</span>
-									</div>
-								);
-							})}
-						</div>
-					) : null }
-				</div>
-
-				{ /* PRICE */ }
-				<div className={ styles.quotePriceLine }>
-					<span className={ styles.quotePriceHeader }>Subtotal</span>
-					<span className={ styles.quotePriceListing }>${ quote.pricing.subtotal?.toFixed(2) || '--' }</span>
-				</div>
-				<div className={ styles.quotePriceLine }>
-					<span className={ styles.quotePriceHeader }>Tax</span>
-					<span className={ styles.quotePriceListing }>${ quote.pricing.tax?.toFixed(2) || '--' }</span>
-				</div>
-				<div className={ styles.quotePriceLine }>
-					<span className={ styles.quotePriceHeader }>AMOUNT DUE</span>
-					<span className={ styles.quotePriceListing }>${ quote.pricing.orderTotal?.toFixed(2) || '--' }</span>
-				</div>
+				{ /* SALES REPS */ }
+				<span className={ styles.infoColumnSalesReps }>
+					<span className={ styles.infoColumnHeader }>Sales Reps</span>
+					{ salesmen.map((salesman, index) => {
+						return (
+							<div key={ index } className={ styles.salesmanListing }>
+								<div>{ salesman.firstName + ' ' + salesman.lastName }</div>
+								<div>{ salesman.email }</div>
+								<div>{ salesman.phone }</div>
+							</div>
+						);
+					})}
+				</span>
 
 			</div>
+
+			<div className={ styles.invoiceNotice }>INVOICE AMOUNT: ${ formatUSDAmount(invoice.amount) }</div>
 
 			<FinalizeSection
 				orderId={ orderId }
-				invoiceId={ invoiceId }
-				termsText={ termsRawText }
-				termsFileHandle={ quote.termsFileHandle }
-				amountToPay={ quote.amount }
-				invoiceStatus={ quote.status }
-				jsonCards={ JSON.stringify(quote.payments.cards) }
+				jsonInvoice={ JSON.stringify(invoice) }
+				jsonCards={ JSON.stringify(cards) }
+				jsonPayments={ JSON.stringify(payments) }
+				invoiceAmount={ invoice.amount }
 			/>
+
+			<div className={ styles.termsAndConditions }>
+				<div className={ styles.termsAndConditionsHeader }>INVOICE TERMS</div>
+				<Markdown>{ termsRawText }</Markdown>
+				<p>Consult the finalized quote that was sent for this order for the full terms and conditions.</p>
+			</div>
 		</div>
 	);
 };
 
-export default QuoteServer;
+export default InvoiceServer;

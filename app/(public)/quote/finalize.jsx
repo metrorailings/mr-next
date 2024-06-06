@@ -8,11 +8,12 @@ import TermsModal from 'app/(public)/quote/termsModal';
 
 import styles from 'public/styles/page/quote.module.scss';
 
-const FinalizeSection = ({ termsText, orderId, invoiceId, invoiceStatus, amountToPay, termsFileHandle, jsonCards }) => {
+const FinalizeSection = ({ orderId, jsonInvoice, termsText, termsFileHandle }) => {
 	const [showTermsModal, setShowTermsModal] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
 
 	const router = useRouter();
+	const invoice = JSON.parse(jsonInvoice);
 
 	const openModal = () => {
 		setShowTermsModal(true);
@@ -23,16 +24,16 @@ const FinalizeSection = ({ termsText, orderId, invoiceId, invoiceStatus, amountT
 	}
 
 	const finalizeOrder = () => {
-		window.setTimeout(() => { router.push('/quote/thank-you?orderId=' + orderId) }, 1500);
+		window.setTimeout(() => { router.push('/quote/thank-you?orderId=' + orderId + '&amount=' + invoice.amount) }, 1500);
 	}
 
 	return (
 		<>
-			{ invoiceStatus === 'open' ? (
+			{ invoice.status === 'open' ? (
 				<>
 					<div className={ styles.termsAcceptedSection }>
-						<input id='termsAccepted' type='checkbox' className={ styles.termsAcceptedCheckbox } checked={ termsAccepted } readOnly/>
-						<label onClick={ () => setTermsAccepted(!termsAccepted) }></label>
+						<input id='termsAccepted' type='checkbox' className={ styles.termsAcceptedCheckbox } checked={ termsAccepted } readOnly />
+						<label onClick={ () => setTermsAccepted(!(termsAccepted)) }></label>
 						<span className={ styles.termsAcceptedLabel }>I have read and accepted the <span className={ styles.termsAndConditionsLink } onClick={ openModal }>terms and conditions</span>.</span>
 					</div>
 					<div className={ styles.paymentSection }>
@@ -43,12 +44,12 @@ const FinalizeSection = ({ termsText, orderId, invoiceId, invoiceStatus, amountT
 						) : null }
 						<PaymentForms
 							orderId={ orderId }
-							invoiceId={ invoiceId }
+							invoiceId={ invoice._id }
 							acceptCard={ true }
 							acceptAlternate={ false }
-							cards={ JSON.parse(jsonCards) }
+							cards={ [] }
 							postFunc={ finalizeOrder }
-							presetPaymentAmount={ amountToPay }
+							presetPaymentAmount={ invoice.amount }
 						/>
 					</div>
 				</>

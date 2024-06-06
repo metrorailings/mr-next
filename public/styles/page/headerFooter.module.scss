@@ -45,7 +45,7 @@
 	justify-content: flex-start;
 
 	@include common.responsive-desktop-only() {
-		height: 100px;
+		height: 70px;
 	}
 
 	@include common.responsive-portrait-mobile-only() {
@@ -151,7 +151,7 @@
 	display: block;
 
 	@include common.responsive-desktop-only() {
-		height: 100px;
+		height: 70px;
 	}
 
 	@include common.responsive-portrait-mobile-only() {

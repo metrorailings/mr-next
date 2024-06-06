@@ -287,7 +287,7 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 				<div className={ styles.paymentAmountSection }>
 					{ presetPaymentAmount ? (
 						<div>
-							Amount to Pay: ${ formatUSDAmount(presetPaymentAmount) }
+							Amount Owed Now: ${ formatUSDAmount(presetPaymentAmount) }
 						</div>
 					) : (
 						<>

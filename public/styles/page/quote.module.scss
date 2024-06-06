@@ -52,13 +52,20 @@
 		right: auto;
 	}
 
-	width: 80%;
-	display: flex;
-	flex-wrap: wrap;
-}
+	width: 95%;
+	display: grid;
 
-.info-column-header {
-	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
+	@include common.responsive-desktop-only() {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	@include common.responsive-tablet-only() {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@include common.responsive-phone-only() {
+		grid-template-columns: 1fr;
+	}
 }
 
 .info-column {
@@ -76,14 +83,17 @@
 	&-company {
 		@extend .info-column;
 
-		@include common.responsive-tablet-up() {
+		@include common.responsive-desktop-only() {
 			text-align: left;
-			flex: 1;
+		}
+
+		@include common.responsive-tablet-only() {
+			text-align: left;
+			order: 1;
 		}
 
 		@include common.responsive-phone-only() {
 			text-align: center;
-			width: 100%;
 			order: 2;
 		}
 	}
@@ -91,14 +101,17 @@
 	&-order {
 		@extend .info-column;
 
-		@include common.responsive-tablet-up() {
+		@include common.responsive-desktop-only() {
 			text-align: center;
-			flex: 1;
+		}
+
+		@include common.responsive-tablet-only() {
+			text-align: left;
+			order: 3;
 		}
 
 		@include common.responsive-phone-only() {
 			text-align: center;
-			width: 100%;
 			order: 1;
 		}
 	}
@@ -106,17 +119,68 @@
 	&-customer {
 		@extend .info-column;
 
-		@include common.responsive-tablet-up() {
+		@include common.responsive-desktop-only() {
+			text-align: center;
+		}
+
+		@include common.responsive-tablet-only() {
 			text-align: right;
-			flex: 1;
+			order: 4;
 		}
 
 		@include common.responsive-phone-only() {
 			text-align: center;
-			width: 100%;
+			order: 4;
+		}
+	}
+
+	&-sales-reps {
+		@extend .info-column;
+
+		@include common.responsive-desktop-only() {
+			text-align: right;
+		}
+
+		@include common.responsive-tablet-only() {
+			text-align: right;
+			order: 2;
+		}
+
+		@include common.responsive-phone-only() {
+			text-align: center;
 			order: 3;
 		}
 	}
+}
+
+.info-column-header {
+	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
+}
+
+.salesman-listing {
+	border-bottom: {
+		width: 1px;
+		style: solid;
+		color: common.$colors-silver;
+	}
+
+	padding: {
+		top: 3px;
+		bottom: 3px;
+	}
+
+	display: flex;
+	flex-direction: column;
+
+	&:last-of-type {
+		border-bottom: none;
+	}
+}
+
+.salesman-listing-cell {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
 }
 
 .quote-status-text {
@@ -282,6 +346,69 @@
 	flex: 1;
 }
 
+.invoice-body {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+
+	@include common.responsive-mobile-only() {
+		grid-template-columns: 1fr;
+	}
+}
+
+.invoice-body-section-header {
+	@include common.fonts-define-font($family: Avenir Heavy) {
+		text-decoration: underline;
+	};
+
+	margin: {
+		top: 15px;
+		bottom: 15px;
+	}
+}
+
+.invoice-body-row {
+	margin: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	width: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.invoice-body-label {
+	@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-secondary);
+
+	margin-right: 5px;
+	text-align: right;
+	flex: 1;
+}
+
+.invoice-body-amount {
+	@include common.fonts-define-font($family: Avenir Heavy);
+
+	margin-left: 5px;
+	text-align: left;
+	flex: 1;
+}
+
+.invoice-body-section {
+	@include common.fonts-define-font($family: Comfortaa);
+
+	margin: {
+		top: 15px;
+		bottom: 15px;
+		left: 25px;
+		right: 25px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: column;
+}
+
 .terms-accepted-section {
 	margin: {
 		top: 25px;
@@ -338,10 +465,51 @@
 }
 
 .terms-and-conditions {
+	@include common.fonts-define-font($family: Avenir Light);
+
 	margin: {
+		top: 35px;
 		left: 5%;
 		right: 5%;
 	}
+
+	line-height: 1.5em;
+	letter-spacing: 0.5px;
+}
+
+.terms-and-conditions-header {
+	@include common.fonts-define-font($family: Avenir Heavy) {
+		text-decoration: underline;
+	}
+
+	margin: {
+		bottom: 20px;
+	}
+
+	text-align: center;
+	width: 100%;
+}
+
+.modal-scroll-down-notice {
+	@include common.animations-transition-settings($property: height);
+	@include common.fonts-define-font($size: common.$fonts-secondary) {
+		color: common.$colors-white;
+	};
+
+	padding: {
+		top: 5px;
+		bottom: 5px;
+	}
+
+	background-color: common.$colors-slate-gray;
+	text-align: center;
+	cursor: pointer;
+}
+
+.modal-scroll-down-icon {
+	@include common.animations-animation-settings($keyframeSet: scroll-down-arrow, $duration: 0.5s, $timing: ease-in-out, $iterations: infinite);
+
+	margin-left: 5px;
 }
 
 .print-iframe {
@@ -393,29 +561,7 @@
 	text-align: center;
 }
 
-.modal-scroll-down-notice {
-	@include common.animations-transition-settings($property: height);
-	@include common.fonts-define-font($size: common.$fonts-secondary) {
-		color: common.$colors-white;
-	};
-
-	padding: {
-		top: 5px;
-		bottom: 5px;
-	}
-
-	background-color: common.$colors-slate-gray;
-	text-align: center;
-	cursor: pointer;
-}
-
-.modal-scroll-down-icon {
-	@include common.animations-animation-settings($keyframeSet: scroll-down-arrow, $duration: 0.5s, $timing: ease-in-out, $iterations: infinite);
-
-	margin-left: 5px;
-}
-
-.invoice-finalization-notice {
+.invoice-notice {
 	@include common.fonts-define-font($family: Comfortaa);
 
 	border: {

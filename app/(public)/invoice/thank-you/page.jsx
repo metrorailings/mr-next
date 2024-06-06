@@ -25,16 +25,16 @@ const ThankYouServer = async ({ searchParams }) => {
 	return (
 		<div className={ styles.pageContainer }>
 			<div className={ styles.pageHeader }>
-				Thank you so much for choosing us!
+				Thank you so much for your payment!
 			</div>
 			<p className={ styles.infoText }>
-				We have received your payment! Our credit card processor should be sending a receipt for ${ formatUSDAmount(amount) } soon to one of the e-mail addresses listed on this order.
+				Our credit card processor should be sending a receipt for ${ formatUSDAmount(amount) } soon to one of the e-mail addresses listed on this order.
 			</p>
 			<p className={ styles.infoText }>
 				If a receipt never arrives or there is no e-mail address associated with this order, please call your sales rep for a copy of the receipt.
 			</p>
 			<p className={ styles.infoText }>
-				We will now proceed forward with your order. If you have any more questions, feel free to reach out to the sales rep(s) managing your order. All contact information is below.
+				If you have any more questions or concerns, feel free to reach out to the sales rep(s) managing your order. All contact information is below.
 			</p>
 			<div className={ styles.salesmanTable }>
 				{ users.map((user, index) => {

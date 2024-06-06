@@ -42,7 +42,11 @@ const InvoiceList = () => {
 	}
 
 	const navigateToInvoice = (invoice) => {
-		window.open('/quote?oid=' + obfuscateNumber(invoice.orderId) + '&iid=' + obfuscateNumber(invoice._id), '_blank');
+		if (invoice.category === 'quote') {
+			window.open('/quote?oid=' + obfuscateNumber(invoice.orderId) + '&iid=' + obfuscateNumber(invoice._id), '_blank');
+		} else {
+			window.open('/invoice?oid=' + obfuscateNumber(invoice.orderId) + '&iid=' + obfuscateNumber(invoice._id), '_blank');
+		}
 	}
 
 	const translateStatus = (status) => {

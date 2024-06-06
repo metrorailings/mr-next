@@ -69,7 +69,7 @@ export async function moveOrderIntoProduction(data) {
 	try {
 		const order = await saveChangesToOrder(data.orderId,{ 
 			status: shopStatuses[0].key,
-			'text.agreement': process.env.CURRENT_TERMS_AND_CONDITIONS_FOR_INSTALL_ORDER
+			'text.agreement': process.env.CURRENT_TERMS_AND_CONDITIONS_CONTRACT
 		});
 		return { success: true, order: order };
 	} catch (error) {

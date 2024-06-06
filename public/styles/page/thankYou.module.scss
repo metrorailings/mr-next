@@ -23,6 +23,8 @@
 	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-subsection);
 
 	margin: {
+		top: 25px;
+		bottom: 25px;
 		left: auto;
 		right: auto;
 	}

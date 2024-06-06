@@ -51,7 +51,7 @@ export default function Header() {
 					MENU
 				</span>
 	
-					<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
+				<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
 					<Link href='/contact-us' className={ styles.topMenuLink }>CONTACT US</Link>				
 					<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
 				</span>

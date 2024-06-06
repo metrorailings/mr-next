@@ -1,10 +1,5 @@
-'use client'
-
-import React, { useContext } from 'react';
 import Image from 'next/image';
 import dayjs from 'dayjs';
-
-import { OrdersContext } from 'app/admin/orderDetails/orderContext';
 
 import { formatUSDAmount } from 'lib/utils';
 
@@ -14,9 +9,7 @@ import amexLogo from 'assets/images/logos/amex.svg';
 import mastercardLogo from 'assets/images/logos/mastercard.svg';
 import discoverLogo from 'assets/images/logos/discover.svg';
 
-const PaymentHistory = () => {
-
-	const orderDetails = useContext(OrdersContext);
+const PaymentHistory = ({ payments }) => {
 
 	const determineCardBrandToShow = (brand) => {
 		switch (brand) {
@@ -35,7 +28,7 @@ const PaymentHistory = () => {
 
 	return (
 		<div className={ styles.pastPaymentsTable }>
-			{ orderDetails.payments.charges.map((payment) => {
+			{ payments.map((payment) => {
 				return (
 					<div className={ styles.pastPaymentsRecord } key={ payment._id }>
 						<span className={ styles.pastPaymentDataCard }>
@@ -56,7 +49,7 @@ const PaymentHistory = () => {
 						<span className={ styles.pastPaymentDataAmount }>${ formatUSDAmount(payment.amount) }</span>
 						{ payment.invoiceId ? (
 							<span className={ styles.pastPaymentDataDate }>
-								<div className={ styles.pastPaymentMinorData }>From Invoice</div>
+								<div className={ styles.pastPaymentMinorData }>Via Invoice</div>
 								<div>{ payment.invoiceId }</div>
 							</span>
 						) : (

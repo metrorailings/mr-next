@@ -930,14 +930,14 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 							{ orderDetails.payments.charges?.length ? (
 								<span className={ styles.orderPaymentSection }>
 									<label htmlFor='payments.charges' className={ styles.orderFormLabel }>Payment History</label>
-									<PaymentHistory/>
+									<PaymentHistory payments={ order.payments.charges } />
 								</span>
 							) : null }
 
 							{ orderDetails.invoices.length ? (
 								<span className={ styles.orderPaymentSection }>
 									<label htmlFor='invoices' className={ styles.orderFormLabel }>Invoice History</label>
-									<InvoiceList/>
+									<InvoiceList />
 								</span>
 							) : null }
 

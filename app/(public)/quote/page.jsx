@@ -10,6 +10,7 @@ import FinalizeSection from 'app/(public)/quote/finalize';
 import { translateDesignCode, fetchDesignMetadata } from 'lib/designs/translator';
 import { decryptNumber } from 'lib/utils';
 import { getInvoice } from 'lib/http/invoicesDAO';
+import { getUsersByUsername } from 'lib/http/usersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
@@ -23,6 +24,19 @@ const QuoteServer = async ({ searchParams }) => {
 	if (quote === null || quote.category !== 'quote' ) {
 		redirect('/');
 	}
+
+	// Fetch all salesman information as well as past payments made against the order with which this invoices is associated and the cards that were used on those past payments
+	const salesmen = await getUsersByUsername(quote.sales.assignees.map(assignee => assignee.username));
+
+	// Pull the city/state information together into one coherent string
+	let cityStateInfo = [];
+	if (quote.customer.city) {
+		cityStateInfo.push(quote.customer.city);
+	}
+	if (quote.customer.state) {
+		cityStateInfo.push(quote.customer.state);
+	}
+	cityStateInfo = cityStateInfo.join(',');
 
 	// Grab a list of all selected design options
 	const designs = Object.keys(quote.design);
@@ -53,19 +67,23 @@ const QuoteServer = async ({ searchParams }) => {
 
 				{ /* ORDER ID */ }
 				<span className={ styles.infoColumnOrder }>
-					<span className={ styles.infoColumnHeader }>ORDER #{ orderId }</span>
+					<span className={ styles.infoColumnHeader }>ORDER #{ quote.orderId }</span>
 					<br />
-					{ quote?.dates?.created ? 'Drafted on ' + dayjs(quote.dates.created).format('MMM DD, YYYY') : null }
+					{ 'Drafted on ' + dayjs(quote.dates.created).format('MMM DD, YYYY') }
 					<br />
 					Status: <i className={ styles.quoteStatusText }>{ quote.status.toUpperCase() }</i>
-					<br />
-					<span className={ styles.infoColumnHeader }>Salespeople</span>
-					{ quote.sales.assignees.each((assignee) => {
+				</span>
+
+				{ /* SALES REPS */ }
+				<span className={ styles.infoColumnSalesReps }>
+					<span className={ styles.infoColumnHeader }>Sales Reps</span>
+					{ salesmen.map((salesman, index) => {
 						return (
-							<>
-								<br/>
-								<span>{ assignee }</span>
-							</>
+							<div key={ index } className={ styles.salesmanListing }>
+								<div>{ salesman.firstName + ' ' + salesman.lastName }</div>
+								<div>{ salesman.email }</div>
+								<div>{ salesman.phone }</div>
+							</div>
 						);
 					})}
 				</span>
@@ -74,7 +92,7 @@ const QuoteServer = async ({ searchParams }) => {
 				<span className={ styles.infoColumnCustomer }>
 					<span className={ styles.infoColumnHeader }>Customer</span>
 					<br />
-					{ quote.customer.name || '--' }
+					{ quote.customer.name }
 					{ quote.customer.address ? (
 						<>
 							<br />
@@ -82,13 +100,13 @@ const QuoteServer = async ({ searchParams }) => {
 						</>
 					) : null }
 					<br/>
-					{ quote.customer.city ? + quote.customer.city + ', ' : null }{ quote.customer.state ? quote.customer.state + ' ' : null }{ quote.customer.zipCode || null }
-					{ quote.customer.email.length ? (
+					{ cityStateInfo }
+					{ quote.customer.email.map((email) => {
 						<>
-							<br />
-							{ quote.customer.email.length ? quote.customer.email.join(', ') : null }
+							<br/>
+							{ email }
 						</>
-					) : null }
+					})}
 					{ quote.customer.areaCode && quote.customer.phoneOne && quote.customer.phoneTwo ? (
 							<>
 								<br />
@@ -99,7 +117,7 @@ const QuoteServer = async ({ searchParams }) => {
 			</div>
 
 			{ quote.status !== 'open' ? (
-				<div className={ styles.invoiceFinalizationNotice }>This quote has been { quote.status }.</div>
+				<div className={ styles.invoiceNotice }>This quote has been { quote.status }.</div>
 			) : null }
 
 			<div className={ styles.quoteContainer }>
@@ -148,12 +166,9 @@ const QuoteServer = async ({ searchParams }) => {
 
 			<FinalizeSection
 				orderId={ orderId }
-				invoiceId={ invoiceId }
+				jsonInvoice={ JSON.stringify(invoice) }
 				termsText={ termsRawText }
 				termsFileHandle={ quote.termsFileHandle }
-				amountToPay={ quote.amount }
-				invoiceStatus={ quote.status }
-				jsonCards={ JSON.stringify(quote.payments.cards) }
 			/>
 		</div>
 	);

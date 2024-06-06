@@ -11,7 +11,7 @@ const TermsServer = ({ searchParams }) => {
 	// Pull the 'Terms and Conditions' from the file system
 	const termsRawText = fileHandle.startsWith('assets/text/terms') ?
 		readFileSync(process.cwd() + '/' + fileHandle, { encoding: 'utf-8' }) :
-		readFileSync(process.cwd() + '/' + process.env.CURRENT_TERMS_AND_CONDITIONS_FOR_INSTALL_ORDER);
+		readFileSync(process.cwd() + '/' + process.env.CURRENT_TERMS_AND_CONDITIONS_CONTRACT);
 
 	return (
 		<div className={ styles.termsAndConditions }>
