@@ -163,6 +163,12 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 		refElement.current.style.height = refElement.current.scrollHeight + 'px';
 	};
 
+
+	const resizeSection = () => {
+		if (cardSection.current && cardSection.current.style.height !== '0px') { cardSection.current.style.height = cardSection.current.scrollHeight + 'px'; }
+		if (alternateSection.current && alternateSection.current.style.height !== '0px') { alternateSection.current.style.height = alternateSection.current.scrollHeight + 'px'; }
+	}
+
 	const determineCardIcon = (brand) => {
 		switch (brand?.toLowerCase()) {
 			case 'visa': return faCcVisa;
@@ -272,6 +278,12 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 			showSection(cardSection);
 		} else if (alternateSection.current) {
 			showSection(alternateSection);
+		}
+
+		screen.orientation.addEventListener("change", resizeSection);
+
+		return () => {
+			screen.orientation.removeEventListener('change', resizeSection);
 		}
 	}, []);
 

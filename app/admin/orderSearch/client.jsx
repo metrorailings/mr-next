@@ -4,18 +4,19 @@ import { useSearchParams, usePathname } from 'next/navigation'
 import React, { useState, useMemo, useRef, useEffect } from "react";
 
 import FileUpload from 'components/admin/fileUpload';
+import OptionSet from 'components/admin/OptionSet';
+import { filterOrders } from 'app/admin/orderSearch/orderFilter';
 
 import styles from 'public/styles/page/orderSearch.module.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faUserTag, faLocationDot, faSquareEnvelope, faSquarePhone } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleXmark, faUserTag, faLocationDot, faSquareEnvelope, faSquarePhone } from '@fortawesome/free-solid-svg-icons';
 
-import { filterOrders } from "app/admin/orderSearch/orderFilter";
-
-const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
+const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 
 	const searchParams = new useSearchParams();
 	const pathName = usePathname();
 	const orders = useMemo(() => JSON.parse(jsonOrders), [jsonOrders]);
+
 	const [filteredOrders, setFilteredOrders] = useState(JSON.parse(jsonFilteredOrders));
 	const [filters, setFilters] = useState({
 		status: searchParams.get('status') || '',
@@ -24,37 +25,14 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 		maxPage: Math.ceil(filteredOrders.length / 10) // Used to determine how many times we can render new data for infinite scroll
 	});
 	const observerTarget = useRef(null);
+	const statuses = JSON.parse(jsonStatuses);
+	const statusLabels = statuses.map(status => status.label);
+	const statusValues = statuses.map(status => status.key);
 
-	useEffect(() => {
-		// Observer to allow for infinite scrolling so that more orders are only loaded once the user scrolls down far enough
-		const observer = new IntersectionObserver(
-			entries => {
-				if (entries[0].isIntersecting) {
-					setFilters((prevState) => {
-						return {
-							...prevState,
-							page: (prevState.page < prevState.maxPage ? prevState.page + 1 : prevState.page)
-						}
-					});
-				}
-			},{ threshold: 0.5 });
-		const observedNode = observerTarget?.current || null;
-		
-		if (observedNode) {
-			observer.observe(observedNode);
-		}
-
-		return () => {
-			if (observedNode) {
-				observer.unobserve(observedNode);
-			}
-		};
-	}, [observerTarget]);
-
-	const updateStatusFilter = (event) => {
+	const updateStatusFilter = (newStatus) => {
 		const newFilters = {
 			...filters,
-			status: event.currentTarget.dataset.status,
+			status: newStatus,
 			page: 1
 		};
 		const newlyFilteredOrders = filterOrders(orders, newFilters);
@@ -115,6 +93,32 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 		return '#';
 	}
 
+	useEffect(() => {
+		// Observer to allow for infinite scrolling so that more orders are only loaded once the user scrolls down far enough
+		const observer = new IntersectionObserver(
+			entries => {
+				if (entries[0].isIntersecting) {
+					setFilters((prevState) => {
+						return {
+							...prevState,
+							page: (prevState.page < prevState.maxPage ? prevState.page + 1 : prevState.page)
+						}
+					});
+				}
+			},{ threshold: 0.5 });
+		const observedNode = observerTarget?.current || null;
+
+		if (observedNode) {
+			observer.observe(observedNode);
+		}
+
+		return () => {
+			if (observedNode) {
+				observer.unobserve(observedNode);
+			}
+		};
+	}, [observerTarget]);
+
 	return (
 		<>
 			<div className={ styles.pageContainer }>
@@ -125,21 +129,18 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders }) => {
 				<hr className={ styles.sectionDivider }></hr>
 
 				<div className={ styles.filterSection }>
+
 					<div className={ styles.filterRow }>
 						<span className={ styles.filterLabel }>Status</span>
-						<span className={ styles.filterValues }>
-							<a className={ (filters.status === '' ? styles['selected'] : '') } data-status='' onClick={ updateStatusFilter }>All</a>
-							<a className={ (filters.status === 'open' ? styles['selected'] : '') } data-status='open' onClick={ updateStatusFilter }>Open</a>
-							<a className={ (filters.status === 'prospect' ? styles['selected'] : '') } data-status='prospect' onClick={ updateStatusFilter }>Prospect</a>
-							<a className={ (filters.status === 'pending' ? styles['selected'] : '') } data-status='pending' onClick={ updateStatusFilter }>Pending Confirmation</a>
-							<a className={ (filters.status === 'material' ? styles['selected'] : '') } data-status='material' onClick={ updateStatusFilter }>Material</a>
-							<a className={ (filters.status === 'shop' ? styles['selected'] : '') } data-status='shop' onClick={ updateStatusFilter }>Production</a>
-							<a className={ (filters.status === 'install' ? styles['selected'] : '') } data-status='install' onClick={ updateStatusFilter }>Install</a>
-							<a className={ (filters.status === 'closing' ? styles['selected'] : '') } data-status='closing' onClick={ updateStatusFilter }>Closing</a>
-							<a className={ (filters.status === 'closed' ? styles['selected'] : '') } data-status='closed' onClick={ updateStatusFilter }>Closed</a>
-							<a className={ (filters.status === 'cancelled' ? styles['selected'] : '') } data-status='cancelled' onClick={ updateStatusFilter }>Cancelled</a>
-						</span>
+						<OptionSet
+							labels={ statusLabels }
+							values={ statusValues }
+							currentValue={ filters.status }
+							isDisabled={ false }
+							setter={ updateStatusFilter }
+						/>
 					</div>
+
 					<div className={ styles.filterRow }>
 						<span className={ styles.filterLabel }>Search</span>
 						<span className={ styles.filterInputGrouping }>

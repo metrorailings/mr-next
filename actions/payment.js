@@ -1,5 +1,7 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
+
 import { getOrderById, attachNewCard, attachNewPayment, attachStripeCustomerProfileData } from 'lib/http/ordersDAO';
 import { stripeAddCustomer, stripeAddCreditCard, stripeChargeCard, recordNewCardPayment, uploadPaymentImage, recordNewImagePayment } from 'lib/http/paymentsDAO';
 import { finalizeInvoice } from 'lib/http/invoicesDAO';
@@ -41,6 +43,7 @@ export async function addCardAndPayByCard(data) {
 	}
 
 	// @TODO: Add logging here to indicate whether the payment was made, but unsuccessfully recorded in the system
+	revalidatePath('/', 'layout');
 	return { success: paymentIntent ? true : false, card: registeredCard || null };
 }
 
@@ -71,6 +74,7 @@ export async function payByCard(data) {
 	}
 
 	// @TODO: Add logging here to indicate whether the payment was made, but unsuccessfully recorded in the system
+	revalidatePath('/', 'layout');
 	return { success: paymentIntent ? true : false };
 }
 
@@ -82,6 +86,7 @@ export async function payByImage(data) {
 		const uploadedPaymentImage = await uploadPaymentImage(data.paymentImage);
 		const paymentRecord = await recordNewImagePayment(uploadedPaymentImage, data.orderId, data.paymentAmount, order.customer.state);
 		await attachNewPayment(data.orderId, paymentRecord._id, paymentRecord.amount);
+		revalidatePath('/', 'layout');
 		return { success: true };
 	} catch (error) {
 		console.error(error);

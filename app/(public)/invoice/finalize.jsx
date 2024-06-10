@@ -50,12 +50,12 @@ const FinalizeSection = ({ orderId, jsonInvoice, jsonCards, jsonPayments }) => {
 					/>
 				) : null }
 				{ invoice.status === 'finalized' ? (
-					<div className={ styles.invoiceBodyRow }>
+					<div className={ styles.invoiceBodyRowCenter }>
 						This invoice was paid on { dayjs(invoice.dates.finalized).format('MM/DD/YY') }.
 					</div>
 				) : null }
 				{ invoice.status === 'cancelled' ? (
-					<div className={ styles.invoiceBodyRow }>
+					<div className={ styles.invoiceBodyRowCenter }>
 						This invoice was cancelled.
 					</div>
 				) : null }

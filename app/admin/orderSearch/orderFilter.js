@@ -54,10 +54,7 @@ function filterOrdersBySearchText(orders, searchText = '') {
 
 		// Stud the order with some empty strings prior to filtering
 		order.customer.company = order.customer.company || '';
-		order.customer.email = order.customer.email || '';
-		order.customer.areaCode = order.customer.areaCode || '';
-		order.customer.phoneOne = order.customer.phoneOne || '';
-		order.customer.phoneTwo = order.customer.phoneTwo || '';
+		order.customer.email = order.customer.email?.join(',') || '';
 		order.customer.address = order.customer.address || '';
 		order.customer.city = order.customer.city || '';
 		order.customer.state = order.customer.state || '';

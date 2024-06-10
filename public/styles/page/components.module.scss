@@ -1010,6 +1010,8 @@
 	}
 
 	cursor: pointer;
+	display: flex;
+	flex-wrap: wrap;
 
 	& > label, & > a {
 		@include common.animations-transition-settings($property: all, $duration: 0.5s);
@@ -1024,16 +1026,6 @@
 		background-color: common.$colors-silver;
 		color: common.$colors-black;
 		cursor: inherit;
-
-		&:first-of-type {
-			border-top-left-radius: 10px;
-			border-bottom-left-radius: 10px;
-		}
-
-		&:last-of-type {
-			border-top-right-radius: 10px;
-			border-bottom-right-radius: 10px;
-		}
 
 		&.selected-option-set {
 			background-color: common.$colors-slate-gray;

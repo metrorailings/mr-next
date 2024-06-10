@@ -1,9 +1,12 @@
-import { redirect } from 'next/navigation'
+'use server'
+
+import { permanentRedirect } from 'next/navigation'
 
 import OrderSearchPage from "app/admin/orderSearch/client";
 import { filterOrders } from "app/admin/orderSearch/orderFilter";
 
 import { getAllOrders } from 'lib/http/ordersDAO';
+import { prospectStatuses, openStatuses, closedStatuses } from 'lib/dictionary';
 
 const OrderSearchServer = async (request) => {
 
@@ -12,16 +15,33 @@ const OrderSearchServer = async (request) => {
 
 	// Should no filters be set in the URL, reset the URL to include default filters
 	if (Object.keys(params).length === 0) {
-		redirect('/admin/orderSearch?status=open')
+		permanentRedirect('/admin/orderSearch?status=open')
 	}
 
 	const filteredOrders = filterOrders(orders, params);
+
+	const statuses = [
+		{
+			key: 'prospect',
+			label: 'Prospect',
+			state: 'prospect'
+		},
+		...prospectStatuses(),
+		{
+			key: 'open',
+			label: 'Open',
+			state: 'open'
+		},
+		...openStatuses(),
+		...closedStatuses()
+	];
 
 	return (
 		<>
 			<OrderSearchPage
 				jsonOrders={ JSON.stringify(orders) }
 				jsonFilteredOrders={ JSON.stringify(filteredOrders) }
+				jsonStatuses={ JSON.stringify(statuses) }
 			/>
 		</>
 	);
