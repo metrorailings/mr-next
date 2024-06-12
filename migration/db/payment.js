@@ -72,4 +72,4 @@ PaymentSchema.set('timestamps', true)
 PaymentSchema.set('toJSON', { virtuals: true })
 PaymentSchema.set('toObject', { virtuals: true })
 
-module.exports = (mongoose.models?.Payment || mongoose.model('Payment', PaymentSchema));
+export default mongoose.model('Payment', PaymentSchema);

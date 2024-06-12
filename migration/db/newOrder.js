@@ -1,10 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { } from 'mongoose';
 
-import { getAllStatusKeys } from 'lib/dictionary';
-import Note from 'lib/models/note';
-import File from 'lib/models/file';
-import Invoice from 'lib/models/invoice';
-import Payment from 'lib/models/payment';
+import { getAllStatusKeys } from '../lib/dictionary.js';
 
 const OrderSchema = new mongoose.Schema({
 
@@ -137,19 +133,13 @@ const OrderSchema = new mongoose.Schema({
 	},
 
 	text: {
-		agreement: {
-			type: Schema.Types.Mixed,
-			default: '',
-		},
+		agreement: String,
 		additionalDescription: String
 	},
 
 	payments: {
 		balanceRemaining: Number,
-		customer: {
-			id: String,
-			createdOn: Date
-		},
+		customer: Object,
 		cards: [{
 			id: String,
 			brand: String,
@@ -157,13 +147,7 @@ const OrderSchema = new mongoose.Schema({
 			exp_year: Number,
 			last4: String
 		}],
-		charges: {
-			type: [{
-				type: Schema.Types.Number,
-				ref: 'Payment'
-			}],
-			default: []
-		},
+		charges: [Number],
 	},
 
 	modHistory: [{
@@ -184,27 +168,9 @@ const OrderSchema = new mongoose.Schema({
 		lastModifier: String
 	},
 
-	notes: {
-		type: [{
-			type: Schema.Types.Number,
-			ref: 'Notes'
-		}],
-		default: []
-	},
-	files: {
-		type: [{
-			type: Schema.Types.Number,
-			ref: 'Files'
-		}],
-		default: []
-	},
-	invoices: {
-		type: [{
-			type: Schema.Types.Number,
-			ref: 'Invoice'
-		}],
-		default: []
-	},
+	notes: [Number],
+	files: [Object],
+	invoices: [Number],
 
 	migrated: {
 		type: Boolean,
@@ -228,4 +194,4 @@ OrderSchema.post('findOne', (doc) => {
 	}
 });
 
-module.exports = (mongoose.models?.Order || mongoose.model('Order', OrderSchema));
+export default mongoose.model('newOrder', OrderSchema);

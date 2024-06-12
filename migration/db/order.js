@@ -1,23 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
 
-import { getAllStatusKeys } from 'lib/dictionary';
-import Note from 'lib/models/note';
-import File from 'lib/models/file';
-import Invoice from 'lib/models/invoice';
-import Payment from 'lib/models/payment';
-
 const OrderSchema = new mongoose.Schema({
 
 	_id: {
 		type: Number
-	},
-
-	sales: {
-		header: String,
-		assignees: [{
-			username: String,
-			commission: Number
-		}]
 	},
 
 	customer: {
@@ -133,7 +119,6 @@ const OrderSchema = new mongoose.Schema({
 
 	status: {
 		type: String,
-		enum: getAllStatusKeys()
 	},
 
 	text: {
@@ -146,10 +131,7 @@ const OrderSchema = new mongoose.Schema({
 
 	payments: {
 		balanceRemaining: Number,
-		customer: {
-			id: String,
-			createdOn: Date
-		},
+		customer: Object,
 		cards: [{
 			id: String,
 			brand: String,
@@ -157,13 +139,7 @@ const OrderSchema = new mongoose.Schema({
 			exp_year: Number,
 			last4: String
 		}],
-		charges: {
-			type: [{
-				type: Schema.Types.Number,
-				ref: 'Payment'
-			}],
-			default: []
-		},
+		charges: [Number],
 	},
 
 	modHistory: [{
@@ -175,7 +151,6 @@ const OrderSchema = new mongoose.Schema({
 	dates: {
 		created: Date,
 		lastModified: Date,
-		finalized: Date,
 		due: Date
 	},
 
@@ -184,48 +159,11 @@ const OrderSchema = new mongoose.Schema({
 		lastModifier: String
 	},
 
-	notes: {
-		type: [{
-			type: Schema.Types.Number,
-			ref: 'Notes'
-		}],
-		default: []
-	},
-	files: {
-		type: [{
-			type: Schema.Types.Number,
-			ref: 'Files'
-		}],
-		default: []
-	},
-	invoices: {
-		type: [{
-			type: Schema.Types.Number,
-			ref: 'Invoice'
-		}],
-		default: []
-	},
+	notes: [Number],
+	files: [Object],
+	pictures: [Object],
+	drawings: [Object]
 
-	migrated: {
-		type: Boolean,
-		default: false
-	},
+}, { collection: 'orders' });
 
-}, { collection: 'orders' })
-
-OrderSchema.set('timestamps', true)
-OrderSchema.set('toJSON', { virtuals: true })
-OrderSchema.set('toObject', { virtuals: true })
-
-OrderSchema.post('findOne', (doc) => {
-	const designKeys = Object.keys(doc.design);
-
-	for (let i = 0; i < designKeys.length; i += 1) {
-		if ( !(doc.design[designKeys[i]]) ) {
-			delete doc.design[designKeys[i]];
-			delete doc.designDescription[designKeys[i]];
-		}
-	}
-});
-
-module.exports = (mongoose.models?.Order || mongoose.model('Order', OrderSchema));
+export default mongoose.model('order', OrderSchema);
