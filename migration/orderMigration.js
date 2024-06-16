@@ -1,4 +1,8 @@
-import { getAllOrders } from './db/ordersDAO.js';
+import { getAllOrders, updateOrder } from './db/ordersDAO.js';
+import { findNotesByOrder } from './db/notesDAO.js';
+import { findFilesByOrder } from './db/filesDAO.js';
+import { findInvoicesByOrder } from './db/invoicesDAO.js';
+import { getPaymentsByOrder } from './db/paymentsDAO.js';
 
 import { MIGRATION_USER, AGREEMENT } from './env.js';
 
@@ -8,6 +12,8 @@ let migratedOrders = [];
 for (let i = 0; i < orders.length; i += 1) {
 	const order = orders[i];
 	let migratedOrder = {};
+
+	console.log('Migrating order ' + order._id);
 
 	// ID
 	migratedOrder._id = order._id;
@@ -19,7 +25,8 @@ for (let i = 0; i < orders.length; i += 1) {
 	};
 
 	// Customer Info
-	const migratedEmails = order.customer?.email?.split(',') || [];
+	const migratedEmails = order.customer?.email ? (Array.isArray(order.customer.email) ? order.customer.email : order.customer.email.split(',')) : '';
+
 	migratedOrder.customer = {
 		name: order.customer?.name || '',
 		company: order.customer?.company || '',
@@ -93,6 +100,7 @@ for (let i = 0; i < orders.length; i += 1) {
 
 	// Payments
 	const legacyCards = order.payments?.cards || [];
+	const payments = await getPaymentsByOrder(order._id);
 	const migratedCards = legacyCards.map((card) => {
 		return {
 			id: card.id,
@@ -110,9 +118,8 @@ for (let i = 0; i < orders.length; i += 1) {
 			createdOn: (order.payments?.customer?.created ? order.payments.customer.created * 1000 : null)
 		},
 		cards: migratedCards,
-		charges: [] // Will get updated in a separate migration for payments
+		charges: payments.map(payment => payment._id) || []
 	}
-	order.payments.charges.cards = [];
 
 	// Status and Text
 	migratedOrder.status = (order.status === 'prospect' ? 'lead' : order.status);
@@ -135,20 +142,20 @@ for (let i = 0; i < orders.length; i += 1) {
 
 	// Mod History
 	migratedOrder.modHistory = order.modHistory || [];
+	migratedOrder.modHistory.push({
+		user: MIGRATION_USER.USERNAME,
+		date: new Date(),
+		reason: '2024 Migration'
+	});
 
-	// Notes and Files
-	migratedOrder.notes = order.notes || [];
-	let files = [];
-	if (order.pictures) {
-		files.push(...(order.pictures));
-	}
-	if (order.drawings) {
-		files.push(...(order.drawings));
-	}
-	if (order.files) {
-		files.push(...(order.files));
-	}
-	migratedOrder.files = files;
+	// Notes, Files, and Invoices
+	const orderNotes = await findNotesByOrder(order._id);
+	const orderFiles = await findFilesByOrder(order._id);
+	const orderInvoices = await findInvoicesByOrder(order._id);
+
+	migratedOrder.notes = orderNotes.map(note => note._id) || [];
+	migratedOrder.files = orderFiles.map(file => file._id);
+	migratedOrder.invoices = orderInvoices.map(invoice => invoice._id);
 
 	// Migration Meta
 	migratedOrder.users = {
@@ -158,12 +165,13 @@ for (let i = 0; i < orders.length; i += 1) {
 	migratedOrder.migrated = true;
 
 	// END
+	console.log('Ready to port over order ' + migratedOrder._id);
 	migratedOrders.push(migratedOrder);
 }
 
 for (let j = 0; j < migratedOrders.length; j += 1) {
-	console.log(migratedOrders[j]);
-	//	await updateOrder(migratedOrders[j]);
+	await updateOrder(migratedOrders[j]);
+	console.log('Order ' + migratedOrders[j]._id + ' migrated!');
 }
 
 console.log('Done!');

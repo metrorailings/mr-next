@@ -12,10 +12,7 @@ const OrderSchema = new mongoose.Schema({
 			required: true
 		},
 		company: String,
-		email: {
-			type: [String],
-			default: []
-		},
+		email: String,
 		areaCode: String,
 		phoneOne: String,
 		phoneTwo: String,
@@ -115,6 +112,7 @@ const OrderSchema = new mongoose.Schema({
 			type: Number,
 			default: 0
 		},
+		depositAmount: Number
 	},
 
 	status: {
@@ -132,14 +130,8 @@ const OrderSchema = new mongoose.Schema({
 	payments: {
 		balanceRemaining: Number,
 		customer: Object,
-		cards: [{
-			id: String,
-			brand: String,
-			exp_month: Number,
-			exp_year: Number,
-			last4: String
-		}],
-		charges: [Number],
+		cards: [Object],
+		charges: [Object]
 	},
 
 	modHistory: [{
@@ -166,4 +158,4 @@ const OrderSchema = new mongoose.Schema({
 
 }, { collection: 'orders' });
 
-export default mongoose.model('order', OrderSchema);
+export default mongoose.model('Order', OrderSchema);

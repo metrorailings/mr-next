@@ -2,14 +2,15 @@ import { getAllOrders } from './db/ordersDAO.js';
 import { updatePayment } from './db/paymentsDAO.js';
 
 const orders = await getAllOrders();
-const migratedPayments = [];
 
 for (let i = 0; i < orders.length; i += 1) {
 	const order = orders[i];
 	const payments = order.payments.charges || [];
 
+	console.log('Processing order ' + order._id);
 	for (let x = 0; x < payments.length; x += 1) {
 		const payment = payments[x];
+		console.log('Migrating payment ID: ' + payment._id);
 
 		// Payment Body
 		let migratedPayment = {
@@ -53,12 +54,8 @@ for (let i = 0; i < orders.length; i += 1) {
 		}
 
 		// END
-		migratedPayments.push(migratedPayment);
+		await updatePayment(migratedPayment);
 	}
-}
-
-for (let k = 0; k < migratedPayments.length; k += 1) {
-	await updatePayment(migratedPayments[k]);
 }
 
 console.log('Done!');

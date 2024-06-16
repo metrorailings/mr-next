@@ -4,7 +4,7 @@ import Counters from './counter.js';
 
 import { MIGRATION_USER, AGREEMENT } from '../env.js';
 
-export async function createNewQuoteInvoice(order, amountToPay, paid = false, cancelled = false) {
+export async function createNewQuoteInvoice(order, amountToPay, paymentDate) {
 	await dbConnect();
 
 	const username = MIGRATION_USER.USERNAME;
@@ -13,23 +13,53 @@ export async function createNewQuoteInvoice(order, amountToPay, paid = false, ca
 	const countersResult = await Counters.findByIdAndUpdate('invoices', { $inc: { seq: 1 } }).exec();
 	
 	const newQuote = {
-		...order, // Keep in mind that the only properties from the order that will actually be saved into this invoice are the ones explicitly defined in the Mongoose schema
 		_id: countersResult.seq,
 		orderId: order._id,
-		status: paid ? 'finalized' : (cancelled ? 'cancelled' : 'open'),
+		status: 'finalized',
 		category: 'quote',
 		amount: amountToPay,
 		termsFileHandle: AGREEMENT.PATH,
 		dates: {
-			created: new Date()
+			created: paymentDate
 		},
 		users: {
 			creator: username
-		}
+		},
+		customer: order.customer,
+		design: order.design || {},
+		designDescription: order.designDescription || {},
+		dimensions: order.dimensions || {},
+		text: order.additionalDescription || '',
+		payments: {
+			balanceRemaining: order.pricing.orderTotal
+		},
+		pricing: order.pricing
 	};
 
 	try {
 		return await Invoices.create(newQuote);
+	} catch (error) {
+		console.error(error);
+		throw new Error(error);
+	}
+}
+
+export async function updateOrderMetadata(order, invoiceId) {
+	await dbConnect();
+
+	try {
+		await Invoices.findOneAndUpdate({ _id: invoiceId }, { ...order }, { upsert: false });
+	} catch (error) {
+		console.error(error);
+		throw new Error(error);
+	}
+}
+
+export async function findInvoicesByOrder(orderId) {
+	await dbConnect();
+
+	try {
+		return await Invoices.find({ orderId: orderId }).exec();
 	} catch (error) {
 		console.error(error);
 		throw new Error(error);

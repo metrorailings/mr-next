@@ -29,3 +29,14 @@ export async function addFile(oldFile, orderId) {
 		throw new Error(error);
 	}
 }
+
+export async function findFilesByOrder(orderId) {
+	await dbConnect();
+
+	try {
+		return await Files.find({ orderId: orderId }).exec();
+	} catch (error) {
+		console.error(error);
+		throw new Error(error);
+	}
+}

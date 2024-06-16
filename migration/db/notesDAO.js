@@ -41,3 +41,14 @@ export async function updateNote(note) {
 		throw new Error(error);
 	}
 }
+
+export async function findNotesByOrder(orderId) {
+	await dbConnect();
+
+	try {
+		return await Notes.find({ orderId: orderId }).exec();
+	} catch (error) {
+		console.error(error);
+		throw new Error(error);
+	}
+}

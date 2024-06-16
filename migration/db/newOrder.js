@@ -169,7 +169,7 @@ const OrderSchema = new mongoose.Schema({
 	},
 
 	notes: [Number],
-	files: [Object],
+	files: [Number],
 	invoices: [Number],
 
 	migrated: {
@@ -177,21 +177,6 @@ const OrderSchema = new mongoose.Schema({
 		default: false
 	},
 
-}, { collection: 'orders' })
-
-OrderSchema.set('timestamps', true)
-OrderSchema.set('toJSON', { virtuals: true })
-OrderSchema.set('toObject', { virtuals: true })
-
-OrderSchema.post('findOne', (doc) => {
-	const designKeys = Object.keys(doc.design);
-
-	for (let i = 0; i < designKeys.length; i += 1) {
-		if ( !(doc.design[designKeys[i]]) ) {
-			delete doc.design[designKeys[i]];
-			delete doc.designDescription[designKeys[i]];
-		}
-	}
-});
+}, { collection: 'newOrders' });
 
 export default mongoose.model('newOrder', OrderSchema);

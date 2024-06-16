@@ -35,17 +35,25 @@ const InvoiceSchema = new mongoose.Schema({
 
 	// All the properties listed from here onward will be parsed from whatever order this invoice represents
 	sales: {
-		header: String,
-		assignees: [{
-			username: String,
-			commission: Number
-		}],
+		header: {
+			type: String,
+			default: 'Metal Product'
+		},
+		assignees: {
+			type: [{
+				username: String,
+				commission: Number
+			}],
+			default: [{
+				username: 'wparedes',
+				commission: 0
+			}]
+		},
 	},
 
 	customer: {
 		name: {
-			type: String,
-			required: true
+			type: String
 		},
 		company: String,
 		email: {
