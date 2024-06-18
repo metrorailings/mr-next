@@ -1,13 +1,4 @@
-/**
- * A module designed to help us filter orders for display on the orderSearch page
- **/
-
-// ----------------- CONSTANTS --------------------------
-
-const statusDefinitions = {
-	open: ['material', 'layout', 'welding', 'grinding', 'painting', 'install', 'closing'],
-	shop: ['material', 'layout', 'welding', 'grinding', 'painting', 'install']
-};
+import { prospectStatuses, openStatuses } from 'lib/dictionary';
 
 // ----------------- UTILITY FUNCTIONS --------------------------
 
@@ -33,13 +24,18 @@ function sortOrdersByDueDate(a, b) {
 }
 
 // Function meant to filter orders by a given status
-function filterOrdersByStatus(orders, status) {
-	if (!(status)) {
+function filterOrdersByStatus(orders, status)
+{
+
+	const prospectStatusMarkers = prospectStatuses();
+	const openStatusMarkers = openStatuses();
+	if (!(status))
+	{
 		return orders;
+	} else if (status === 'prospect') {
+		return orders.filter(order => prospectStatusMarkers.find(statusMeta => order.status === statusMeta.key));
 	} else if (status === 'open') {
-		return orders.filter(order => statusDefinitions.open.find(status => order.status === status));
-	} else if (status === 'shop') {
-		return orders.filter(order => statusDefinitions.shop.find(status => order.status === status));
+		return orders.filter(order => openStatusMarkers.find(statusMeta => order.status === statusMeta.key));
 	} else {
 		return orders.filter(order => order.status === status);
 	}
@@ -50,11 +46,11 @@ function filterOrdersBySearchText(orders, searchText = '') {
 	searchText = searchText.toLowerCase();
 
 	return orders.filter((order) => {
-		let phoneNumber = '' + order.customer.areaCode + order.customer.phoneOne + order.customer.phoneTwo;
+		const phoneNumber = '' + order.customer.areaCode + order.customer.phoneOne + order.customer.phoneTwo;
+		const emails = order.customer.email?.join(',') || '';
 
 		// Stud the order with some empty strings prior to filtering
 		order.customer.company = order.customer.company || '';
-		order.customer.email = order.customer.email?.join(',') || '';
 		order.customer.address = order.customer.address || '';
 		order.customer.city = order.customer.city || '';
 		order.customer.state = order.customer.state || '';
@@ -64,7 +60,7 @@ function filterOrdersBySearchText(orders, searchText = '') {
 		return ((order._id.toString().indexOf(searchText) >= 0) ||
 			(order.customer.name.toLowerCase().indexOf(searchText) >= 0) ||
 			(order.customer.company.toLowerCase().indexOf(searchText) >= 0) ||
-			(order.customer.email.toLowerCase().indexOf(searchText) >= 0) ||
+			(emails.toLowerCase().indexOf(searchText) >= 0) ||
 			(phoneNumber.indexOf(searchText) >= 0) ||
 			(order.customer.address.toLowerCase().indexOf(searchText) >= 0) ||
 			(order.customer.city.toLowerCase().indexOf(searchText) >= 0) ||

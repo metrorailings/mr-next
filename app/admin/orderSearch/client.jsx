@@ -2,6 +2,7 @@
 
 import { useSearchParams, usePathname } from 'next/navigation'
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import dayjs from 'dayjs';
 
 import FileUpload from 'components/admin/fileUpload';
 import OptionSet from 'components/admin/OptionSet';
@@ -168,7 +169,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 					{ filteredOrders.slice(0, filters.page * 10).map((order, index) => {
 						return (
 							<div id={'order_box_' + index} key={ index } className={ styles.orderBox } >
-								<div className={ styles.orderBoxInfoRow }>
+								<div className={ styles.orderBoxInfoBody }>
 									<span className={ styles.orderBoxGeneralInfoColumn }>
 										<div className={ styles.orderBoxId }>{ order._id }</div>
 										<div className={ styles.orderBoxStatus }>{ order.status }</div>
@@ -191,27 +192,27 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 											<div className={ styles.orderBoxDatum }>
 												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faLocationDot } />
 												<a target='_blank' href={ generateGoogleLink(order.customer) }>
-													{ order.customer.address }
+													{ order.customer.address || '--' }
 													<br />
-													{ order.customer.city ? order.customer.city + ',' + order.customer.state : '' }
+													{ (order.customer.city || '--') + ', ' + (order.customer.state || '--') }
 												</a>
 											</div>
 
 											<div className={ styles.orderBoxDatum }>
 												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faSquareEnvelope } />
 												<span>
-													{ order.customer.email.map((email, index) => {
+													{ order.customer.email.length > 0 ? order.customer.email.map((email, index) => {
 														return (
 															<div key={index}>{ email }</div>
 														)
-													})}
+													}) : '--' }
 												</span>
 											</div>
 
 											<div className={ styles.orderBoxDatum }>
 												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faSquarePhone } />
 												<a href={ generatePhoneNumber(order.customer) }>
-													{ '(' + order.customer.areaCode + ') ' + order.customer.phoneOne + '-' + order.customer.phoneTwo }
+													{ '(' + (order.customer.areaCode || '---') + ') ' + (order.customer.phoneOne || '---') + '-' + (order.customer.phoneTwo || '----') }
 												</a>
 											</div>
 
@@ -224,14 +225,14 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 
 											<div className={ styles.orderBoxDateDatum }>
 												<div className={ styles.orderBoxDateLabel }>Created:</div>
-												<div>{ order.dates.created + (order.users?.creator ? ' (' + order.users.creator + ')' : '')}</div>
+												<div>{ dayjs(order.dates.created).format('MM/DD/YY') + (order.users?.creator ? ' (' + order.users.creator + ')' : '')}</div>
 											</div>
 
 											<div className={ styles.orderBoxDateDatum }>
 												{ order.dates?.lastModified ? (
 													<>
 														<div className={ styles.orderBoxDateLabel }>Last Updated:</div>
-														<div>{ order.dates.lastModified + (order.users?.lastModifier ? ' (' + order.users.lastModifier + ')' : '')}</div>
+														<div>{ dayjs(order.dates.lastModified).format('MM/DD/YY') + (order.users?.lastModifier ? ' (' + order.users.lastModifier + ')' : '')}</div>
 													</>
 												) : null }
 											</div>
@@ -240,7 +241,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 												{ order.dates?.due ? (
 													<>
 														<div className={ styles.orderBoxDateLabel }>Due Date:</div>
-														<div>{ order.dates.due }</div>
+														<div>{ dayjs(order.dates.due).format('MM/DD/YY') }</div>
 													</>
 												) : null }
 											</div>

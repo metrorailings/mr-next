@@ -10,19 +10,6 @@
 	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa);
 }
 
-%order-box-column {
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-
-	& > div {
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-}
-
 %order-box-section-header {
 	@include common.fonts-define-font($family: Avenir Heavy);
 
@@ -31,12 +18,17 @@
 		bottom: 10px;
 	}
 	border-bottom: {
-		width: 0.75px;
+		width: 1px;
 		style: solid;
 		color: common.$colors-slate-gray;
 	}
 
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: common.$colors-lavender;
+	height: 45px;
+	box-sizing: border-box;
 }
 
 /* ----------------------- STYLES ----------------------------- */
@@ -143,63 +135,57 @@
 		bottom: 40px;
 	}
 
-	width: 50%;
+	width: 70%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
 }
 
-.order-box-info-row {
-	width: 100%;
-	display: flex;
-	justify-content: flex-start;
-}
-
-.order-box-customer-info-sub-column {
-	outline: {
-		width: 0.75px;
-		style: solid;
-		color: common.$colors-slate-gray;
-	}
-
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-}
-
-.order-box-section-header {
-	@include common.fonts-define-font($family: Avenir Heavy);
-
-	padding: {
-		top: 10px;
-		bottom: 10px;
-	}
+.order-box-info-body {
 	border-bottom: {
-		width: 0.75px;
-		style: solid;
+		width: 3px;
+		style: double;
 		color: common.$colors-slate-gray;
 	}
 
+	width: 100%;
+	display: grid;
+	grid-template-columns: 3fr 4fr 3fr;
+}
+
+.order-box-id {
+	@include common.fonts-define-font($size: common.$fonts-section);
+
+	border: {
+		width: 1px;
+		style: solid;
+		color: common.$colors-slate-gray;
+
+		top-left-radius: 15px;
+		top: none;
+		left: none;
+		right: none;
+	}
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	background-color: common.$colors-lavender;
+	letter-spacing: 2px;
+	min-height: 100px;
+	height: 50%;
 }
 
-.order-box-general-info-column {
-	@extend %order-box-column;
+.order-box-status {
+	@include common.fonts-define-font($size: common.$fonts-section);
 
-	flex: 2;
-}
-
-.order-box-customer-info-column {
-	@extend %order-box-column;
-
-	flex: 3;
-}
-
-.order-box-date-column {
-	@extend %order-box-column;
-
-	flex: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: common.$colors-success;
+	min-height: 100px;
+	height: 50%;
 }
 
 .order-box-general-info-header {
@@ -214,29 +200,16 @@
 	}
 }
 
-.order-box-id {
-	@include common.fonts-define-font($size: common.$fonts-section);
-
-	border: {
-		top-left-radius: 15px;
-	}
-
-	background-color: common.$colors-lavender;
-	height: 50%;
-	letter-spacing: 2px;
-}
-
-.order-box-status {
-	@include common.fonts-define-font($size: common.$fonts-section);
-
-	border: {
-		width: 0.75px;
+.order-box-customer-info-sub-column {
+	border-left: {
+		width: 1px;
 		style: solid;
 		color: common.$colors-slate-gray;
 	}
 
-	color: common.$colors-success;
-	height: 50%;
+	height: calc(100% - 45px);
+	display: grid;
+	grid-auto-rows: minmax(max-content, 100%);
 }
 
 .order-box-company-name {
@@ -252,9 +225,8 @@
 	}
 
 	display: flex;
-	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
+	align-items: center;
 
 	& > span, & > a {
 		padding: {
@@ -269,14 +241,21 @@
 			style: solid;
 			color: common.$colors-silver;
 		}
+
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		flex-direction: column;
+		height: 100%;
+		box-sizing: border-box;
 	}
 }
 
 .order-box-date-datum {
-	margin: {
+	padding: {
 		top: 15px;
 		bottom: 15px;
-		left: 5px;
+		left: 10px;
 		right: 5px;
 	}
 
@@ -302,7 +281,6 @@
 	}
 
 	text-decoration: underline;
-	font-weight: 700;
 }
 
 .order-box-file-upload {

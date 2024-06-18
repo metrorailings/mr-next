@@ -22,6 +22,11 @@ const OrderSearchServer = async (request) => {
 
 	const statuses = [
 		{
+			key: '',
+			label: 'All',
+			state: 'all'
+		},
+		{
 			key: 'prospect',
 			label: 'Prospect',
 			state: 'prospect'
