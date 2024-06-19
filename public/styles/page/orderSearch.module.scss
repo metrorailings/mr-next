@@ -6,6 +6,14 @@
 
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
+%order-box-section-delineator {
+	border-bottom: {
+		width: 3px;
+		style: double;
+		color: common.$colors-slate-gray;
+	}
+}
+
 %column-header {
 	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa);
 }
@@ -143,19 +151,22 @@
 }
 
 .order-box-info-body {
-	border-bottom: {
-		width: 3px;
-		style: double;
-		color: common.$colors-slate-gray;
-	}
+	@extend %order-box-section-delineator;
 
 	width: 100%;
 	display: grid;
 	grid-template-columns: 3fr 4fr 3fr;
 }
 
+.order-box-general-info-column {
+	display: grid;
+	grid-auto-rows: 1fr;
+}
+
 .order-box-id {
-	@include common.fonts-define-font($size: common.$fonts-section);
+	@include common.fonts-define-font($size: common.$fonts-section) {
+		letter-spacing: 2px;
+	};
 
 	border: {
 		width: 1px;
@@ -172,27 +183,26 @@
 	justify-content: center;
 	align-items: center;
 	background-color: common.$colors-lavender;
-	letter-spacing: 2px;
 	min-height: 100px;
-	height: 50%;
 }
 
 .order-box-status {
-	@include common.fonts-define-font($size: common.$fonts-section);
+	@include common.fonts-define-font($size: common.$fonts-section) {
+		letter-spacing: 1.5px;
+	};
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: common.$colors-success;
 	min-height: 100px;
-	height: 50%;
 }
 
-.order-box-general-info-header {
+.order-box-customer-info-header {
 	@extend %order-box-section-header;
 }
 
-.order-box-dates-header {
+.order-box-misc-header {
 	@extend %order-box-section-header;
 
 	border: {
@@ -251,7 +261,7 @@
 	}
 }
 
-.order-box-date-datum {
+.order-box-miscelleneous-datum {
 	padding: {
 		top: 15px;
 		bottom: 15px;
@@ -275,7 +285,7 @@
 	color: common.$colors-slate-gray;
 }
 
-.order-box-date-label {
+.order-box-miscelleneous-label {
 	margin: {
 		bottom: 5px;
 	}
@@ -283,7 +293,39 @@
 	text-decoration: underline;
 }
 
+.order-box-button-row {
+	@extend %order-box-section-delineator;
+
+	padding: {
+		left: 35px;
+		right: 35px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	box-sizing: border-box;
+	min-height: 75px;
+	width: 100%;
+}
+
+.order-box-action-button {
+	@include form.small-button($bgColor: common.$colors-steel-blue, $width: 140px);
+
+	& > svg {
+		margin: {
+			left: 8px;
+			right: 8px;
+		}
+	}
+}
+
 .order-box-file-upload {
-	display: block;
-	width: 100%
+	@extend %order-box-section-delineator;
+
+	width: 100%;
+}
+
+.order-box-notes {
+	width: 100%;
 }

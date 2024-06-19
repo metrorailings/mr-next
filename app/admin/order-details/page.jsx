@@ -1,4 +1,4 @@
-import OrderDetailsPage from "app/admin/orderDetails/client";
+import OrderDetailsPage from "app/admin/order-details/client";
 
 import { getOrderById } from 'lib/http/ordersDAO';
 import { sortNotes } from 'lib/utils';

@@ -1,16 +1,19 @@
 'use client'
 
-import { useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import dayjs from 'dayjs';
 
-import FileUpload from 'components/admin/fileUpload';
+import FileUpload from 'components/admin/FileUpload';
+import Notes from 'components/admin/Notes';
 import OptionSet from 'components/admin/OptionSet';
-import { filterOrders } from 'app/admin/orderSearch/orderFilter';
+import { filterOrders } from 'app/admin/order-search/orderFilter';
+
+import { buildUserMap } from 'lib/userInfo';
 
 import styles from 'public/styles/page/orderSearch.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faUserTag, faLocationDot, faSquareEnvelope, faSquarePhone } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faUserTag, faLocationDot, faSquareEnvelope, faSquarePhone, faPencil } from '@fortawesome/free-solid-svg-icons';
 
 const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 
@@ -25,7 +28,10 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 		page: 1,
 		maxPage: Math.ceil(filteredOrders.length / 10) // Used to determine how many times we can render new data for infinite scroll
 	});
+	const [userMap, setUserMap] = useState({});
+
 	const observerTarget = useRef(null);
+	const router = useRouter();
 	const statuses = JSON.parse(jsonStatuses);
 	const statusLabels = statuses.map(status => status.label);
 	const statusValues = statuses.map(status => status.key);
@@ -94,6 +100,10 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 		return '#';
 	}
 
+	const navigateToOrderDetails = (orderId) => {
+		router.push('/admin/order-details?id=' + orderId);
+	}
+
 	useEffect(() => {
 		// Observer to allow for infinite scrolling so that more orders are only loaded once the user scrolls down far enough
 		const observer = new IntersectionObserver(
@@ -113,12 +123,21 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 			observer.observe(observedNode);
 		}
 
+		const userLoader = async () => {
+			if (Object.keys(userMap).length === 0) {
+				const users = await buildUserMap();
+				setUserMap(users);
+			}
+		}
+		userLoader();
+
 		return () => {
 			if (observedNode) {
 				observer.unobserve(observedNode);
 			}
 		};
-	}, [observerTarget]);
+
+	}, [observerTarget, userMap]);
 
 	return (
 		<>
@@ -170,13 +189,14 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 						return (
 							<div id={'order_box_' + index} key={ index } className={ styles.orderBox } >
 								<div className={ styles.orderBoxInfoBody }>
+
 									<span className={ styles.orderBoxGeneralInfoColumn }>
 										<div className={ styles.orderBoxId }>{ order._id }</div>
 										<div className={ styles.orderBoxStatus }>{ order.status }</div>
 									</span>
 
-									<span className={ styles.orderBoxCustomerInfoColumn }>
-										<div className={ styles.orderBoxGeneralInfoHeader }>Customer Info</div>
+									<span>
+										<div className={ styles.orderBoxCustomerInfoHeader }>Customer Info</div>
 										<div className={ styles.orderBoxCustomerInfoSubColumn }>
 
 											<div className={ styles.orderBoxDatum }>
@@ -219,42 +239,72 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 										</div>
 									</span>
 
-									<span className={ styles.orderBoxDateColumn }>
-										<div className={ styles.orderBoxDatesHeader }>Dates</div>
+									<span>
+										<div className={ styles.orderBoxMiscHeader }>Miscellaneous</div>
 										<div className={ styles.orderBoxCustomerInfoSubColumn }>
 
-											<div className={ styles.orderBoxDateDatum }>
-												<div className={ styles.orderBoxDateLabel }>Created:</div>
+											{ order.sales.header ? (
+												<div className={ styles.orderBoxMiscelleneousDatum }>
+													<div className={ styles.orderBoxMiscelleneousLabel }>Project Header</div>
+													<div>{ order.sales.header }</div>
+												</div>
+											) : null }
+
+											<div className={ styles.orderBoxMiscelleneousDatum }>
+												<div className={ styles.orderBoxMiscelleneousLabel }>Created:</div>
 												<div>{ dayjs(order.dates.created).format('MM/DD/YY') + (order.users?.creator ? ' (' + order.users.creator + ')' : '')}</div>
 											</div>
 
-											<div className={ styles.orderBoxDateDatum }>
-												{ order.dates?.lastModified ? (
-													<>
-														<div className={ styles.orderBoxDateLabel }>Last Updated:</div>
+											{ order.dates?.lastModified ? (
+												<div className={ styles.orderBoxMiscelleneousDatum }>
+														<div className={ styles.orderBoxMiscelleneousLabel }>Last Updated:</div>
 														<div>{ dayjs(order.dates.lastModified).format('MM/DD/YY') + (order.users?.lastModifier ? ' (' + order.users.lastModifier + ')' : '')}</div>
-													</>
-												) : null }
-											</div>
+												</div>
+											) : null }
 
-											<div className={ styles.orderBoxDateDatum }>
-												{ order.dates?.due ? (
-													<>
-														<div className={ styles.orderBoxDateLabel }>Due Date:</div>
-														<div>{ dayjs(order.dates.due).format('MM/DD/YY') }</div>
-													</>
-												) : null }
-											</div>
+											{ order.dates?.due ? (
+												<div className={ styles.orderBoxMiscelleneousDatum }>
+													<div className={ styles.orderBoxMiscelleneousLabel }>Due Date:</div>
+													<div>{ dayjs(order.dates.due).format('MM/DD/YY') }</div>
+												</div>
+											) : null }
+
+											{ order.sales.assignees.length ? (
+												<div className={ styles.orderBoxMiscelleneousDatum }>
+													<div className={ styles.orderBoxMiscelleneousLabel }>Managers</div>
+													{ order.sales.assignees.map((assignee, index) => {
+														return (
+															<div key={ index }>{ userMap[assignee.username] }</div>
+														);
+													})}
+												</div>
+											) : null }
 
 										</div>
 									</span>
 								</div>
 
+								<div className={ styles.orderBoxButtonRow }>
+									<button type='button' className={ styles.orderBoxActionButton } onClick={ () => navigateToOrderDetails(order._id) }>
+										<FontAwesomeIcon icon={ faPencil } />
+										Edit
+									</button> 
+								</div>
+
 								<div className={ styles.orderBoxFileUpload }>
 									<FileUpload
 										orderId={ order._id }
-										existingFiles={ order.files }
+										existingFiles={ [] }
 										lazyLoad={ true }
+									/>
+								</div>
+
+								<div className={ styles.orderBoxNotes }>
+									<Notes
+										orderId={ order._id }
+										existingNotes={ [] }
+										lazyLoad={ true }
+										inSpanish={ false }
 									/>
 								</div>
 							</div>

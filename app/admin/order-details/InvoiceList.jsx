@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import dayjs from 'dayjs';
 import classNames from 'classnames';
 
-import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/orderContext';
+import { OrdersContext, OrdersDispatchContext } from 'app/admin/order-details/orderContext';
 
 import { cancelInvoice as cancelInvoiceServer } from 'actions/invoice';
 

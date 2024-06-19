@@ -2,7 +2,7 @@
 
 import React, { useContext } from "react";
 
-import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/orderContext';
+import { OrdersContext, OrdersDispatchContext } from 'app/admin/order-details/orderContext';
 
 import { validateFloat } from 'lib/validators/inputValidators';
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 
 import styles from 'public/styles/page/orderDetails.module.scss';
 
-import { validateDesignProp } from 'app/admin/orderDetails/designValidation';
+import { validateDesignProp } from 'app/admin/order-details/designValidation';
 
 const DesignField = ({ data, order, propName, dispatch }) => {
 

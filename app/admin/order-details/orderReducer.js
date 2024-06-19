@@ -1,4 +1,4 @@
-import { validateAllDesignFields } from 'app/admin/orderDetails/designValidation';
+import { validateAllDesignFields } from 'app/admin/order-details/designValidation';
 
 import { validateFloat } from 'lib/validators/inputValidators';
 

@@ -18,12 +18,12 @@ import FileUpload from 'components/admin/fileUpload';
 import { toastValidationError } from 'components/customToaster';
 import MRToolTip from 'components/tooltip';
 
-import DesignField from 'app/admin/orderDetails/DesignField';
-import orderReducer from 'app/admin/orderDetails/orderReducer';
-import { OrdersContext, OrdersDispatchContext } from 'app/admin/orderDetails/orderContext';
-import SalesAssigneeActions from 'app/admin/orderDetails/SalesAssigneeActions';
-import InvoiceAmountModal from 'app/admin/orderDetails/InvoiceAmountModal';
-import InvoiceList from 'app/admin/orderDetails/InvoiceList';
+import DesignField from 'app/admin/order-details/DesignField';
+import orderReducer from 'app/admin/order-details/orderReducer';
+import { OrdersContext, OrdersDispatchContext } from 'app/admin/order-details/orderContext';
+import SalesAssigneeActions from 'app/admin/order-details/SalesAssigneeActions';
+import InvoiceAmountModal from 'app/admin/order-details/InvoiceAmountModal';
+import InvoiceList from 'app/admin/order-details/InvoiceList';
 import PaymentHistory from 'components/public/PaymentHistory';
 
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';

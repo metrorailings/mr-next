@@ -724,12 +724,11 @@
 	margin: {
 		top: 15px;
 		bottom: 15px;
-		left: auto;
-		right: auto;
 	}
 
-	width: 80%;
-	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .upload-file-button {

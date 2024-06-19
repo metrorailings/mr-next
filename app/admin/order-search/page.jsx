@@ -2,8 +2,8 @@
 
 import { permanentRedirect } from 'next/navigation'
 
-import OrderSearchPage from "app/admin/orderSearch/client";
-import { filterOrders } from "app/admin/orderSearch/orderFilter";
+import OrderSearchPage from "app/admin/order-search/client";
+import { filterOrders } from "app/admin/order-search/orderFilter";
 
 import { getAllOrders } from 'lib/http/ordersDAO';
 import { prospectStatuses, openStatuses, closedStatuses } from 'lib/dictionary';
@@ -15,7 +15,7 @@ const OrderSearchServer = async (request) => {
 
 	// Should no filters be set in the URL, reset the URL to include default filters
 	if (Object.keys(params).length === 0) {
-		permanentRedirect('/admin/orderSearch?status=open')
+		permanentRedirect('/admin/order-search?status=open')
 	}
 
 	const filteredOrders = filterOrders(orders, params);
