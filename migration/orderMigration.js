@@ -154,6 +154,8 @@ for (let i = 0; i < orders.length; i += 1) {
 	const orderInvoices = await findInvoicesByOrder(order._id);
 
 	migratedOrder.notes = orderNotes.map(note => note._id) || [];
+	migratedOrder.tasks = [];
+	migratedOrder.shopNotes = [];
 	migratedOrder.files = orderFiles.map(file => file._id);
 	migratedOrder.invoices = orderInvoices.map(invoice => invoice._id);
 

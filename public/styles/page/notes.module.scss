@@ -80,10 +80,20 @@
 }
 
 .note-lazy-load-link {
-	@include common.fonts-define-font() {
+	@include common.fonts-define-font($family: Poppins) {
 		text-decoration: none;
-		color: common.$colors-cadet-blue;
+		color: common.$colors-steel-blue;
+		letter-spacing: 1px;
 	}
+
+	margin: {
+		top: 20px;
+		bottom: 20px;
+	}
+
+	width: 100%;
+	text-align: center;
+	cursor: pointer;
 
 	&:hover {
 		text-decoration: underline;

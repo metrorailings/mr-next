@@ -4,15 +4,16 @@ import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import classNames from 'classnames';
 
-import { NOTE_API } from 'lib/http/apiEndpoints';
-import { httpRequest } from 'lib/http/clientHttpRequester';
+import { updateTaskStatus } from 'actions/note';
+
+import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { getUserSession } from 'lib/userInfo';
 
 import styles from 'public/styles/page/notes.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
-const NoteRecord = ({ note }) => {
+const NoteRecord = ({ order, note }) => {
 
 	const [noteStatus, setNoteStatus] = useState(note.status || '');
 	const [noteCloser, setNoteCloser] = useState(note.closer || '');
@@ -22,17 +23,24 @@ const NoteRecord = ({ note }) => {
 
 		// Note the status update in the back-end
 		try {
-			await httpRequest(NOTE_API.NOTE, 'POST', {
+			const serverResponse = await serverActionCall(updateTaskStatus, {
 				noteId: note._id,
-				noteData: {
-					status: newStatus,
-					closer: username
-				}
-			});
+				newState: newStatus,
+				orderId: note.orderId || null
+			}, {});
 
-			// Update the local copy of the note where necessary
-			setNoteStatus(newStatus);
-			setNoteCloser(username);
+			if (serverResponse.success) {
+				// Update the local copy of the note where necessary
+				setNoteStatus(newStatus);
+				setNoteCloser(username);
+
+				// If an order is associated with this task, update the order accordingly to track the status of this note
+				if (order) {
+					order.tasks = order.tasks.filter((task) => task !== note._id);
+					order.shopNotes = order.shopNotes.filter((shopNote) => shopNote !== note._id);
+					order.notes.push(note);
+				}
+			}
 		} catch (error) {
 			console.error(error);
 		}

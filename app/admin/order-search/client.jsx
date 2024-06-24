@@ -137,7 +137,8 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 			}
 		};
 
-	}, [observerTarget, userMap]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [observerTarget]);
 
 	return (
 		<>
@@ -294,17 +295,17 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 								<div className={ styles.orderBoxFileUpload }>
 									<FileUpload
 										orderId={ order._id }
-										existingFiles={ [] }
+										existingFiles={ order.files }
 										lazyLoad={ true }
 									/>
 								</div>
 
 								<div className={ styles.orderBoxNotes }>
 									<Notes
-										orderId={ order._id }
-										existingNotes={ [] }
-										lazyLoad={ true }
+										order={ order }
+										noteRefs={ order.notes }
 										inSpanish={ false }
+										specialNotes={ [...(order.tasks || []), ...(order.shopNotes || [])] }
 									/>
 								</div>
 							</div>

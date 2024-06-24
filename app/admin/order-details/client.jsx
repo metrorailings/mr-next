@@ -11,10 +11,10 @@ import { generateInvoice } from 'actions/invoice';
 
 import Multitext from 'components/multitext';
 import MultiSelect from 'components/multiSelect';
-import OptionSet from 'components/admin/optionSet';
+import OptionSet from 'components/admin/OptionSet';
 import PaymentForms from 'components/paymentForms';
-import Notes from 'components/admin/notes';
-import FileUpload from 'components/admin/fileUpload';
+import Notes from 'components/admin/Notes';
+import FileUpload from 'components/admin/FileUpload';
 import { toastValidationError } from 'components/customToaster';
 import MRToolTip from 'components/tooltip';
 
