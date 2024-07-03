@@ -169,6 +169,8 @@ const OrderSchema = new mongoose.Schema({
 	},
 
 	notes: [Number],
+	tasks: [Number],
+	shopNotes: [Number],
 	files: [Number],
 	invoices: [Number],
 

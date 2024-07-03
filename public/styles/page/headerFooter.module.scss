@@ -65,6 +65,7 @@
 .desktop-menu-links {
 	display: flex;
 	align-items: center;
+	justify-content: flex-end;
 	flex-wrap: wrap;
 	flex: 7;
 
@@ -115,15 +116,13 @@
 	}
 }
 
-.top-menu-link {
+.top-menu-link-slot {
 	margin: {
-		right: 35px;
+		right: 15px;
 	}
 
-	cursor: pointer;
 	text-align: right;
-	text-decoration: none;
-	color: common.$colors-slate-gray;
+	max-width: 250px;
 
 	@include common.responsive-desktop-only {
 		flex: 1;
@@ -141,6 +140,12 @@
 		width: 100%;
 		text-align: right;
 	}
+}
+
+.top-menu-link {
+	cursor: pointer;
+	text-decoration: none;
+	color: common.$colors-slate-gray;
 
 	&:hover {
 		text-decoration: underline;

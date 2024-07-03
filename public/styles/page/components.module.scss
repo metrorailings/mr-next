@@ -375,17 +375,16 @@
 .thumbnail-title-bar {
 	@include common.fonts-define-font($size: common.$fonts-secondary);
 
+	padding: 5px;
 	position: absolute;
 	z-index: 20;
 	top: calc(100% - 30px);
 	width: 150px;
-	height: 25px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: block;
+	box-sizing: border-box;
 	color: common.$colors-white;
 	background-color: rgba(0 0 0 / 55%);
 }
@@ -776,17 +775,25 @@
 	letter-spacing: 0.3px;
 }
 
-.see-files-link {
-	@include common.fonts-define-font($size: common.$fonts-secondary);
-
-	margin: {
-		top: 5px;
-		bottom: 5px;
+.files-lazy-load-link {
+	@include common.fonts-define-font($family: Poppins) {
+		text-decoration: none;
+		color: common.$colors-steel-blue;
+		letter-spacing: 1px;
 	}
 
-	color: common.$colors-steel-blue;
-	text-decoration: underline;
+	margin: {
+		top: 10px;
+		bottom: 10px;
+	}
+
+	width: 100%;
+	text-align: center;
 	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 /* ----------------------- MODALS ----------------------------- */

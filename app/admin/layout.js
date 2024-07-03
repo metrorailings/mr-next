@@ -1,3 +1,12 @@
+'use client'
+
+import React, { useState, useEffect } from 'react';
+
+import { UserContext, UserMapContext } from 'app/admin/userContext';
+
+import { buildUserMap, getUserSession } from 'lib/userInfo';
+
+import Header from 'components/admin/header';
 import EventOrganizer from 'components/eventOrganizer';
 import CustomToaster from 'components/customToaster';
 
@@ -7,16 +16,35 @@ export const viewport = {
 }
 
 export default function RootLayout({ children }) {
+
+	const [user, setUser] = useState(null);
+	const [userMap, setUserMap] = useState({});
+
+	useEffect(() => {
+		setUser(getUserSession());
+
+		const userLoader = async () => {
+			const users = await buildUserMap();
+			setUserMap(users);
+		}
+		userLoader();
+	}, []);
+
 	return (
 		<html lang='en'>
 			<head>
 				<title>Metro Railings Admin Platform</title>
 			</head>
 			<body>
-				{ children }
-		
-				<EventOrganizer/>
-				<CustomToaster/>
+				<UserContext.Provider value={ user }>
+					<UserMapContext.Provider value={ userMap }>
+						<Header />
+						{ children }
+
+						<EventOrganizer />
+						<CustomToaster />
+					</UserMapContext.Provider>
+				</UserContext.Provider>
 			</body>
 		</html>
 	);

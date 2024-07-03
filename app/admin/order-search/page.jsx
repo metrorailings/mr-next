@@ -18,8 +18,6 @@ const OrderSearchServer = async (request) => {
 		permanentRedirect('/admin/order-search?status=open')
 	}
 
-	const filteredOrders = filterOrders(orders, params);
-
 	const statuses = [
 		{
 			key: '',
@@ -45,7 +43,6 @@ const OrderSearchServer = async (request) => {
 		<>
 			<OrderSearchPage
 				jsonOrders={ JSON.stringify(orders) }
-				jsonFilteredOrders={ JSON.stringify(filteredOrders) }
 				jsonStatuses={ JSON.stringify(statuses) }
 			/>
 		</>

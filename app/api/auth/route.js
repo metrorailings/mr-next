@@ -10,7 +10,6 @@ import User from "lib/models/user";
  * Function to validate the credentials for a user trying to log in to the admin platform
  *
  * @param request
- * @returns {Promise<NextResponse>}
  */
 export async function POST(request) {
 	await dbConnect();
@@ -57,5 +56,21 @@ export async function POST(request) {
 	} catch (error) {
 		console.error(error);
 		return NextResponse.json( { error: 'Server issue' }, { status: 500 });
+	}
+}
+
+/**
+ * Function to log a user out from the system
+ */
+export function DELETE() {
+	try {
+		if (cookies().has('user')) {
+			cookies().delete('user');
+		}
+
+		return NextResponse.json({}, { status: 200 });
+	} catch (error) {
+		console.error(error);
+		return NextResponse.json({ error: 'Server Issue' }, { status: 500 });
 	}
 }

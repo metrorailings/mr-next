@@ -1,5 +1,7 @@
 'use server'
 
+import { cookies } from 'next/headers';
+
 import {
 	saveNewOrder,
 	saveChangesToOrder,
@@ -10,6 +12,7 @@ import {
 import {
 	saveNewFile,
 	deleteFile,
+	getFilesByOrder,
 	uploadFileToVercel,
 	uploadImageToVercel,
 	deleteFromVercel
@@ -80,22 +83,19 @@ export async function moveOrderIntoProduction(data) {
 
 export async function addFileToOrder(formData) {
 	const uploadedFile = formData.get('newFile');
+	const orderId = formData.get('orderId');
+	const uploader = JSON.parse(cookies().get('user').value).username;
 
 	try {
 		// Upload the file first to Vercel's blob service
-		const fileBlob = acceptableImageExtensions[uploadedFile.type] ? await uploadImageToVercel(uploadedFile) : await uploadFileToVercel(uploadedFile);
+		const fileBlob = acceptableImageExtensions[uploadedFile.type] ? await uploadImageToVercel(uploadedFile, orderId) : await uploadFileToVercel(uploadedFile, orderId);
 
 		// Save the new file into our database
 		// Make sure to notate which order the file is to be associated with
-		const metadata = {
-			...fileBlob,
-			orderId: formData.get('orderId'),
-			uploader: formData.get('uploader')
-		};
-		const dbNote = await saveNewFile(metadata);
-		await attachFileToOrder(dbNote.orderId, dbNote._id);
+		const processedFile = await saveNewFile(fileBlob, orderId, uploader);
+		await attachFileToOrder(processedFile.orderId, processedFile._id);
 
-		return { success: true, file: metadata };
+		return { success: true, file: processedFile };
 	} catch (error) {
 		console.error(error);
 		return { success: false };
@@ -111,13 +111,24 @@ export async function deleteFileFromOrder(data) {
 		// In case we fail to properly delete the file for whatever reason, still notate the operation as a success
 		// as the file's been detached from the order
 		try {
-			await deleteFile(data.fileId);
-			await deleteFromVercel(data.fileUrl);
+			if (await deleteFile(data.fileId)) {
+				await deleteFromVercel(data.fileUrl);
+			}
 		} catch (error) {
 			console.error(error);
 		}
 
 		return { success: true };
+	} catch (error) {
+		console.error(error);
+		return { success: false };
+	}
+}
+
+export async function fetchFilesByOrder(data) {
+	try {
+		const files = await getFilesByOrder(data.orderId);
+		return { success: true, files: JSON.stringify(files) };
 	} catch (error) {
 		console.error(error);
 		return { success: false };

@@ -1,6 +1,7 @@
 'use client'
 
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link';
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import dayjs from 'dayjs';
 
@@ -15,13 +16,14 @@ import styles from 'public/styles/page/orderSearch.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faUserTag, faLocationDot, faSquareEnvelope, faSquarePhone, faPencil } from '@fortawesome/free-solid-svg-icons';
 
-const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
+const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 
 	const searchParams = new useSearchParams();
-	const pathName = usePathname();
 	const orders = useMemo(() => JSON.parse(jsonOrders), [jsonOrders]);
-
-	const [filteredOrders, setFilteredOrders] = useState(JSON.parse(jsonFilteredOrders));
+	const [filteredOrders, setFilteredOrders] = useState(filterOrders(orders, {
+		status: searchParams.get('status') || '',
+		search: searchParams.get('search') || ''
+	}));
 	const [filters, setFilters] = useState({
 		status: searchParams.get('status') || '',
 		search: searchParams.get('search') || '',
@@ -30,6 +32,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 	});
 	const [userMap, setUserMap] = useState({});
 
+	const pathName = usePathname();
 	const observerTarget = useRef(null);
 	const router = useRouter();
 	const statuses = JSON.parse(jsonStatuses);
@@ -43,7 +46,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 			page: 1
 		};
 		const newlyFilteredOrders = filterOrders(orders, newFilters);
-		
+
 		setFilters({
 			...newFilters,
 			maxPage: Math.ceil(newlyFilteredOrders.length / 10)
@@ -144,7 +147,9 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 		<>
 			<div className={ styles.pageContainer }>
 				<div className={ styles.pageButtonSection }>
-					<button className={ styles.createOrderButton }>Create Order</button>
+					<Link href='/admin/order-details' prefetch={ true }>
+						<button className={ styles.createOrderButton }>Create Order</button>
+					</Link>
 				</div>
 
 				<hr className={ styles.sectionDivider }></hr>
@@ -188,7 +193,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 				<div className={ styles.ordersListing }>
 					{ filteredOrders.slice(0, filters.page * 10).map((order, index) => {
 						return (
-							<div id={'order_box_' + index} key={ index } className={ styles.orderBox } >
+							<div id={ 'order_box_' + index } key={ 'order_' + order._id } className={ styles.orderBox } >
 								<div className={ styles.orderBoxInfoBody }>
 
 									<span className={ styles.orderBoxGeneralInfoColumn }>
@@ -224,7 +229,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 												<span>
 													{ order.customer.email.length > 0 ? order.customer.email.map((email, index) => {
 														return (
-															<div key={index}>{ email }</div>
+															<div key={ order._id + '-email' + index }>{ email }</div>
 														)
 													}) : '--' }
 												</span>
@@ -275,7 +280,7 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 													<div className={ styles.orderBoxMiscelleneousLabel }>Managers</div>
 													{ order.sales.assignees.map((assignee, index) => {
 														return (
-															<div key={ index }>{ userMap[assignee.username] }</div>
+															<div key={ order._id + '-salesman' + index }>{ userMap[assignee.username] }</div>
 														);
 													})}
 												</div>
@@ -294,9 +299,9 @@ const OrderSearchPage = ({ jsonOrders, jsonFilteredOrders, jsonStatuses }) => {
 
 								<div className={ styles.orderBoxFileUpload }>
 									<FileUpload
-										orderId={ order._id }
-										existingFiles={ order.files }
-										lazyLoad={ true }
+										order={ order }
+										fileRefs={ order.files }
+										inSpanish={ false }
 									/>
 								</div>
 

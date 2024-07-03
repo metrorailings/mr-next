@@ -24,13 +24,10 @@ function sortOrdersByDueDate(a, b) {
 }
 
 // Function meant to filter orders by a given status
-function filterOrdersByStatus(orders, status)
-{
-
+function filterOrdersByStatus(orders, status) {
 	const prospectStatusMarkers = prospectStatuses();
 	const openStatusMarkers = openStatuses();
-	if (!(status))
-	{
+	if (!(status)) {
 		return orders;
 	} else if (status === 'prospect') {
 		return orders.filter(order => prospectStatusMarkers.find(statusMeta => order.status === statusMeta.key));

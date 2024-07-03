@@ -1,8 +1,10 @@
 'use client'
 
 // @TODO - Make this component look pretty on mobile
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import toast from 'react-hot-toast';
+
+import { UserMapContext } from 'app/admin/userContext';
 
 import NoteRecord from 'components/admin/noteRecord';
 import { toastValidationError } from 'components/customToaster';
@@ -11,7 +13,6 @@ import { createNoteTask, fetchNotesByIds } from 'actions/note';
 
 import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { sortNotes } from 'lib/utils';
-import { buildUserMap } from 'lib/userInfo';
 import { validateEmpty, runValidators } from 'lib/validators/inputValidators';
 
 import styles from 'public/styles/page/notes.module.scss';
@@ -25,8 +26,8 @@ const NoteManager = ({ order, existingNotes, specialNotes, noteRefs, inSpanish }
 		orderId: order?._id || null
 	});
 	const [notes, setNotes] = useState(existingNotes || []);
-	const [noteIds, setNoteIds] = useState(noteRefs || [])
-	const [userMap, setUserMap] = useState({});
+	const [noteIds, setNoteIds] = useState(noteRefs || []);
+	const userMap = useContext(UserMapContext);
 
 	// ---------- Validation functions
 
@@ -83,9 +84,9 @@ const NoteManager = ({ order, existingNotes, specialNotes, noteRefs, inSpanish }
 
 	const loadAllNotes = async () => {
 		try {
-			const serverResponse = await serverActionCall(fetchNotesByIds, { noteIds: noteIds }, { noteIds: noteIds }, {
+			const serverResponse = await serverActionCall(fetchNotesByIds, { noteIds: noteIds }, {
 				loading: 'Fetching all the notes written for order ' + order._id + '...',
-				error: 'Something went awry when trying to look all the notes that belong to order ' + order._id + '!'
+				error: 'Something went awry when trying to recover all the notes belonging to order ' + order._id + '!'
 			});
 
 			if (serverResponse.success) {
@@ -101,18 +102,6 @@ const NoteManager = ({ order, existingNotes, specialNotes, noteRefs, inSpanish }
 			toast.error('Something odd happened with the server. Please try again.');
 		}
 	};
-
-	useEffect(() => {
-		const userLoader = async () => {
-			if (Object.keys(userMap).length === 0) {
-				const users = await buildUserMap();
-				setUserMap(users);
-			}
-		}
-		userLoader();
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	return (
 		<>
@@ -152,7 +141,7 @@ const NoteManager = ({ order, existingNotes, specialNotes, noteRefs, inSpanish }
 							<option value=''>Select a username...</option>
 							{ Object.keys(userMap).map((username, index) => {
 								return (
-									<option key={ index } value={ username }>{ userMap[username] }</option>
+									<option key={ order._id + '-note-author-' + index } value={ username }>{ userMap[username] }</option>
 								);
 							})}
 						</select>
@@ -170,14 +159,14 @@ const NoteManager = ({ order, existingNotes, specialNotes, noteRefs, inSpanish }
 				{ specialNotes.length ? (
 					specialNotes.map((note) => {
 						return (
-							<NoteRecord note={ note } inSpanish={ inSpanish } order={ order } key={ note._id } />
+							<NoteRecord note={ note } inSpanish={ inSpanish } order={ order } key={ order._id + '-note-' + note._id } />
 						);
 					})
 				) : null }
 				{ notes.length ? (
 					notes.map((note) => {
 						return (
-							<NoteRecord note={ note } inSpanish={ inSpanish } order={ order } key={ note._id } />
+							<NoteRecord note={ note } inSpanish={ inSpanish } order={ order } key={ order._id + '-note-' + note._id } />
 						);
 					})
 				) : null }

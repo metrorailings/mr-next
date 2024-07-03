@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { } from 'react';
 import Image from 'next/image';
 
 import styles from 'public/styles/page/components.module.scss';
@@ -10,9 +10,7 @@ import genericFileThumbnail from 'assets/images/miscellany/file-thumbnail.png';
 import { publish } from 'lib/utils';
 import { acceptableMediaExtensions } from 'lib/dictionary';
 
-const GalleryViewer = ({ files, imgWidth, imgHeight, deleteFunc }) => {
-
-	const downloadLink = useRef();
+const GalleryViewer = ({ files, orderId, imgWidth, imgHeight, deleteFunc }) => {
 
 	// Function to open the image and any other images it's associated with in a whole-page gallery viewer
 	const viewImage = (index) => {
@@ -20,17 +18,15 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, deleteFunc }) => {
 	};
 
 	// Function used to download non-media files
-	const downloadFile = (url, title) => {
-		downloadLink.current.download = title;
-		downloadLink.current.href = url;
-		downloadLink.current.click();
+	const downloadFile = (url) => {
+		window.open(url, '_blank');
 	};
 
 	return (
 		<div className={ styles.fileCarousel }>
 			{ files.map((file, index) => {
 				return (
-					<div key={ file._id }>
+					<div key={ orderId + '-file-' + file._id }>
 						{ acceptableMediaExtensions[file.contentType] ? (
 							<div className={ styles.fileThumbnailContainer }>
 								<Image
@@ -74,7 +70,6 @@ const GalleryViewer = ({ files, imgWidth, imgHeight, deleteFunc }) => {
 					</div>
 				);
 			})}
-			<a className={ styles.download_link } ref={ downloadLink } href='' download=''></a>
 		</div>
 	);
 }
