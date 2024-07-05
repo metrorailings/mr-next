@@ -8,12 +8,12 @@ import TermsModal from 'app/(public)/quote/termsModal';
 
 import styles from 'public/styles/page/quote.module.scss';
 
-const FinalizeSection = ({ orderId, jsonInvoice, termsText, termsFileHandle }) => {
+const FinalizeSection = ({ orderId, jsonQuote, termsText, termsFileHandle }) => {
 	const [showTermsModal, setShowTermsModal] = useState(false);
 	const [termsAccepted, setTermsAccepted] = useState(false);
 
 	const router = useRouter();
-	const invoice = JSON.parse(jsonInvoice);
+	const invoice = JSON.parse(jsonQuote);
 
 	const openModal = () => {
 		setShowTermsModal(true);

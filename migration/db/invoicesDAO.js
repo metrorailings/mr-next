@@ -29,7 +29,7 @@ export async function createNewQuoteInvoice(order, amountToPay, paymentDate) {
 		design: order.design || {},
 		designDescription: order.designDescription || {},
 		dimensions: order.dimensions || {},
-		text: order.additionalDescription || '',
+		text: order.text || '',
 		payments: {
 			balanceRemaining: order.pricing.orderTotal
 		},

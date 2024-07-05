@@ -84,7 +84,7 @@
 		@extend .info-column;
 
 		@include common.responsive-desktop-only() {
-			text-align: left;
+			text-align: center;
 		}
 
 		@include common.responsive-tablet-only() {
@@ -138,7 +138,7 @@
 		@extend .info-column;
 
 		@include common.responsive-desktop-only() {
-			text-align: right;
+			text-align: center;
 		}
 
 		@include common.responsive-tablet-only() {

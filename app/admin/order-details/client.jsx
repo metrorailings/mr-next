@@ -561,9 +561,9 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 							<>
 								<div className={ styles.orderFormSection }>
 									<Notes
-										orderId={ orderDetails._id }
+										order={ orderDetails }
 										existingNotes={ orderDetails.notes || [] }
-										lazyLoad={ false }
+										specialNotes={ [...(orderDetails.tasks || []), ...(orderDetails.shopNotes || [])] }
 										inSpanish={ false }
 									/>
 								</div>
@@ -578,9 +578,8 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 							<>
 								<div className={ styles.orderFormSection }>
 									<FileUpload
-										orderId={ orderDetails._id }
+										order={ orderDetails }
 										existingFiles={ orderDetails.files }
-										lazyLoad={ false }
 									/>
 								</div>
 
@@ -624,12 +623,12 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 									id='text.additionalDescription'
 									className={ styles.descriptionTextarea }
 									onChange={ handleOrderUpdate }
-									value={ orderDetails.text.additionalDescription }
+									value={ orderDetails.text.additionalDescription.split('<br />').join('\n') }
 								/>
 							</span>
 						</div>
 
-						<hr className={ styles.sectionDivider }/>
+						<hr className={ styles.sectionDivider } />
 
 						{/* ---------- BASE DESIGN SECTION ---------- */ }
 

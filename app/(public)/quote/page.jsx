@@ -166,7 +166,7 @@ const QuoteServer = async ({ searchParams }) => {
 
 			<FinalizeSection
 				orderId={ orderId }
-				jsonInvoice={ JSON.stringify(invoice) }
+				jsonQuote={ JSON.stringify(quote) }
 				termsText={ termsRawText }
 				termsFileHandle={ quote.termsFileHandle }
 			/>

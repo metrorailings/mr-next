@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../MetroRailingsCopy/MetroRailingsCopy.iml" filepath="$PROJECT_DIR$/../MetroRailingsCopy/MetroRailingsCopy.iml" />
       <module fileurl="file://$PROJECT_DIR$/MetroRailingsNext.iml" filepath="$PROJECT_DIR$/MetroRailingsNext.iml" />
     </modules>
   </component>

@@ -1,6 +1,6 @@
 export const DB = {
-	MONGODB_URI: 'mongodb+srv://admin:c2UIK9llSWd0NuZt@development.3lvtw.mongodb.net/MetroRailings',
-	MONGODB_DB_NAME: 'MetroRailings'
+	MONGODB_URI: 'mongodb+srv://admin:c2UIK9llSWd0NuZt@development.3lvtw.mongodb.net/MetroRailingsNext',
+	LEGACY_MONGODB_URI: 'mongodb+srv://admin:c2UIK9llSWd0NuZt@production.3lvtw.mongodb.net/MetroRailings'
 };
 
 export const MIGRATION_USER = {

@@ -133,7 +133,10 @@ const OrderSchema = new mongoose.Schema({
 	},
 
 	text: {
-		agreement: String,
+		agreement: {
+			type: String,
+			default: 'assets/text/terms/2020.contract.txt'
+		},
 		additionalDescription: String
 	},
 
