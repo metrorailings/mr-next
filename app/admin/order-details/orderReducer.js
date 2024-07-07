@@ -112,6 +112,24 @@ export default function orderReducer(order, action) {
 				invoices: action.invoices
 			};
 		}
+		case 'addNewPayment': {
+			return {
+				...order,
+				payments: {
+					...(order.payments),
+					charges: [...(order.payments.charges), action.newPayment]
+				}
+			};
+		}
+		case 'updateDescription': {
+			return {
+				...order,
+				text: {
+					...(order.text),
+					additionalDescription: action.value.split('\n').join('<br />')
+				}
+			};
+		}
 		case 'overwriteOrder': {
 			return {
 				...order,

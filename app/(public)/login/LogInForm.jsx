@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
-import { toastValidationError } from 'components/customToaster';
+import { toastValidationError } from 'components/CustomToaster';
 
 import styles from 'public/styles/page/logIn.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -6,7 +6,7 @@ import { OrdersContext, OrdersDispatchContext } from 'app/admin/order-details/or
 
 import { validateFloat } from 'lib/validators/inputValidators';
 
-import { quickToastNotice } from 'components/customToaster';
+import { quickToastNotice } from 'components/CustomToaster';
 
 import styles from 'public/styles/page/orderDetails.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

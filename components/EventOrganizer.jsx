@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 
 import { subscribe, unsubscribe } from 'lib/utils';
 
-import PhotoViewer from 'components/photoViewer';
-import ConfirmModal from 'components/confirmModal';
-import InfoModal from 'components/infoModal';
-import ContentModal from 'components/contentModal';
+import PhotoViewer from 'components/PhotoViewer';
+import ConfirmModal from 'components/ConfirmModal';
+import InfoModal from 'components/InfoModal';
+import ContentModal from 'components/ContentModal';
 
 const EventOrganizer = () => {
 

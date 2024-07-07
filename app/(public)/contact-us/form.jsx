@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { toastValidationError } from 'components/customToaster';
+import { toastValidationError } from 'components/CustomToaster';
 import { createProspectFromContactUs } from 'actions/order';
 
 import { validateEmail, validateEmpty, runValidators } from 'lib/validators/inputValidators';

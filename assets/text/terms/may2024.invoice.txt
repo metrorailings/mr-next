@@ -5,6 +5,6 @@ Please note that by paying this invoice, you as the Customer fully accept the va
 that Metro Railings has issued the invoice in good faith. Such invoices are only issued when any one of the following 
 conditions hold true:
 
-- The scope of work for this order changes
-- Metro Railings has made some satisfactory progress on this order
-- Metro Railings has finished the work and is looking to collect upon any open balances
+- The scope of work for this order changes.
+- Metro Railings has made some satisfactory progress on this order.
+- Metro Railings has finished the work and is looking to collect upon any open balances.

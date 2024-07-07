@@ -1011,11 +1011,6 @@
 
 // Styling for customized button sets
 .option-set-container {
-	margin: {
-		top: 15px;
-		bottom: 15px;
-	}
-
 	cursor: pointer;
 	display: flex;
 	flex-wrap: wrap;
@@ -1032,6 +1027,7 @@
 		padding: 10px;
 		background-color: common.$colors-silver;
 		color: common.$colors-black;
+		box-shadow: 1px 1px 0.1px 0.5px common.$colors-low-black;
 		cursor: inherit;
 
 		&.selected-option-set {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { quickToastNotice } from 'components/customToaster';
+import { quickToastNotice } from 'components/CustomToaster';
 
 import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

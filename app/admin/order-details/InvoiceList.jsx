@@ -85,7 +85,7 @@ const InvoiceList = () => {
 							[styles.invoiceStatusFinalized]: invoice.status === 'finalized',
 							[styles.invoiceStatusOpen]: invoice.status === 'open'
 						}) }>
-							<span className>{ translateStatus(invoice.status) }</span>
+							<span>{ translateStatus(invoice.status) }</span>
 						</span>
 						<span className={ styles.invoiceTableCell }>${ formatUSDAmount(invoice.amount) }</span>
 						<span className={ styles.invoiceTableCell }>{ invoice.dates.finalized ? dayjs(invoice.dates.finalized).format('MM/DD/YY') : '--' }</span>

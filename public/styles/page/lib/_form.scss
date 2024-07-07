@@ -134,6 +134,14 @@
 	}
 }
 
+@mixin naked-select-dropdown($bgColor: common.$colors-smoke-white) {
+	@include common.fonts-define-font($size: common.$fonts-subsection);
+
+	background-color: $bgColor;
+	border: 0;
+	text-align: right;
+}
+
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
 // Specialized input container meant to stow icons besides form fields

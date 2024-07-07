@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import { quickToastNotice } from 'components/customToaster';
+import { quickToastNotice } from 'components/CustomToaster';
 
 import { validateFloat } from 'lib/validators/inputValidators';
 import { formatUSDAmount } from 'lib/utils';
@@ -30,13 +30,14 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 
 		if (validateFloat(invoiceAmount)) {
 			const amount = parseFloat(invoiceAmount);
-			if (amount > 0 && amount < orderDetails.payments.balanceRemaining) {
+			if (amount > 0 && amount <= orderDetails.payments.balanceRemaining) {
 				modalData.amount = amount;
 				closeFunc(true);
+				return true;
 			}
-		} else {
-			quickToastNotice('Enter a valid amount to charge. Make sure the amount is less than the balance outstanding on this order.')
 		}
+
+		quickToastNotice('Enter a valid amount to charge. Make sure the amount is less than the balance outstanding on this order.')
 	}
 
 	return (
@@ -82,7 +83,7 @@ const InvoiceAmountModal = ({ closeFunc, contentData }) => {
 			</div>
 			<div className={ componentStyles.modalButtonRow }>
 				<button type='button' onClick={ submitAmount } className={ componentStyles.modalConfirmButton }>OK</button>
-				<button type='button' onClick={ closeFunc } className={ componentStyles.modalCancelButton }>Cancel</button>
+				<button type='button' onClick={ () => closeFunc(false) } className={ componentStyles.modalCancelButton }>Cancel</button>
 			</div>
 		</>
 	);

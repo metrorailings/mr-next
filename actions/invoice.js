@@ -10,6 +10,8 @@ import {
 	recordNewInvoice
 } from 'lib/http/ordersDAO';
 
+import { sendQuoteInvoiceEmail } from 'lib/loopMailer';
+
 /**
  * Server action designed to generate a new invoice for a given order
  *
@@ -31,6 +33,9 @@ export async function generateInvoice(data) {
 
 		// Link the invoice to the order it's associated with
 		await recordNewInvoice(order, processedInvoice._id);
+
+		// Send out an e-mail notifying the user that a quote/invoice is ready for their perusal
+		sendQuoteInvoiceEmail(order, processedInvoice._id, isQuote);
 
 		return { success: true, invoice: JSON.stringify(processedInvoice) };
 	} catch (error) {

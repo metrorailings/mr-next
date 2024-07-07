@@ -1,5 +1,6 @@
 import OrderDetailsPage from "app/admin/order-details/client";
 
+import { prospectStatuses, openStatuses, closedStatuses } from 'lib/dictionary';
 import { getOrderById } from 'lib/http/ordersDAO';
 import { sortNotes } from 'lib/utils';
 
@@ -11,9 +12,18 @@ const OrderDetailsServer = async ({ searchParams }) => {
 		sortNotes(order.notes);
 	}
 
+	const statuses = [
+		...prospectStatuses(),
+		...openStatuses(),
+		...closedStatuses()
+	];
+
 	return (
 		<>
-			<OrderDetailsPage jsonOrder={ JSON.stringify(order) } />
+			<OrderDetailsPage
+				jsonOrder={ JSON.stringify(order) }
+				jsonStatuses={ JSON.stringify(statuses) }
+			/>
 		</>
 	);
 };

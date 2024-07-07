@@ -8,7 +8,7 @@ import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { validateEmpty, validateDefined, validateNumberOnly, validateCurrency, runValidators } from 'lib/validators/inputValidators';
 import { formatUSDAmount } from 'lib/utils';
 
-import { toastValidationError } from 'components/customToaster';
+import { toastValidationError } from 'components/CustomToaster';
 
 import { addCardAndPayByCard, payByCard, payByImage } from 'actions/payment';
 
@@ -28,9 +28,9 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
   const [existingCards, setExistingCards] = useState(cards || []);
 	const [selectedCard, setSelectedCard] = useState('');
 	const [creditCard, setCreditCard] = useState({
-		cardNumber: "",
-		expiration: "",
-		cardCode: "",
+		cardNumber: '',
+		expiration: '',
+		cardCode: '',
 		brand: null
 	});
 	const [alternatePaymentImage, setAlternatePaymentImage] = useState(null);
@@ -199,10 +199,12 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 				setExistingCards([...existingCards, serverResult.card]);
 			}
 
-			return serverResult.success;
+			return { success: serverResult.success, data: { card: serverResult.card, payment: serverResult.payment } };
 		} else {
 			toastValidationError(errors);
 		}
+
+		return { success : false };
 	};
 
 	const submitCardPayment = async () => {
@@ -220,53 +222,63 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 				error: 'Something went wrong when trying to charge the credit card. Please try again. If you keep seeing this error message, the card is likely being declined.'
 			});
 
-			return serverResult.success;
+			return { success: serverResult.success, data: { payment: serverResult.payment } };
 		} else {
 			toastValidationError(errors);
 		}
 
-		return false;
+		return { success : false };
 	};
 
 	const submitAlternatePayment = async () => {
 		const errors = runValidators(alternateValidationFields);
 
 		if (errors.length === 0) {
-			const serverResult = await serverActionCall(payByImage, {
-				paymentImage: alternatePaymentImage,
-				orderId: orderId,
-				paymentAmount: paymentAmount
-			}, {
+			const serverResult = await serverActionCall(payByImage, new FormData(alternateSection.current), {
 				loading: 'Uploading the image...',
 				success: 'A new payment has been successfully registered!',
 				error: 'Something went wrong when trying to process this payment. Please try again.'
 			});
 
-			return serverResult.success;
+			return { success: serverResult.success, data: { payment: serverResult.payment } };
 		} else {
 			toastValidationError(errors);
 		}
 
-		return false;
+		return { success : false };
 	};
 
 	const submitPayment = async () => {
 		const errors = runValidators(paymentValidationFields);
-		let transactionProcessed = false;
+		let serverResults = false;
 
 		if (errors.length === 0) {
 			submitButtonRef.current.disabled = true;
 
 			if (cardSection.current && window.parseInt(cardSection.current.style.height, 10)) {
-				transactionProcessed = selectedCard ? await submitCardPayment() : await addCardAndSubmitPayment();
+				serverResults = selectedCard ? await submitCardPayment() : await addCardAndSubmitPayment();
 			}
 			else if (alternateSection.current && window.parseInt(alternateSection.current.style.height, 10)) {
-				transactionProcessed = await submitAlternatePayment();
+				serverResults = await submitAlternatePayment();
 			}
 
 			submitButtonRef.current.disabled = false;
-			if (transactionProcessed && postFunc) {
-				postFunc();
+
+			if (serverResults.success) {
+				// Clear out all fields across all the payment forms
+				setPaymentAmount('');
+				setSelectedCard('');
+				setCreditCard({
+					cardNumber: '',
+					expiration: '',
+					cardCode: '',
+					brand: null
+				});
+				setAlternatePaymentImage(null);
+
+				if (postFunc) {
+					postFunc(serverResults.data || {});
+				}
 			}
 		} else {
 			toastValidationError(errors);
@@ -467,7 +479,7 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 								</button>
 								<input
 									type='file'
-									name='externalPaymentImage'
+									name='paymentImage'
 									ref={ uploadAlternateImageLink }
 									className={ styles.uploadFileInput }
 									accept='.pdf,.jpeg,.jpg,.png'

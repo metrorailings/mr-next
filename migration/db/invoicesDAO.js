@@ -20,7 +20,8 @@ export async function createNewQuoteInvoice(order, amountToPay, paymentDate) {
 		amount: amountToPay,
 		termsFileHandle: AGREEMENT.PATH,
 		dates: {
-			created: paymentDate
+			created: paymentDate,
+			finalized: paymentDate
 		},
 		users: {
 			creator: username

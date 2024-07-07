@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 
 import PaymentHistory from 'components/public/PaymentHistory';
-import PaymentForms from 'components/paymentForms';
+import PaymentForms from 'components/PaymentForms';
 
 import { formatUSDAmount } from 'lib/utils';
 

@@ -9,22 +9,22 @@ import _ from 'lodash';
 import { saveOrder } from 'actions/order';
 import { generateInvoice } from 'actions/invoice';
 
-import Multitext from 'components/multitext';
-import MultiSelect from 'components/multiSelect';
+import Multitext from 'components/Multitext';
+import MultiSelect from 'components/MultiSelect';
 import OptionSet from 'components/admin/OptionSet';
-import PaymentForms from 'components/paymentForms';
+import PaymentForms from 'components/PaymentForms';
 import Notes from 'components/admin/Notes';
 import FileUpload from 'components/admin/FileUpload';
-import { toastValidationError } from 'components/customToaster';
-import MRToolTip from 'components/tooltip';
+import MRToolTip from 'components/Tooltip';
+import { toastValidationError } from 'components/CustomToaster';
 
-import DesignField from 'app/admin/order-details/DesignField';
 import orderReducer from 'app/admin/order-details/orderReducer';
 import { OrdersContext, OrdersDispatchContext } from 'app/admin/order-details/orderContext';
 import SalesAssigneeActions from 'app/admin/order-details/SalesAssigneeActions';
 import InvoiceAmountModal from 'app/admin/order-details/InvoiceAmountModal';
 import InvoiceList from 'app/admin/order-details/InvoiceList';
 import PaymentHistory from 'components/public/PaymentHistory';
+import DesignField from 'app/admin/order-details/DesignField';
 
 import { validateEmpty, validateNumberOnly, runValidators, validateEmail } from 'lib/validators/inputValidators';
 import { serverActionCall } from 'lib/http/clientHttpRequester';
@@ -50,7 +50,7 @@ import glassCharacteristics from 'lib/designs/glassCharacteristics';
 
 import styles from 'public/styles/page/orderDetails.module.scss';
 
-const OrderDetailsPage = ({ jsonOrder }) => {
+const OrderDetailsPage = ({ jsonOrder, jsonStatuses }) => {
 
 	const order = JSON.parse(jsonOrder);
 	
@@ -153,11 +153,16 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		modHistory: order.modHistory || [],
 		dates: order.dates || {},
 		notes: order.notes || [],
+		tasks: order.tasks || [],
+		shopNotes: order.shopNotes || [],
 		files: order.files || [],
 		invoices: order.invoices || []
 	});
 	const [cleanOrderDetails, setCleanOrderDetails] = useState(structuredClone(orderDetails));
 
+	const statuses = JSON.parse(jsonStatuses);
+	const statusLabels = statuses.map(status => status.label);
+	const statusValues = statuses.map(status => status.key);
 	const approvedInvoices = orderDetails.invoices.reduce((accumulator, invoice) => accumulator + (invoice.status === 'finalized' ? 1 : 0), 0);
 	const assignedUsers = orderDetails.sales.assignees.map((assignee) => assignee.username);
 	const invoiceModalData = { amount: 0 };
@@ -302,6 +307,21 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		}
 	};
 
+	const handleNewPayment = ({ payment }) => {
+		// Update the order and the reset as well
+		setCleanOrderDetails(structuredClone({
+			...cleanOrderDetails,
+			payments: {
+				...(cleanOrderDetails.payments),
+				charges: [...(cleanOrderDetails.payments.charges), payment]
+			}
+		}));
+		orderDispatch({
+			type: 'addNewPayment',
+			newPayment: payment
+		});
+	};
+
 	const openInvoiceAmountModal = () => {
 		const errors = [...(runValidators(saveValidationFields)), ...(runValidators(invoiceValidationFields))];
 
@@ -318,6 +338,8 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		if (dbModel) {
 			setCleanOrderDetails(structuredClone({
 				...orderDetails,
+				_id: dbModel._id,
+				status: dbModel.status,
 				modHistory: [...(dbModel.modHistory)],
 				dates: { ...(dbModel.dates) },
 				payments: { ...(dbModel.payments) }
@@ -361,6 +383,14 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [orderDetails.pricing.subtotal, orderDetails.pricing.isTaxApplied, orderDetails.pricing.isFeeApplied, orderDetails.customer.state]);
 
+	useEffect(() => {
+		orderDispatch({
+			type: 'genericOrderUpdate',
+			properties: ['payments', 'balanceRemaining'],
+			value: orderDetails.pricing.orderTotal - orderDetails.payments.charges.reduce((accumulator, payment) => accumulator + payment.amount, 0)
+		});
+	}, [orderDetails.pricing.orderTotal, orderDetails.payments.charges]);
+
 	// Load all the users when the page loads
 	useEffect(() => {
 		const userLoader = async () => {
@@ -383,8 +413,23 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 
 						<h3 className={ styles.pageHeader }>CLIENT ORDER</h3>
 						{ orderDetails._id ? (
-							<div className={ styles.orderIdBox }>
-								ID: { orderDetails._id }
+							<div className={ styles.processedOrderHeader }>
+								<span className={ styles.orderIdBox }>
+									ID: { orderDetails._id }
+								</span>
+								<select
+									name='status'
+									id='orderStatus'
+									className={ styles.statusInputControl }
+									onChange={ handleOrderUpdate }
+									value={ orderDetails.status }
+								>
+									{ statusLabels.map((statusLabel, index) => {
+										return (
+											<option key={ index } value={ statusValues[index] }>{ statusLabel }</option>
+										);
+									}) }
+								</select>
 							</div>
 						) : null }
 						<hr className={ styles.firstPageDivider }></hr>
@@ -580,6 +625,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 									<FileUpload
 										order={ orderDetails }
 										existingFiles={ orderDetails.files }
+										inSpanish={ false }
 									/>
 								</div>
 
@@ -628,7 +674,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 							</span>
 						</div>
 
-						<hr className={ styles.sectionDivider } />
+						<hr className={ styles.sectionDivider }/>
 
 						{/* ---------- BASE DESIGN SECTION ---------- */ }
 
@@ -919,9 +965,7 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 										cards={ orderDetails.payments.cards }
 										balanceRemaining={ orderDetails.payments.balanceRemaining || 0 }
 										orderState={ orderDetails.customer.state || '' }
-										postFunc={ () => {
-											console.log('In post func');
-										}}
+										postFunc={ handleNewPayment }
 									/>
 								</span>
 							) : null }
@@ -929,14 +973,14 @@ const OrderDetailsPage = ({ jsonOrder }) => {
 							{ orderDetails.payments.charges?.length ? (
 								<span className={ styles.orderPaymentSection }>
 									<label htmlFor='payments.charges' className={ styles.orderFormLabel }>Payment History</label>
-									<PaymentHistory payments={ order.payments.charges } />
+									<PaymentHistory payments={ orderDetails.payments.charges }/>
 								</span>
 							) : null }
 
 							{ orderDetails.invoices.length ? (
 								<span className={ styles.orderPaymentSection }>
 									<label htmlFor='invoices' className={ styles.orderFormLabel }>Invoice History</label>
-									<InvoiceList />
+									<InvoiceList/>
 								</span>
 							) : null }
 

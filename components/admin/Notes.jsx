@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { UserMapContext } from 'app/admin/userContext';
 
 import NoteRecord from 'components/admin/noteRecord';
-import { toastValidationError } from 'components/customToaster';
+import { toastValidationError } from 'components/CustomToaster';
 
 import { createNoteTask, fetchNotesByIds } from 'actions/note';
 

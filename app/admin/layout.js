@@ -8,7 +8,7 @@ import { buildUserMap, getUserSession } from 'lib/userInfo';
 
 import Header from 'components/admin/header';
 import EventOrganizer from 'components/eventOrganizer';
-import CustomToaster from 'components/customToaster';
+import CustomToaster from 'components/CustomToaster';
 
 // @TODO - Beautify the admin system on mobile sometime in the far future
 export const viewport = {

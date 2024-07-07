@@ -50,6 +50,12 @@
 	}
 }
 
+.processed-order-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .order-id-box {
 	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Comfortaa) {
 		font-style: italic;
@@ -66,6 +72,7 @@
 
 	padding: 15px;
 	background-color: common.$colors-gray;
+	flex: 10;
 }
 
 .order-form-section {
@@ -177,6 +184,21 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: nowrap;
+}
+
+.status-input-control {
+	@include form.naked-select-dropdown();
+	@extend %input-control;
+
+	margin: {
+		left: 30px;
+		right: 15px;
+	}
+
+	padding: {
+		left: 5px;
+		right: 8px;
+	}
 }
 
 .small-input-control {

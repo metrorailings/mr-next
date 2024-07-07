@@ -1,7 +1,7 @@
 import Header from 'components/public/header';
 import Footer from 'components/public/footer';
 import EventOrganizer from 'components/eventOrganizer';
-import MRToaster from 'components/customToaster';
+import MRToaster from 'components/CustomToaster';
 
 export default function Layout(props) {
 	return (

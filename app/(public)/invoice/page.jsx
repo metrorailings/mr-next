@@ -77,6 +77,20 @@ const InvoiceServer = async ({ searchParams }) => {
 					Status: <i className={ styles.quoteStatusText }>{ invoice.status.toUpperCase() }</i>
 				</span>
 
+				{ /* SALES REPS */ }
+				<span className={ styles.infoColumnSalesReps }>
+					<span className={ styles.infoColumnHeader }>Sales Reps</span>
+					{ salesmen.map((salesman, index) => {
+						return (
+							<div key={ index } className={ styles.salesmanListing }>
+								<div>{ salesman.firstName + ' ' + salesman.lastName }</div>
+								<div>{ salesman.email }</div>
+								<div>{ salesman.phone }</div>
+							</div>
+						);
+					})}
+				</span>
+
 				{ /* BILL TO INFO */ }
 				<span className={ styles.infoColumnCustomer }>
 					<span className={ styles.infoColumnHeader }>Customer</span>
@@ -103,21 +117,6 @@ const InvoiceServer = async ({ searchParams }) => {
 						</>
 					) : null }
 				</span>
-
-				{ /* SALES REPS */ }
-				<span className={ styles.infoColumnSalesReps }>
-					<span className={ styles.infoColumnHeader }>Sales Reps</span>
-					{ salesmen.map((salesman, index) => {
-						return (
-							<div key={ index } className={ styles.salesmanListing }>
-								<div>{ salesman.firstName + ' ' + salesman.lastName }</div>
-								<div>{ salesman.email }</div>
-								<div>{ salesman.phone }</div>
-							</div>
-						);
-					})}
-				</span>
-
 			</div>
 
 			<div className={ styles.invoiceNotice }>INVOICE AMOUNT: ${ formatUSDAmount(invoice.amount) }</div>

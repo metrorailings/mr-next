@@ -8,6 +8,7 @@ import visaLogo from 'assets/images/logos/visa.svg';
 import amexLogo from 'assets/images/logos/amex.svg';
 import mastercardLogo from 'assets/images/logos/mastercard.svg';
 import discoverLogo from 'assets/images/logos/discover.svg';
+import checkImage from 'assets/images/miscellany/check-image.png';
 
 const PaymentHistory = ({ payments }) => {
 
@@ -43,7 +44,7 @@ const PaymentHistory = ({ payments }) => {
 									<span>(...{ payment.stripeMetadata.card.last4 })</span>
 								</>
 							) : (
-								<Image src={ payment.imageMetadata.url } width={ 160 } height={ 90 } alt='Image payment'/>
+								<Image src={ checkImage } width={ 48 } height={ 27 } alt='Check/Cash Payment'/>
 							) }
 						</span>
 						<span className={ styles.pastPaymentDataAmount }>${ formatUSDAmount(payment.amount) }</span>

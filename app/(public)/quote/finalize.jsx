@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import PaymentForms from 'components/paymentForms';
+import PaymentForms from 'components/PaymentForms';
 import TermsModal from 'app/(public)/quote/termsModal';
 
 import styles from 'public/styles/page/quote.module.scss';
