@@ -195,11 +195,11 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 				error: 'Something went wrong when trying to validate and charge the credit card. Please check your credit card details and try again.'
 			});
 
-			if (serverResult.success && serverResult?.card) {
+			if (serverResult?.success && serverResult?.card) {
 				setExistingCards([...existingCards, serverResult.card]);
 			}
 
-			return { success: serverResult.success, data: { card: serverResult.card, payment: serverResult.payment } };
+			return { success: serverResult?.success, data: { card: serverResult?.card, payment: serverResult?.payment } };
 		} else {
 			toastValidationError(errors);
 		}
@@ -222,7 +222,7 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 				error: 'Something went wrong when trying to charge the credit card. Please try again. If you keep seeing this error message, the card is likely being declined.'
 			});
 
-			return { success: serverResult.success, data: { payment: serverResult.payment } };
+			return { success: serverResult?.success, data: { payment: serverResult?.payment } };
 		} else {
 			toastValidationError(errors);
 		}
@@ -240,7 +240,7 @@ const PaymentForms = ({ orderId, invoiceId, cards, acceptCard, acceptAlternate, 
 				error: 'Something went wrong when trying to process this payment. Please try again.'
 			});
 
-			return { success: serverResult.success, data: { payment: serverResult.payment } };
+			return { success: serverResult?.success, data: { payment: serverResult?.payment } };
 		} else {
 			toastValidationError(errors);
 		}

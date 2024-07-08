@@ -4,6 +4,7 @@
 // @TODO - Split the code out into multiple files wherever possible
 
 import React, { useState, useReducer, useEffect } from 'react';
+import { useRouter } from 'next/navigation'
 import _ from 'lodash';
 
 import { saveOrder } from 'actions/order';
@@ -159,6 +160,8 @@ const OrderDetailsPage = ({ jsonOrder, jsonStatuses }) => {
 		invoices: order.invoices || []
 	});
 	const [cleanOrderDetails, setCleanOrderDetails] = useState(structuredClone(orderDetails));
+
+	const router = useRouter();
 
 	const statuses = JSON.parse(jsonStatuses);
 	const statusLabels = statuses.map(status => status.label);
@@ -400,8 +403,11 @@ const OrderDetailsPage = ({ jsonOrder, jsonStatuses }) => {
 			}
 		}
 		userLoader();
-
 		setUser(getUserSession());
+
+		// Refresh the page whenever we navigate to ensure the page always contains the latest data
+		router.refresh();
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

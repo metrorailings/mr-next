@@ -77,18 +77,29 @@ export default function Header() {
 						<Link href='/admin/order-search' className={ styles.topMenuLink }>ORDERS</Link>
 					</span>
 					<span className={ styles.topMenuLinkSlot }>
-						<FontAwesomeIcon icon={ faPowerOff } onClick={ logOut } className={ styles.topMenuLink } />
+						<Link href='/admin/gallery' className={ styles.topMenuLink }>GALLERY</Link>
 					</span>
 				</span>
 
+				<span className={ styles.desktopIconList }>
+					<FontAwesomeIcon icon={ faPowerOff } onClick={ logOut } className={ styles.topMenuLink }/>
+				</span>
+
 				<span className={ styles.topMenuExpander } onClick={ toggleMobileMenu }>
-					<FontAwesomeIcon icon={ faBars } />
+					<FontAwesomeIcon icon={ faBars }/>
 					MENU
 				</span>
 
 				<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
-					<Link href='/admin/dashboard' className={ styles.topMenuLink }>DASHBOARD</Link>
-					<Link href='/admin/order-search' className={ styles.topMenuLink }>ORDERS</Link>
+					<span className={ styles.topMenuLinkSlot }>
+						<Link href='/admin/dashboard' className={ styles.topMenuLink }>DASHBOARD</Link>
+					</span>
+					<span className={ styles.topMenuLinkSlot }>
+						<Link href='/admin/order-search' className={ styles.topMenuLink }>ORDERS</Link>
+					</span>
+					<span className={ styles.topMenuLinkSlot }>
+						<Link href='/admin/gallery' className={ styles.topMenuLink }>GALLERY</Link>
+					</span>
 				</span>
 
 			</header>

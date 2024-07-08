@@ -1,8 +1,8 @@
 'use client'
 
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link';
-import React, { useState, useMemo, useRef, useEffect } from "react";
 import dayjs from 'dayjs';
 
 import FileUpload from 'components/admin/FileUpload';
@@ -126,14 +126,6 @@ const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 			observer.observe(observedNode);
 		}
 
-		const userLoader = async () => {
-			if (Object.keys(userMap).length === 0) {
-				const users = await buildUserMap();
-				setUserMap(users);
-			}
-		}
-		userLoader();
-
 		return () => {
 			if (observedNode) {
 				observer.unobserve(observedNode);
@@ -142,6 +134,21 @@ const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [observerTarget]);
+
+	useEffect(() => {
+		const userLoader = async () => {
+			if (Object.keys(userMap).length === 0) {
+				const users = await buildUserMap();
+				setUserMap(users);
+			}
+		}
+		userLoader();
+
+		// Refresh the page whenever we navigate to ensure the page always contains the latest data
+		router.refresh();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<>

@@ -7,7 +7,7 @@ import { stripeAddCustomer, stripeAddCreditCard, stripeChargeCard, recordNewCard
 import { finalizeInvoice } from 'lib/http/invoicesDAO';
 
 export async function addCardAndPayByCard(data) {
-	const uploader = JSON.parse(cookies().get('user').value)?.username || null;
+	const uploader = cookies().has('user') ? JSON.parse(cookies().get('user').value)?.username : 'CUSTOMER';
 	let paymentIntent = false;
 	let registeredCard = false;
 	let paymentRecord = false;
@@ -51,13 +51,13 @@ export async function addCardAndPayByCard(data) {
 }
 
 export async function payByCard(data) {
-	const uploader = JSON.parse(cookies().get('user').value)?.username || null;
+	const uploader = cookies().has('user') ? JSON.parse(cookies().get('user').value)?.username : 'CUSTOMER';
 	let paymentIntent = false;
 	let paymentRecord = false;
 
 	try {
 		const order = await getOrderById(data.orderId);
-		if (order.payments.customer === null) {
+		if (!(order.payments.customer?.id)) {
 			order.payments.customer = await stripeAddCustomer(order);
 		}
 		paymentIntent = await stripeChargeCard(data, order);
@@ -83,7 +83,7 @@ export async function payByCard(data) {
 }
 
 export async function payByImage(formData) {
-	const uploader = JSON.parse(cookies().get('user').value).username;
+	const uploader = cookies().has('user') ? JSON.parse(cookies().get('user').value)?.username : 'CUSTOMER';
 	const uploadedFile = formData.get('paymentImage');
 	const paymentAmount = formData.get('paymentAmount');
 	const orderId = formData.get('orderId');

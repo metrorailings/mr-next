@@ -5,6 +5,22 @@
 
 /* ----------------------- HEADER STYLES ----------------------------- */
 
+.top-menu-space {
+	display: block;
+
+	@include common.responsive-desktop-only() {
+		height: 70px;
+	}
+
+	@include common.responsive-portrait-mobile-only() {
+		height: 90px;
+	}
+
+	@include common.responsive-landscape-mobile-only() {
+		height: 55px;
+	}
+}
+
 .top-menu {
 	@include common.fonts-define-font($family: Raleway) {
 		letter-spacing: 0.1em;
@@ -18,31 +34,13 @@
 		color: common.$colors-black;
 	}
 
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: 2fr 8fr auto;
 	position: fixed;
 	z-index: 500;
 	width: 100%;
 	background-color: common.$colors-smoke-white;
 	opacity: 0.95;
-
-	@include common.responsive-print-only() {
-		display: none;
-	}
-}
-
-.top-menu-logo-container {
-	margin: {
-		left: 25px;
-		right: 25px;
-	}
-
-	flex: 1;
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
 
 	@include common.responsive-desktop-only() {
 		height: 70px;
@@ -56,6 +54,17 @@
 		height: 55px;
 	}
 
+	@include common.responsive-print-only() {
+		display: none;
+	}
+}
+
+.top-menu-logo-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	position: relative;
+
 	& > img {
 		cursor: pointer;
 		object-fit: contain;
@@ -63,15 +72,45 @@
 }
 
 .desktop-menu-links {
+	margin: {
+		right: 30px;
+	}
+
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	flex-wrap: wrap;
-	flex: 7;
 
 	@include common.responsive-mobile-only() {
 		display: none;
 		flex: 0;
+	}
+}
+
+.desktop-icon-list {
+	border-left: {
+		style: solid;
+		width: 1px;
+		color: common.$colors-low-black;
+	}
+
+	padding: {
+		left: 10px;
+		right: 10px;
+	}
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 60px;
+	height: 100%;
+	box-sizing: border-box;
+	cursor: pointer;
+	text-decoration: none;
+	color: common.$colors-slate-gray;
+	background-color: rgba(0 0 0 / 10%);
+
+	&:hover {
+		text-decoration: underline;
 	}
 }
 
@@ -101,6 +140,7 @@
 
 	@include common.responsive-desktop-only() {
 		display: none;
+		width: 0;
 	}
 
 	@include common.responsive-portrait-mobile-only() {
@@ -149,22 +189,6 @@
 
 	&:hover {
 		text-decoration: underline;
-	}
-}
-
-.top-menu-space {
-	display: block;
-
-	@include common.responsive-desktop-only() {
-		height: 70px;
-	}
-
-	@include common.responsive-portrait-mobile-only() {
-		height: 90px;
-	}
-
-	@include common.responsive-landscape-mobile-only() {
-		height: 55px;
 	}
 }
 
