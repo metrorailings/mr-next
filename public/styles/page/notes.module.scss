@@ -80,7 +80,7 @@
 }
 
 .note-lazy-load-link {
-	@include common.fonts-define-font($family: Poppins) {
+	@include common.fonts-define-font($family: var(--font-poppins)) {
 		text-decoration: none;
 		color: common.$colors-steel-blue;
 		letter-spacing: 1px;
@@ -156,7 +156,7 @@
 }
 
 .note-date-subcell {
-	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection) {
+	@include common.fonts-define-font($family: var(--font-raleway), $size: common.$fonts-subsection) {
 		color: common.$colors-slate-gray;
 	};
 
@@ -166,7 +166,7 @@
 }
 
 .note-author-subcell {
-	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-raleway), $size: common.$fonts-subsection);
 
 	margin: {
 		top: 20px;
@@ -189,7 +189,7 @@
 }
 
 .note-cell-special-header {
-	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-section) {
+	@include common.fonts-define-font($family: var(--font-raleway), $size: common.$fonts-section) {
 		text-transform: uppercase;
 		letter-spacing: 1px;
 		color: common.$colors-low-black;
@@ -211,7 +211,7 @@
 }
 
 .task-metadata-cell {
-	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-section);
+	@include common.fonts-define-font($family: var(--font-raleway), $size: common.$fonts-section);
 
 	border-right: {
 		style: solid;
@@ -236,7 +236,7 @@
 	&-open {
 		@extend .task-status-subcell;
 
-		@include common.fonts-define-font($family: Raleway) {
+		@include common.fonts-define-font($family: var(--font-raleway)) {
 			color: common.$colors-sea-green;
 		};
 	}
@@ -244,7 +244,7 @@
 	&-resolved {
 		@extend .task-status-subcell;
 
-		@include common.fonts-define-font($family: Raleway) {
+		@include common.fonts-define-font($family: var(--font-raleway)) {
 			color: common.$colors-pale-violet-red;
 		};
 	}
@@ -252,14 +252,14 @@
 	&-cancelled {
 		@extend .task-status-subcell;
 
-		@include common.fonts-define-font($family: Raleway) {
+		@include common.fonts-define-font($family: var(--font-raleway)) {
 			color: common.$colors-slate-gray;
 		};
 	}
 }
 
 .task-owners-subcell {
-	@include common.fonts-define-font($family: Raleway);
+	@include common.fonts-define-font($family: var(--font-raleway));
 
 	margin: {
 		top: 10px;

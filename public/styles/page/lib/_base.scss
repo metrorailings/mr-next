@@ -5,7 +5,7 @@
 /* ----------------------- PLACEHOLDERS ----------------------------- */
 
 %page-header {
-	@include common.fonts-define-font($size: common.$fonts-subheader, $family: 'Comfortaa');
+	@include common.fonts-define-font($size: common.$fonts-subheader, $family: var(--font-comfortaa));
 
 	margin: {
 		top: 25px;

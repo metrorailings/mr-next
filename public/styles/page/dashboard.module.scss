@@ -59,7 +59,7 @@
 }
 
 .dashboard-bubble-customer-name {
-	@include common.fonts-define-font($family: Avenir Heavy) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy)) {
 		color: black;
 	};
 

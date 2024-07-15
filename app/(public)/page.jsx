@@ -53,7 +53,7 @@ const HomeServer = async () => {
 					</span>
 					<span>ETRO RAILINGS</span>
 				</div>
-				<Suspense fallback={ <p>Blahblahblah</p> }>
+				<Suspense fallback={ <p></p> }>
 					<VideoComponent videos={ blobs }/>
 				</Suspense>
 			</div>

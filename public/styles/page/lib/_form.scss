@@ -12,7 +12,7 @@
  */
 @mixin primary-button($bgColor: common.$colors-steel-blue, $width: 100%, $isSquare: false) {
 	@include common.animations-transition-settings($property: all, $duration: 0.25s);
-	@include common.fonts-define-font($size: common.$fonts-section, $family: Avenir Light);
+	@include common.fonts-define-font($size: common.$fonts-section, $family: var(--font-avenir-light));
 
 	border: {
 		width: 1px;
@@ -47,7 +47,7 @@
 
 @mixin minor-button($bgColor: common.$colors-faint-silver, $width: auto) {
 	@include common.animations-transition-settings($property: all, $duration: 0.25s);
-	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+	@include common.fonts-define-font($family: var(--font-poppins), $size: common.$fonts-secondary);
 
 	border: {
 		width: 0.5px;
@@ -76,7 +76,7 @@
  */
 @mixin small-button($bgColor: common.$colors-indian-red, $width: 100%) {
 	@include common.animations-transition-settings($property: all, $duration: 0.25s);
-	@include common.fonts-define-font($family: Poppins);
+	@include common.fonts-define-font($family: var(--font-poppins));
 
 	border: {
 		width: 1px;
@@ -111,7 +111,7 @@
  */
 @mixin banner-button($bgColor: common.$colors-slate-gray) {
 	@include common.animations-transition-settings($property: all, $duration: 0.25s);
-	@include common.fonts-define-font($family: Avenir Heavy) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy)) {
 		letter-spacing: 1.5px;
 		color: common.$colors-white;
 	}
@@ -252,7 +252,7 @@
 }
 
 %label {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-avenir-heavy)) {
 		letter-spacing: 0.3px;
 		color: common.$colors-low-black;
 	}
@@ -266,14 +266,14 @@
 }
 
 %secondary-label {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-avenir-heavy)) {
 		letter-spacing: 0.1px;
 		color: common.$colors-slate-gray;
 	}
 }
 
 %input-control {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins);
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-poppins));
 
 	height: 2em;
 	color: common.$colors-low-black;

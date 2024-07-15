@@ -38,7 +38,7 @@
 }
 
 .order-form-input-directions {
-	@include common.fonts-define-font($size: common.$fonts-special, $family: Avenir Light) {
+	@include common.fonts-define-font($size: common.$fonts-special, $family: var(--font-avenir-light)) {
 		letter-spacing: 0.3px;
 		color: common.$colors-low-black;
 		font-style: italic;
@@ -57,7 +57,7 @@
 }
 
 .order-id-box {
-	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Comfortaa) {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: var(--font-comfortaa)) {
 		font-style: italic;
 	};
 
@@ -257,7 +257,7 @@
 }
 
 .order-input-neighboring-text {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-comfortaa)) {
 		font-style: italic;
 	};
 
@@ -268,14 +268,14 @@
 }
 
 .price-label {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-avenir-heavy)) {
 		letter-spacing: 1px;
 		color: common.$colors-low-black;
 	}
 }
 
 .price-text {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Comfortaa) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-comfortaa)) {
 		letter-spacing: 0.5px;
 	};
 }
@@ -326,7 +326,7 @@
 }
 
 .invoice-table-header-row {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Avenir Heavy) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-avenir-heavy)) {
 		letter-spacing: 0.5px;
 		color: common.$colors-white;
 	}
@@ -344,7 +344,7 @@
 }
 
 .invoice-table-row {
-	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+	@include common.fonts-define-font($family: var(--font-poppins), $size: common.$fonts-secondary);
 
 	padding: {
 		left: 15px;

@@ -15,11 +15,11 @@
 }
 
 %column-header {
-	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa);
+	@include common.fonts-define-font($size: common.$fonts-section, $family: var(--font-comfortaa));
 }
 
 %order-box-section-header {
-	@include common.fonts-define-font($family: Avenir Heavy);
+	@include common.fonts-define-font($family: var(--font-avenir-heavy));
 
 	padding: {
 		top: 10px;
@@ -81,13 +81,13 @@
 }
 
 .filter-label {
-	@include common.fonts-define-font($family: Comfortaa);
+	@include common.fonts-define-font($family: var(--font-comfortaa));
 
 	margin: 20px;
 }
 
 .filter-values {
-	@include common.fonts-define-font($family: Avenir Light);
+	@include common.fonts-define-font($family: var(--font-avenir-light));
 
 	flex-grow: 1;
 }

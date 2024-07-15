@@ -6,7 +6,7 @@
 /* ----------------------- STYLES ----------------------------- */
 
 .page-container {
-	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-subsection);
 
 	padding: {
 		bottom: 90px;
@@ -88,7 +88,7 @@
 }
 
 .galleria-title {
-	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subheader) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy), $size: common.$fonts-subheader) {
 		letter-spacing: 2px;
 		text-transform: uppercase;
 	};

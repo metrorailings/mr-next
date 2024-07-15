@@ -69,7 +69,7 @@
 }
 
 .info-column {
-	@include common.fonts-define-font($family: Avenir Light) {
+	@include common.fonts-define-font($family: var(--font-avenir-light)) {
 		line-height: 1.75em;
 	};
 
@@ -154,7 +154,7 @@
 }
 
 .info-column-header {
-	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-avenir-heavy), $size: common.$fonts-subsection);
 }
 
 .salesman-listing {
@@ -202,7 +202,7 @@
 }
 
 .quote-body {
-	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-default);
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-default);
 
 	border-top: {
 		style: solid;
@@ -324,7 +324,7 @@
 }
 
 .quote-price-header {
-	@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-comfortaa), $size: common.$fonts-subsection);
 
 	text-align: right;
 	padding-right: 45px;
@@ -336,7 +336,7 @@
 }
 
 .quote-price-listing {
-	@include common.fonts-define-font($family: Roboto Mono, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-roboto-mono), $size: common.$fonts-subsection);
 
 	padding: {
 		left: 10px;
@@ -356,7 +356,7 @@
 }
 
 .invoice-body-section-header {
-	@include common.fonts-define-font($family: Avenir Heavy) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy)) {
 		text-decoration: underline;
 	};
 
@@ -378,14 +378,14 @@
 
 	&-center {
 		@extend .invoice-body-row;
-		@include common.fonts-define-font($family: Avenir Heavy);
+		@include common.fonts-define-font($family: var(--font-avenir-heavy));
 
 		justify-content: center;
 	}
 }
 
 .invoice-body-label {
-	@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-secondary);
+	@include common.fonts-define-font($family: var(--font-comfortaa), $size: common.$fonts-secondary);
 
 	margin-right: 5px;
 	text-align: right;
@@ -393,7 +393,7 @@
 }
 
 .invoice-body-amount {
-	@include common.fonts-define-font($family: Avenir Heavy);
+	@include common.fonts-define-font($family: var(--font-avenir-heavy));
 
 	margin-left: 5px;
 	text-align: left;
@@ -401,7 +401,7 @@
 }
 
 .invoice-body-section {
-	@include common.fonts-define-font($family: Comfortaa);
+	@include common.fonts-define-font($family: var(--font-comfortaa));
 
 	margin: {
 		top: 15px;
@@ -454,14 +454,14 @@
 }
 
 .terms-accepted-label {
-	@include common.fonts-define-font($family: Avenir Heavy) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy)) {
 		letter-spacing: 0.3px;
 		color: common.$colors-low-black;
 	}
 }
 
 .terms-and-conditions-link {
-	@include common.fonts-define-font($family: Avenir Heavy) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy)) {
 		letter-spacing: 0.3px;
 		color: common.$colors-low-black;
 	}
@@ -472,7 +472,7 @@
 }
 
 .terms-and-conditions {
-	@include common.fonts-define-font($family: Avenir Light);
+	@include common.fonts-define-font($family: var(--font-avenir-light));
 
 	margin: {
 		top: 35px;
@@ -485,7 +485,7 @@
 }
 
 .terms-and-conditions-header {
-	@include common.fonts-define-font($family: Avenir Heavy) {
+	@include common.fonts-define-font($family: var(--font-avenir-heavy)) {
 		text-decoration: underline;
 	}
 
@@ -553,7 +553,7 @@
 }
 
 .payment-section-overlay-notice {
-	@include common.fonts-define-font($family: Comfortaa);
+	@include common.fonts-define-font($family: var(--font-comfortaa));
 
 	border: {
 		radius: 15px;
@@ -569,7 +569,7 @@
 }
 
 .invoice-notice {
-	@include common.fonts-define-font($family: Comfortaa);
+	@include common.fonts-define-font($family: var(--font-comfortaa));
 
 	border: {
 		radius: 15px;

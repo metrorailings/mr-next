@@ -20,7 +20,7 @@
 }
 
 .info-text {
-	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-subsection);
 
 	margin: {
 		top: 25px;
@@ -71,7 +71,7 @@
 }
 
 .salesman-name {
-	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-section);
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-section);
 
 	padding: 25px;
 	flex: 1;
@@ -80,7 +80,7 @@
 }
 
 .salesman-contact-info-cell {
-	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-subsection);
 
 	padding: 25px;
 	flex: 1;

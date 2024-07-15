@@ -31,21 +31,16 @@ export default function RootLayout({ children }) {
 	}, []);
 
 	return (
-		<html lang='en'>
-			<head>
-				<title>Metro Railings Admin Platform</title>
-			</head>
-			<body>
-				<UserContext.Provider value={ user }>
-					<UserMapContext.Provider value={ userMap }>
-						<Header />
-						{ children }
+		<>
+			<UserContext.Provider value={ user }>
+				<UserMapContext.Provider value={ userMap }>
+					<Header />
+					{ children }
 
-						<EventOrganizer />
-						<CustomToaster />
-					</UserMapContext.Provider>
-				</UserContext.Provider>
-			</body>
-		</html>
+					<EventOrganizer />
+					<CustomToaster />
+				</UserMapContext.Provider>
+			</UserContext.Provider>
+		</>
 	);
 }

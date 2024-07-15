@@ -19,7 +19,7 @@
 }
 
 %home-section-header {
-	@include common.fonts-define-font($family: Raleway, $size: common.$fonts-subsection) {
+	@include common.fonts-define-font($family: var(--font-raleway), $size: common.$fonts-subsection) {
 		letter-spacing: 5px;
 	};
 
@@ -194,7 +194,7 @@
 }
 
 .product-box-title {
-	@include common.fonts-define-font($family: Avenir Heavy, $size: common.$fonts-subsection);
+	@include common.fonts-define-font($family: var(--font-avenir-heavy), $size: common.$fonts-subsection);
 
 	margin: {
 		bottom: 10px;
@@ -210,7 +210,7 @@
 }
 
 .product-box-learning-link {
-	@include common.fonts-define-font($family: Raleway) {
+	@include common.fonts-define-font($family: var(--font-raleway)) {
 		text-decoration: underline;
 	};
 
@@ -330,13 +330,13 @@
 }
 
 .stat-metric {
-	@include common.fonts-define-font($size: common.$fonts-subheader, $family: Roboto Mono) {
+	@include common.fonts-define-font($size: common.$fonts-subheader, $family: var(--font-roboto-mono)) {
 		letter-spacing: 2px;
 	};
 }
 
 .stat-label {
-	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Avenir Light) {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: var(--font-avenir-light)) {
 		letter-spacing: 0.5px;
 	};
 
@@ -344,7 +344,7 @@
 }
 
 .stats-as-of-date {
-	@include common.fonts-define-font($family: Avenir Light) {
+	@include common.fonts-define-font($family: var(--font-avenir-light)) {
 		font-style: italic;
 	};
 
@@ -512,7 +512,7 @@
 }
 
 .review-block-data {
-	@include common.fonts-define-font($family: Roboto Mono);
+	@include common.fonts-define-font($family: var(--font-roboto-mono));
 
 	width: 150px;
 	text-align: center;

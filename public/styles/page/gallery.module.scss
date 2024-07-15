@@ -138,7 +138,7 @@
 }
 
 .photo-index {
-	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Roboto Mono);
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: var(--font-roboto-mono));
 
 	border: {
 		radius: 50%;

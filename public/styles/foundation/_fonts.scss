@@ -14,17 +14,6 @@
  * Avenir 85 Heavy (for general text)
  * Avenir 35 Light (for general text)
  */
-@import url('https://fonts.googleapis.com/css?family=Comfortaa|Roboto+Mono:100,400|Poppins:300,400,700');
-
-@font-face {
-	font-family: 'Avenir Heavy';
-	src: url('fonts/d513e15e-8f35-4129-ad05-481815e52625.woff2') format('woff2'), url('fonts/61bd362e-7162-46bd-b67e-28f366c4afbe.woff') format('woff');
-}
-
-@font-face {
-	font-family: 'Avenir Light';
-	src:url('fonts/avenirLight.ttf') format('ttf')
-}
 
 /* ----------------------- PUBLIC CONSTANTS ----------------------------- */
 
@@ -49,7 +38,7 @@ $special: 12px;
  *
  * @author kinsho
  */
-@mixin define-font($weight: 400, $size: $default, $family: Avenir) {
+@mixin define-font($weight: 400, $size: $default, $family: var(--font-avenir-light)) {
 	font: {
 		weight: $weight;
 		size: $size;

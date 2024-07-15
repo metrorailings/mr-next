@@ -22,7 +22,7 @@
 }
 
 .top-menu {
-	@include common.fonts-define-font($family: Raleway) {
+	@include common.fonts-define-font($family: var(--font-raleway)) {
 		letter-spacing: 0.1em;
 		text-decoration: none;
 		color: common.$colors-slate-gray;
@@ -230,7 +230,7 @@
 }
 
 .footer-contact-number {
-	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa) {
+	@include common.fonts-define-font($size: common.$fonts-section, $family: var(--font-comfortaa)) {
 		color: common.$colors-white;
 		letter-spacing: 5px;
 	};
@@ -253,7 +253,7 @@
 }
 
 .footer-copyright {
-	@include common.fonts-define-font($size: common.$fonts-section, $family: Comfortaa) {
+	@include common.fonts-define-font($size: common.$fonts-section, $family: var(--font-comfortaa)) {
 		color: common.$colors-white;
 		letter-spacing: 5px;
 	};
@@ -276,7 +276,7 @@
 }
 
 .footer-mobile-contact-us, .footer-mobile-call-us {
-	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Comfortaa) {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: var(--font-comfortaa)) {
 		color: common.$colors-white;
 		letter-spacing: 0.5px;
 	};

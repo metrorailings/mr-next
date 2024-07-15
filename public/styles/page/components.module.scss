@@ -163,7 +163,7 @@
 /* ----------------------- TOAST ----------------------------- */
 
 %standard-toast {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins) {
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-poppins)) {
 		color: common.$colors-white !important;
 	};
 
@@ -265,7 +265,7 @@
 }
 
 .loading-text {
-	@include common.fonts-define-font($weight: 700, $size: common.$fonts-header, $family: Comfortaa);
+	@include common.fonts-define-font($weight: 700, $size: common.$fonts-header, $family: var(--font-comfortaa));
 	@include common.animations-animation-settings($keyframeSet: fade-into-view, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
 	letter-spacing: 0.2em;
@@ -274,7 +274,7 @@
 }
 
 .section-loading-text {
-	@include common.fonts-define-font($weight: 700, $size: common.$fonts-section, $family: Comfortaa);
+	@include common.fonts-define-font($weight: 700, $size: common.$fonts-section, $family: var(--font-comfortaa));
 	@include common.animations-animation-settings($keyframeSet: fade-into-view, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
 	letter-spacing: 0.2em;
@@ -574,7 +574,7 @@
 }
 
 .multitext-set-value {
-	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+	@include common.fonts-define-font($family: var(--font-poppins), $size: common.$fonts-secondary);
 
 	margin: {
 		top: 5px;
@@ -596,7 +596,7 @@
 }
 
 .multitext-new-value {
-	@include common.fonts-define-font($size: common.$fonts-secondary, $family: Poppins);
+	@include common.fonts-define-font($size: common.$fonts-secondary, $family: var(--font-poppins));
 
 	margin-top: 8px;
 	border: none;
@@ -669,7 +669,7 @@
 }
 
 .multi-select-selected-value-row {
-	@include common.fonts-define-font($family: Poppins, $size: common.$fonts-secondary);
+	@include common.fonts-define-font($family: var(--font-poppins), $size: common.$fonts-secondary);
 
 	display: flex;
 	align-items: center;
@@ -777,7 +777,7 @@
 }
 
 .files-lazy-load-link {
-	@include common.fonts-define-font($family: Poppins) {
+	@include common.fonts-define-font($family: var(--font-poppins)) {
 		text-decoration: none;
 		color: common.$colors-steel-blue;
 		letter-spacing: 1px;
@@ -984,7 +984,7 @@
 }
 
 .galleria-photo-index {
-	@include common.fonts-define-font($size: common.$fonts-subsection, $family: Roboto Mono);
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: var(--font-roboto-mono));
 
 	border: {
 		radius: 50%;
@@ -1083,28 +1083,28 @@
 
 	&-card {
 		@extend .past-payment-data;
-		@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-default);
+		@include common.fonts-define-font($family: var(--font-comfortaa), $size: common.$fonts-default);
 
 		flex: 1;
 	}
 
 	&-amount {
 		@extend .past-payment-data;
-		@include common.fonts-define-font($family: Roboto Mono, $size: common.$fonts-subsection);
+		@include common.fonts-define-font($family: var(--font-roboto-mono), $size: common.$fonts-subsection);
 
 		flex: 2;
 	}
 
 	&-date {
 		@extend .past-payment-data;
-		@include common.fonts-define-font($family: Comfortaa, $size: common.$fonts-default);
+		@include common.fonts-define-font($family: var(--font-comfortaa), $size: common.$fonts-default);
 
 		flex: 1;
 	}
 }
 
 .past-payment-minor-data {
-	@include common.fonts-define-font($family: Avenir Light, $size: common.$fonts-secondary);
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-secondary);
 
 	text-align: center;
 }
