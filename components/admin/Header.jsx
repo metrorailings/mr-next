@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react';
+import { } from 'react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,29 +12,12 @@ import { httpRequest } from 'lib/http/clientHttpRequester';
 
 import styles from "public/styles/page/headerFooter.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faPowerOff } from '@fortawesome/free-solid-svg-icons'
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import logo from "assets/images/logos/color_logo_transparent_background_small.png";
 
 export default function Header() {
 
-	const mobileMenu = useRef(null);
-
 	const router = useRouter();
-
-	const toggleMobileMenu = (event) => {
-		event.stopPropagation();
-
-		mobileMenu.current.style.height = mobileMenu.current.style.height || '0px';
-		if (window.parseInt(mobileMenu.current.style.height, 10)) {
-			mobileMenu.current.style.height = '0px';
-		} else {
-			mobileMenu.current.style.height = mobileMenu.current.scrollHeight + 'px';
-		}
-	};
-
-	const closeMobileMenu = () => {
-		mobileMenu.current.style.height = '0px';
-	}
 
 	const logOut = async () => {
 		try {
@@ -58,7 +41,7 @@ export default function Header() {
 
 	return (
 		<>
-			<header className={ styles.topMenu } onClick={ closeMobileMenu }>
+			<header className={ styles.topMenu }>
 
 				<span className={ styles.topMenuLogoContainer }>
 					<Image
@@ -74,7 +57,7 @@ export default function Header() {
 						<Link href='/admin/dashboard' className={ styles.topMenuLink }>DASHBOARD</Link>
 					</span>
 					<span className={ styles.topMenuLinkSlot }>
-						<Link href='/admin/order-search' className={ styles.topMenuLink }>ORDERS</Link>
+						<Link href='/admin/order-search?status=open' className={ styles.topMenuLink }>ORDERS</Link>
 					</span>
 					<span className={ styles.topMenuLinkSlot }>
 						<Link href='/admin/gallery' className={ styles.topMenuLink }>GALLERY</Link>
@@ -83,23 +66,6 @@ export default function Header() {
 
 				<span className={ styles.desktopIconList }>
 					<FontAwesomeIcon icon={ faPowerOff } onClick={ logOut } className={ styles.topMenuLink }/>
-				</span>
-
-				<span className={ styles.topMenuExpander } onClick={ toggleMobileMenu }>
-					<FontAwesomeIcon icon={ faBars }/>
-					MENU
-				</span>
-
-				<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
-					<span className={ styles.topMenuLinkSlot }>
-						<Link href='/admin/dashboard' className={ styles.topMenuLink }>DASHBOARD</Link>
-					</span>
-					<span className={ styles.topMenuLinkSlot }>
-						<Link href='/admin/order-search' className={ styles.topMenuLink }>ORDERS</Link>
-					</span>
-					<span className={ styles.topMenuLinkSlot }>
-						<Link href='/admin/gallery' className={ styles.topMenuLink }>GALLERY</Link>
-					</span>
 				</span>
 
 			</header>

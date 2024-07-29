@@ -87,6 +87,7 @@
 	position: relative;
 
 	& > img {
+		object-fit: contain;
 		cursor: pointer;
 	}
 }

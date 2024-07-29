@@ -2,21 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { UserContext, UserMapContext } from 'app/admin/userContext';
-
 import { buildUserMap, getUserSession } from 'lib/userInfo';
 
-import Header from 'components/admin/header';
-import EventOrganizer from 'components/eventOrganizer';
+import { UserContext, UserMapContext } from 'app/admin/userContext';
+
+import Header from 'components/admin/Header';
+import EventOrganizer from 'components/EventOrganizer';
 import CustomToaster from 'components/CustomToaster';
 
-// @TODO - Beautify the admin system on mobile sometime in the far future
-export const viewport = {
-	width: '1201',
-}
-
-export default function RootLayout({ children }) {
-
+export default function AdminContextLoader({ children }) {
 	const [user, setUser] = useState(null);
 	const [userMap, setUserMap] = useState({});
 

@@ -9,85 +9,85 @@ $desktop-only: 1201px;
 /* ----------------------- MIX-INS ----------------------------- */
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that can (at minimum) support resolution
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that can (at minimum) support resolution
  * expected from a desktop environment
  *
  * @author kinsho
  */
 @mixin desktop-only() {
-	@media only screen and (min-device-width: $desktop-only) {
+	@media only screen and (min-width: $desktop-only) {
 		@content;
 	}
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that can (at minimum) support resolution
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that can (at minimum) support resolution
  * expected from a tablet environment
  *
  * @author kinsho
  */
 @mixin tablet-up() {
-	@media only screen and (min-device-width: $tablet-min) {
+	@media only screen and (min-width: $tablet-min) {
 		@content;
 	}
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that support resolution expected from
  * a tablet environment
  *
  * @author kinsho
  */
 @mixin tablet-only() {
-	@media only screen and (min-device-width: $tablet-min) and (max-device-width: $tablet-max) {
+	@media only screen and (min-width: $tablet-min) and (max-width: $tablet-max) {
 		@content;
 	}
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that support resolution expected from
  * a smartphone environment
  *
  * @author kinsho
  */
 @mixin phone-only() {
-	@media only screen and (max-device-width: $phone-general-max) {
+	@media only screen and (max-width: $phone-general-max) {
 		@content;
 	}
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that support resolution expected from
  * a mobile environment
  *
  * @author kinsho
  */
 @mixin mobile-only() {
-	@media only screen and (max-device-width: $tablet-max) {
+	@media only screen and (max-width: $tablet-max) {
 		@content;
 	}
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that support resolution expected from
  * a mobile environment
  *
  * @author kinsho
  */
 @mixin portrait-mobile-only() {
-	@media only screen and (max-device-width: $tablet-max) and (orientation: portrait) {
+	@media only screen and (max-width: $tablet-max) and (orientation: portrait) {
 		@content;
 	}
 }
 
 /*
- * Mix-in is responsible for enforcing CSS stylings only on devices that support resolution expected from
+ * Mix-in is responsible for enforcing CSS stylings only on viewports that support resolution expected from
  * a mobile environment
  *
  * @author kinsho
  */
 @mixin landscape-mobile-only() {
-	@media only screen and (max-device-width: $tablet-max) and (orientation: landscape) {
+	@media only screen and (max-width: $tablet-max) and (orientation: landscape) {
 		@content;
 	}
 }
@@ -99,7 +99,7 @@ $desktop-only: 1201px;
  * @author kinsho
  */
 @mixin portrait-phone-only() {
-	@media only screen and (max-device-width: $phone-portrait-max) and (orientation: portrait) {
+	@media only screen and (max-width: $phone-portrait-max) and (orientation: portrait) {
 		@content;
 	}
 }
@@ -111,7 +111,7 @@ $desktop-only: 1201px;
  * @author kinsho
  */
 @mixin landscape-phone-only() {
-	@media only screen and (max-device-width: $phone-portrait-max) and (orientation: landscape) {
+	@media only screen and (max-width: $phone-portrait-max) and (orientation: landscape) {
 		@content;
 	}
 }

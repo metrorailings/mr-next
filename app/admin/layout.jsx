@@ -7,7 +7,16 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-tooltip/dist/react-tooltip.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-export default function RootLayout({ children }) {
+import ContextLoader from 'app/admin/ContextLoader';
+
+// @TODO - Beautify the admin system on mobile sometime in the far future
+export const viewport = {
+	width: '1202',
+	initialScale: '0.1'
+};
+
+export default function RootAdminLayout({ children }) {
+
 	return (
 		<html lang='en' className={ classNames({
 			[RobotoMono.variable]: true,
@@ -17,11 +26,10 @@ export default function RootLayout({ children }) {
 			[AvenirHeavy.variable]: true,
 			[AvenirLight.variable]: true
 		})}>
-			<head>
-				<title>Metro Railings</title>
-			</head>
 			<body>
-				{ children }
+				<ContextLoader>
+					{ children }
+				</ContextLoader>
 			</body>
 		</html>
 	);

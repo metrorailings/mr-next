@@ -1,19 +1,15 @@
 'use client'
 
 import React, { } from 'react';
-import { useRouter } from 'next/navigation';
 import dayjs from "dayjs";
 
-import { } from '@fortawesome/free-solid-svg-icons'
 import styles from 'public/styles/page/dashboard.module.scss';
 
 const DashboardBubble = ({ jsonOrder }) => {
 
 	const order = JSON.parse(jsonOrder);
 
-	const router = useRouter();
-
-	const navigateToOrderPage = () => router.push('/admin/orderDetails?id=' + order.id);
+	const navigateToOrderPage = () => window.open('/admin/order-details?id=' + order.id, '_blank');
 
 	return (
 		<span className={ styles.dashboardBubble } onClick={ navigateToOrderPage }>

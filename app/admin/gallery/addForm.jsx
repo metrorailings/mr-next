@@ -2,14 +2,14 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-import { addGalleryImage } from 'actions/gallery';
+import { addNewGalleryImage } from 'actions/gallery';
 
 import { serverActionCall } from 'lib/http/clientHttpRequester';
 import { getUserSession } from 'lib/userInfo';
 
 import styles from 'public/styles/page/gallery.module.scss';
 
-const AddForm = () => {
+const AddForm = ({ addToGalleryFunc }) => {
 	const [user, setUser] = useState('');
 	const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -19,15 +19,15 @@ const AddForm = () => {
 	const	uploadImage = async () => {
 		if (fileInputRef.current.value) {
 			setFormSubmitted(true);
-			const serverResponse = await serverActionCall(addGalleryImage, new FormData(formRef.current), {
+			const serverResponse = await serverActionCall(addNewGalleryImage, new FormData(formRef.current), {
 				loading: 'Uploading a new gallery image...',
 				error: 'Something went wrong when trying to upload a new image. See Rickin for help here.',
-				success: 'The image has been uploaded. Refreshing page...'
+				success: 'The image has been uploaded!'
 			});
 			setFormSubmitted(false);
 
 			if (serverResponse.success) {
-				window.setTimeout(() => window.location.reload(), 1000);
+				addToGalleryFunc(JSON.parse(serverResponse.data));
 			}
 		}
 	};
@@ -37,7 +37,7 @@ const AddForm = () => {
 	}, []);
 
 	return (
-		<form className={ styles.galleryFooter } action={ addGalleryImage } ref={ formRef }>
+		<form className={ styles.galleryFooter } ref={ formRef }>
 			<input
 				type='file'
 				name='galleryImage'

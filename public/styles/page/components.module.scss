@@ -246,36 +246,16 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-direction: column;
-	background-color: common.$colors-white;
-	opacity: 0;
-	z-index: -9999;
-
-	& > div {
-		margin: {
-			top: 25px;
-			bottom: 25px;
-		}
-
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: row;
-	}
+	background-color: common.$colors-smoke-white;
 }
 
 .loading-text {
 	@include common.fonts-define-font($weight: 700, $size: common.$fonts-header, $family: var(--font-comfortaa));
-	@include common.animations-animation-settings($keyframeSet: fade-into-view, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
 
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
-	color: common.$colors-cadet-blue;
-}
-
-.section-loading-text {
-	@include common.fonts-define-font($weight: 700, $size: common.$fonts-section, $family: var(--font-comfortaa));
-	@include common.animations-animation-settings($keyframeSet: fade-into-view, $duration: 1.5s, $timing: linear, $iterations: 1, $persist: true);
+	margin: {
+		left: 30px;
+		right: 30px;
+	}
 
 	letter-spacing: 0.2em;
 	text-transform: uppercase;
@@ -296,50 +276,16 @@
 	border-radius: 100%;
 	animation-fill-mode: both;
 
-	&:nth-of-type(1) {
+	&:nth-of-type(2) {
 		animation-delay: 0s;
 	}
 
-	&:nth-of-type(2) {
+	&:nth-of-type(3) {
 		animation-delay: 0.15s;
 	}
 
-	&:nth-of-type(3) {
+	&:nth-of-type(4) {
 		animation-delay: 0.3s;
-	}
-}
-
-.uploading-indicators {
-	@include common.animations-transition-settings($property: opacity, $duration: 0.25s);
-
-	position: absolute;
-	top: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	opacity: 1.0;
-	z-index: -250;
-
-	& > .section-loading-text {
-		color: common.$colors-indian-red;
-		text-transform: none;
-		width: 100%;
-	}
-
-	& > .loading-ball {
-		background-color: common.$colors-indian-red;
-		width: 30px;
-		height: 20px;
-	}
-}
-
-.rotate-spinner {
-	@include common.animations-animation-settings($keyframeSet: rotate-spinner, $duration: 1.0s, $timing: ease, $iterations: infinite);
-
-	margin: {
-		left: 10px;
-		right: 10px;
 	}
 }
 

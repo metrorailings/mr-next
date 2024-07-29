@@ -1,5 +1,4 @@
 import Gallery from 'app/admin/gallery/gallery';
-import AddForm from 'app/admin/gallery/addForm';
 
 import { getGalleryImages } from 'lib/http/galleryDAO';
 
@@ -13,7 +12,6 @@ const GalleryServer = async () => {
 		<div className={ styles.pageContainer }>
 			<div className={ styles.pageHeader }>GALLERY MANAGEMENT</div>
 			<Gallery jsonImages={ JSON.stringify(galleryImages) } />
-			<AddForm />
 		</div>
 	);
 

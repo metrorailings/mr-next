@@ -1,17 +1,35 @@
+import classNames from 'classnames';
+
 import Header from 'components/public/header';
 import Footer from 'components/public/footer';
-import EventOrganizer from 'components/eventOrganizer';
+import EventOrganizer from 'components/EventOrganizer';
 import CustomToaster from 'components/CustomToaster';
 
-export default function Layout(props) {
-	return (
-		<>
-			<Header />
-			<main>{props.children}</main>
-			<Footer />
+import 'public/styles/foundation/global.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
+import 'react-tooltip/dist/react-tooltip.css';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 
-			<EventOrganizer />
-			<CustomToaster />
-		</>
-	)
+import { RobotoMono, Poppins, Raleway, Comfortaa, AvenirLight, AvenirHeavy } from 'app/fonts';
+
+export default function RootPublicLayout({ children }) {
+	return (
+		<html lang='en' className={ classNames({
+			[RobotoMono.variable]: true,
+			[Poppins.variable]: true,
+			[Raleway.variable]: true,
+			[Comfortaa.variable]: true,
+			[AvenirHeavy.variable]: true,
+			[AvenirLight.variable]: true
+		})}>
+			<body>
+				<Header />
+				{ children }
+				<Footer />
+	
+				<EventOrganizer />
+				<CustomToaster />
+			</body>
+		</html>
+	);
 }
