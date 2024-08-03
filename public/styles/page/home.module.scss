@@ -406,8 +406,6 @@
 	margin: {
 		top: 15px;
 		bottom: 15px;
-		left: 10px;
-		right: 10px;
 	}
 
 	display: flex;
@@ -415,9 +413,7 @@
 }
 
 .gallery-image-inner-slot {
-	object-fit: contain;
 	position: relative;
-	cursor: pointer;
 
 	@include common.responsive-desktop-only() {
 		width: 300px;
@@ -432,6 +428,11 @@
 	@include common.responsive-phone-only() {
 		width: 150px;
 		height: 150px;
+	}
+
+	& > img {
+		object-fit: cover;
+		cursor: pointer;
 	}
 }
 

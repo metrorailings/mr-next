@@ -11,21 +11,21 @@ import logo from "assets/images/logos/color_logo_transparent_background_small.pn
 
 export default function Header() {
 
-	const mobileMenu = useRef(null);
+	const mobileMenuRef = useRef(null);
 
 	const toggleMobileMenu = (event) => {
 		event.stopPropagation();
 
-		mobileMenu.current.style.height = mobileMenu.current.style.height || '0px';
-		if (window.parseInt(mobileMenu.current.style.height, 10)) {
-			mobileMenu.current.style.height = '0px';
+		mobileMenuRef.current.style.height = mobileMenuRef.current.style.height || '0px';
+		if (window.parseInt(mobileMenuRef.current.style.height, 10)) {
+			mobileMenuRef.current.style.height = '0px';
 		} else {
-			mobileMenu.current.style.height = mobileMenu.current.scrollHeight + 'px';
+			mobileMenuRef.current.style.height = mobileMenuRef.current.scrollHeight + 'px';
 		}
 	};
 
 	const closeMobileMenu = () => {
-		mobileMenu.current.style.height = '0px';
+		mobileMenuRef.current.style.height = '0px';
 	}
 
 	return (
@@ -37,30 +37,33 @@ export default function Header() {
 						src={ logo }
 						alt="Logo"
 						fill={ true }
-						sizes="(max-width: 768px) 33vw, 25vw"
+						sizes="25vw"
 					/>
 				</span>
-	
+
 				<span className={ styles.desktopMenuLinks }>
-					<span className={ styles.topMenuLinkSlot }>
+					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/contact-us' className={ styles.topMenuLink }>CONTACT US</Link>
 					</span>
-					<span className={ styles.topMenuLinkSlot }>
+					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
 					</span>
 				</span>
-	
-				<span className={ styles.topMenuExpander } onClick={ toggleMobileMenu }>
-					<FontAwesomeIcon icon={ faBars }/>
-					MENU
-				</span>
-	
-				<span className={ styles.mobileMenuLinks } ref={ mobileMenu }>
-					<Link href='/contact-us' className={ styles.topMenuLink }>CONTACT US</Link>				
-					<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
+
+				<span className={ styles.mobileMenuExpander } onClick={ toggleMobileMenu }>
+					<FontAwesomeIcon icon={ faBars }/> MENU
 				</span>
 
+				<div className={ styles.mobileMenuLinks } ref={ mobileMenuRef }>
+					<div className={ styles.mobileMenuLinkSlot }>
+						<Link href='/contact-us' className={ styles.topMenuLink }>CONTACT US</Link>
+					</div>
+					<div className={ styles.mobileMenuLinkSlot }>
+						<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
+					</div>
+				</div>
 			</header>
+
 			<div className={ styles.topMenuSpace }></div>
 		</>
 	);
