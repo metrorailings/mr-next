@@ -48,6 +48,12 @@ export default function Header() {
 					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
 					</span>
+					<span className={ styles.desktopMenuLinkSlot }>
+						<Link href='/aluminum' prefetch={ true } className={ styles.topMenuLink }>ALUMINUM HANDRAILS</Link>
+					</span>
+					<span className={ styles.desktopMenuLinkSlot }>
+						<Link href='/cable' prefetch={ true } className={ styles.topMenuLink }>CABLE HANDRAILS</Link>
+					</span>
 				</span>
 
 				<span className={ styles.mobileMenuExpander } onClick={ toggleMobileMenu }>
@@ -60,6 +66,12 @@ export default function Header() {
 					</div>
 					<div className={ styles.mobileMenuLinkSlot }>
 						<Link href='/gallery' prefetch={ true } className={ styles.topMenuLink }>GALLERY</Link>
+					</div>
+					<div className={ styles.mobileMenuLinkSlot }>
+						<Link href='/aluminum' prefetch={ true } className={ styles.topMenuLink }>ALUMINUM HANDRAILS</Link>
+					</div>
+					<div className={ styles.mobileMenuLinkSlot }>
+						<Link href='/cable' prefetch={ true } className={ styles.topMenuLink }>CABLE HANDRAILS</Link>
 					</div>
 				</div>
 			</header>

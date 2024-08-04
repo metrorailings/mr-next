@@ -10,7 +10,7 @@ import styles from 'public/styles/page/home.module.scss';
 const GallerySection = ({ jsonImages }) => {
 
 	const images = JSON.parse(jsonImages);
-	const [shownImageCount, setShownImageCount] = useState(images.length);
+	const [shownImageCount, setShownImageCount] = useState(Math.min(images.length, 6));
 	const galleryContainerRef = useRef(null);
 	const imageRef = useRef(null);
 	const imageContainerRef = useRef(null);
@@ -39,10 +39,7 @@ const GallerySection = ({ jsonImages }) => {
 	useEffect(() => {
 		setGallerySectionHeight();
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [shownImageCount]);
-
-	useEffect(() => {
+		// Keep this listener here in this useEffect function as it depends on a state value that can change at any moment
 		window.screen.orientation.addEventListener('change', setGallerySectionHeight);
 
 		return () => {
@@ -50,7 +47,7 @@ const GallerySection = ({ jsonImages }) => {
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [shownImageCount]);
 
 	return (
 		<div className={ styles.gallerySection }>
@@ -69,6 +66,7 @@ const GallerySection = ({ jsonImages }) => {
 									fill={ true }
 									sizes="(max-width: 768px) 50vw, 33vw"
 								/>
+								<span className={ styles.galleryImageIndex }>{ images[i].index }</span>
 							</span>
 						</span>
 					);

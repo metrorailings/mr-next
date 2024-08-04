@@ -436,6 +436,30 @@
 	}
 }
 
+.gallery-image-index {
+	@include common.fonts-define-font($size: common.$fonts-subsection, $family: var(--font-roboto-mono));
+
+	border: {
+		radius: 50%;
+		color: common.$colors-black;
+		style: solid;
+	}
+
+	padding: {
+		top: 5px;
+		bottom: 5px;
+		left: 15px;
+		right: 15px;
+	}
+
+	position: absolute;
+	top: 5%;
+	left: calc(100% - 50px);
+	z-index: 100;
+	color: common.$colors-black;
+	background-color: common.$colors-white;
+}
+
 .expand-gallery-link {
 	@include common.fonts-define-font() {
 		color: common.$colors-white;

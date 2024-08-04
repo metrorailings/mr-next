@@ -101,8 +101,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 60px;
-	height: 100%;
+	width: 75px;
 	box-sizing: border-box;
 	cursor: pointer;
 	text-decoration: none;
@@ -133,7 +132,6 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	justify-self: flex-end;
 	width: 100px;
 	box-sizing: border-box;
 	cursor: pointer;
@@ -172,10 +170,11 @@
 
 .desktop-menu-link-slot {
 	margin: {
+		left: 25px;
 		right: 25px;
 	}
 
-	text-align: right;
+	text-align: center;
 	max-width: 250px;
 
 	@include common.responsive-desktop-only {

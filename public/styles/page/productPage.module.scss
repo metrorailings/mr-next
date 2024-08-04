@@ -85,10 +85,26 @@
 	margin: 15px;
 	flex: 1;
 	text-align: center;
+
+	&-align-left {
+		@extend .product-block-text;
+
+		@include common.responsive-tablet-up() {
+			text-align: left;
+		}
+	}
+
+	&-align-right {
+		@extend .product-block-text;
+
+		@include common.responsive-tablet-up() {
+			text-align: right;
+		}
+	}
 }
 
 .galleria-title {
-	@include common.fonts-define-font($family: var(--font-avenir-heavy), $size: common.$fonts-subheader) {
+	@include common.fonts-define-font($family: var(--font-avenir-light), $size: common.$fonts-subheader) {
 		letter-spacing: 2px;
 		text-transform: uppercase;
 	};

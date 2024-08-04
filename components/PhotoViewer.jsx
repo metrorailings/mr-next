@@ -7,6 +7,7 @@ import styles from "public/styles/page/components.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmarkCircle, faCircleArrowLeft, faCircleArrowRight } from '@fortawesome/free-solid-svg-icons'
 
+// @TODO - Update the photo viewer to show the index of the photo if the viewer is being used for gallery images
 const PhotoViewer = ({ photos, currentIndex, preventAccessToOriginal, closeFunc }) => {
 
 	const [photoIndex, setPhotoIndex] = useState(currentIndex);

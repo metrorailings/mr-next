@@ -60,7 +60,7 @@ const CableProductServer = async () => {
 			</div>
 
 			<div className={ styles.productBlock }>
-				<p className={ styles.productBlockText }>{ cableDetailText }</p>
+				<p className={ styles.productBlockTextAlignRight }>{ cableDetailText }</p>
 				<span className={ styles.productBlockImageContainer }>
 					<Image
 						src={ cableCoil2 }
@@ -100,11 +100,11 @@ const CableProductServer = async () => {
 						className={ styles.productBlockImage }
 					/>
 				</span>
-				<p className={ styles.productBlockText }>{ customizationText }</p>
+				<p className={ styles.productBlockTextAlignLeft }>{ customizationText }</p>
 			</div>
 
 			<div className={ styles.productBlock }>
-				<p className={ styles.productBlockText }>{ colorText }</p>
+				<p className={ styles.productBlockTextAlignRight }>{ colorText }</p>
 				<span className={ styles.productBlockImageContainer }>
 					<Image
 						src={ blackenedCable }

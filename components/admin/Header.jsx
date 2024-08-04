@@ -53,13 +53,13 @@ export default function Header() {
 				</span>
 
 				<span className={ styles.desktopMenuLinks }>
-					<span className={ styles.topMenuLinkSlot }>
+					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/admin/dashboard' className={ styles.topMenuLink }>DASHBOARD</Link>
 					</span>
-					<span className={ styles.topMenuLinkSlot }>
+					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/admin/order-search?status=open' className={ styles.topMenuLink }>ORDERS</Link>
 					</span>
-					<span className={ styles.topMenuLinkSlot }>
+					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/admin/gallery' className={ styles.topMenuLink }>GALLERY</Link>
 					</span>
 				</span>
