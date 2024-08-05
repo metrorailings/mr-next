@@ -50,14 +50,17 @@
 	}
 
 	z-index: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	text-align: center;
 }
 
 /* TODO - Figure out how to make product blocks fade onto the page once the user scrolls down to the point where it should be visible */
 
 .product-block {
+	margin: {
+		top: 20px;
+		bottom: 20px;
+	}
+
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -85,6 +88,7 @@
 	margin: 15px;
 	flex: 1;
 	text-align: center;
+	line-height: 1.65em;
 
 	&-align-left {
 		@extend .product-block-text;

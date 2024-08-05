@@ -1,0 +1,90 @@
+import { readFileSync } from 'node:fs';
+import Image from 'next/image';
+
+import { getGalleryImages } from 'lib/http/galleryDAO';
+
+import Galleria from 'components/galleria';
+
+import styles from 'public/styles/page/productPage.module.scss';
+import stainlessSteelBanner from 'assets/images/products/stainless-steel/railing-1.jpeg';
+import cableRailing1 from 'assets/images/products/stainless-steel/cable-railing-1.jpeg';
+import cableRailing2 from 'assets/images/products/stainless-steel/cable-railing-2.jpeg';
+import glassRailing1 from 'assets/images/products/stainless-steel/glass-railing-1.jpeg';
+import glassRailing2 from 'assets/images/products/stainless-steel/glass-railing-2.jpeg';
+
+const StainlessSteelProductServer = async () => {
+
+	const introText = readFileSync('assets/text/stainlessSteel/intro.txt', { encoding: 'utf-8' });
+	const customizationText = readFileSync('assets/text/stainlessSteel/customization.txt', { encoding: 'utf-8' });
+	const materialText = readFileSync('assets/text/stainlessSteel/material.txt', { encoding: 'utf-8' });
+
+	const galleryPhotos = await getGalleryImages('aluminum');
+
+	return (
+		<div className={ styles.pageContainer }>
+			<div className={ styles.productBanner }>
+				<Image
+					src={ stainlessSteelBanner }
+					alt='Stainless steel railing signature'
+					fill={ true }
+					sizes="100vw"
+					className={ styles.productBannerImage }
+				/>
+				<span className={ styles.productBannerName }>Stainless Steel Railings</span>
+			</div>
+
+			<div className={ styles.productBlock }>
+				<p className={ styles.productBlockTextAlignRight }>{ introText }</p>
+				<span className={ styles.productBlockImageContainer }>
+					<Image
+						src={ cableRailing2 }
+						alt='Stainless steel cable railing'
+						fill={ true }
+						sizes="(max-width: 768px) 75vw, 50vw"
+						className={ styles.productBlockImage }
+					/>
+				</span>
+			</div>
+
+			<div className={ styles.productBlock }>
+				<span className={ styles.productBlockImageContainer }>
+					<Image
+						src={ glassRailing2 }
+						alt='Stainless steel glass railing'
+						fill={ true }
+						sizes="(max-width: 768px) 75vw, 50vw"
+						className={ styles.productBlockImage }
+					/>
+				</span>
+				<p className={ styles.productBlockTextAlignLeft }>{ materialText }</p>
+			</div>
+
+			<div className={ styles.productBlock }>
+				<span className={ styles.productBlockImageContainer }>
+					<Image
+						src={ cableRailing1 }
+						alt='Stainless steel cable railing'
+						fill={ true }
+						sizes="(max-width: 768px) 75vw, 50vw"
+						className={ styles.productBlockImage }
+					/>
+				</span>
+				<p className={ styles.productBlockText }>{ customizationText }</p>
+				<span className={ styles.productBlockImageContainer }>
+					<Image
+						src={ glassRailing1 }
+						alt='Stainless steel glass railing'
+						fill={ true }
+						sizes="(max-width: 768px) 75vw, 50vw"
+						className={ styles.productBlockImage }
+					/>
+				</span>
+			</div>
+
+			<div className={ styles.galleriaTitle }>Stainless Steel Rails Gallery</div>
+			<Galleria jsonImages={ JSON.stringify(galleryPhotos) } isPublic={ true }/>
+		</div>
+	);
+};
+
+export default StainlessSteelProductServer;

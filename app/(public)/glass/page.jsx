@@ -42,7 +42,7 @@ const GlassProductServer = async () => {
 			</div>
 
 			<div className={ styles.productBlock }>
-				<p className={ styles.productBlockText }>{ introText }</p>
+				<p className={ styles.productBlockTextAlignRight }>{ introText }</p>
 				<span className={ styles.productBlockImageContainer }>
 					<Image
 						src={ glassPanel }
@@ -64,11 +64,11 @@ const GlassProductServer = async () => {
 						className={ styles.productBlockImage }
 					/>
 				</span>
-				<p className={ styles.productBlockText }>{ stylesText }</p>
+				<p className={ styles.productBlockTextAlignLeft }>{ stylesText }</p>
 			</div>
 
 			<div className={ styles.productBlock }>
-				<p className={ styles.productBlockText }>{ framedRailingText }</p>
+				<p className={ styles.productBlockTextAlignRight }>{ framedRailingText }</p>
 				<span className={ styles.productBlockImageContainer }>
 					<Image
 						src={ framedGlass1 }
@@ -112,7 +112,7 @@ const GlassProductServer = async () => {
 						className={ styles.productBlockImage }
 					/>
 				</span>
-				<p className={ styles.productBlockText }>{ talonRailingText }</p>
+				<p className={ styles.productBlockTextAlignLeft }>{ talonRailingText }</p>
 			</div>
 
 			<div className={ styles.productBlock }>
@@ -138,7 +138,7 @@ const GlassProductServer = async () => {
 			</div>
 
 			<div className={ styles.productBlock }>
-				<p className={ styles.productBlockText }>{ fasciaRailingText }</p>
+				<p className={ styles.productBlockTextAlignRight }>{ fasciaRailingText }</p>
 				<span className={ styles.productBlockImageContainer }>
 					<Image
 						src={ fasciaGlass1 }

@@ -30,7 +30,7 @@ const GallerySection = ({ jsonImages }) => {
 	const setGallerySectionHeight = () => {
 		if (imageRef?.current) {
 			window.setTimeout(() => {
-				const imagesPerRow = Math.floor(document.documentElement.clientWidth / imageContainerRef.current.clientWidth);
+				const imagesPerRow = Math.floor(document.documentElement.clientWidth / (imageContainerRef.current.clientWidth - 1));
 				galleryContainerRef.current.style.height = ((imageRef.current.clientHeight + 30) * Math.ceil(shownImageCount / imagesPerRow)) + 'px';
 			}, 100);
 		}
