@@ -4,7 +4,7 @@ import { pullLegacyData } from './db/legacyDAO.js';
 
 const legacyData = await pullLegacyData();
 console.log('Writing out the data to a text file...');
-writeFileSync('./migration/legacyData.txt', JSON.stringify(legacyData));
+writeFileSync('legacyData.txt', JSON.stringify(legacyData));
 
 console.log('Done!');
 process.exit();

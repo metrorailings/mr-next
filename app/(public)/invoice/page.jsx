@@ -61,9 +61,9 @@ const InvoiceServer = async ({ searchParams }) => {
 					<br/>
 					{ process.env.NEXT_PUBLIC_COMPANY_ADDRESS_2 }
 					<br/>
-					{ process.env.NEXT_PUBLIC_COMPANY_EMAIL }
+					{ process.env.NEXT_PUBLIC_SUPPORT_MAILBOX }
 					<br/>
-					{ process.env.NEXT_PUBLIC_COMPANY_PHONE_NUMBER }
+					{ process.env.NEXT_PUBLIC_HOTLINE_NUMBER }
 				</span>
 
 				{ /* ORDER ID */ }

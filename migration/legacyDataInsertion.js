@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import { clearCollectionData, insertLegacyOrders, insertLegacyPayments, insertLegacyNotes, insertLegacyUsers, insertLegacyCounters } from './db/legacyDAO.js';
 
-const { orders, payments, notes, users, counters } = JSON.parse(readFileSync('./migration/legacyData.txt'));
+const { orders, payments, notes, users, counters } = JSON.parse(readFileSync('legacyData.txt'));
 
 console.log('Deleting all old database data...');
 await clearCollectionData();

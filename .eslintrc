@@ -8,6 +8,7 @@
     "es6" : true
   },
   "rules": {
-    "require-await" : "error"
+    "require-await" : "error",
+    "@next/next/no-html-link-for-pages": "off"
   }
 }

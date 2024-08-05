@@ -154,7 +154,7 @@ const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 		<>
 			<div className={ styles.pageContainer }>
 				<div className={ styles.pageButtonSection }>
-					<Link href='/admin/order-details' prefetch={ true }>
+					<Link href='/admin/order-details' prefetch={ true } passHref>
 						<button className={ styles.createOrderButton }>Create Order</button>
 					</Link>
 				</div>
@@ -224,11 +224,11 @@ const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 
 											<div className={ styles.orderBoxDatum }>
 												<FontAwesomeIcon className={ styles.orderBoxIcon } icon={ faLocationDot } />
-												<a target='_blank' href={ generateGoogleLink(order.customer) }>
+												<Link target='_blank' href={ generateGoogleLink(order.customer) } passHref>
 													{ order.customer.address || '--' }
 													<br />
 													{ (order.customer.city || '--') + ', ' + (order.customer.state || '--') }
-												</a>
+												</Link>
 											</div>
 
 											<div className={ styles.orderBoxDatum }>
