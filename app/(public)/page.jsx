@@ -8,7 +8,7 @@ import StatsSection from 'app/(public)/stats';
 import GallerySection from 'app/(public)/gallery';
 import ReviewsServer from 'app/(public)/reviewsServer';
 import ReviewSkeleton from 'app/(public)/reviewSkeleton';
-import VideoComponent from 'components/public/videoComponent';
+import VideoComponent from 'components/public/VideoComponent';
 
 import { textToParagraphs } from 'lib/utils';
 import { getGalleryImages } from 'lib/http/galleryDAO';

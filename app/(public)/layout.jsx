@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 
-import Header from 'components/public/header';
-import Footer from 'components/public/footer';
+import Header from 'components/public/Header';
+import Footer from 'components/public/Footer';
 import EventOrganizer from 'components/EventOrganizer';
 import CustomToaster from 'components/CustomToaster';
 
