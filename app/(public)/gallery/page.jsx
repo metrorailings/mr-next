@@ -1,4 +1,4 @@
-import Galleria from 'components/galleria';
+import Galleria from 'components/Galleria';
 
 import { getGalleryImages } from 'lib/http/galleryDAO';
 

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { getGalleryImages } from 'lib/http/galleryDAO';
 
-import Galleria from 'components/galleria';
+import Galleria from 'components/Galleria';
 
 import styles from 'public/styles/page/productPage.module.scss';
 import cableBanner from 'assets/images/products/cable/cable-banner.jpg';

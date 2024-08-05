@@ -5,7 +5,7 @@ import { UserContext } from 'app/admin/userContext';
 
 import { addFileToOrder, deleteFileFromOrder, fetchFilesByOrder } from 'actions/order';
 
-import GalleryViewer from 'components/galleryViewer';
+import GalleryViewer from 'components/GalleryViewer';
 import { toastValidationError } from 'components/CustomToaster';
 
 import { acceptableMediaExtensions } from 'lib/dictionary';
