@@ -1,4 +1,4 @@
-import ReviewSection from 'app/(public)/reviews';
+import ReviewSection from 'app/(public)/Reviews';
 
 import { getGoogleReviews } from 'lib/google';
 
