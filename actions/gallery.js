@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 
 import {
 	addGalleryImage as addGalleryImageDAO,
@@ -10,6 +11,15 @@ import {
 	uploadToVercel,
 	deleteFromVercel,
 } from 'lib/http/galleryDAO';
+
+function revalidateCache() {
+	revalidatePath('/(public)', 'page');
+	revalidatePath('/(public)/aluminum', 'page');
+	revalidatePath('/(public)/cable', 'page');
+	revalidatePath('/(public)/glass', 'page');
+	revalidatePath('/(public)/stainless-steel', 'page');
+	revalidatePath('/admin/gallery', 'page');
+}
 
 export async function addNewGalleryImage(formData) {
 	const imageFile = formData.get('galleryImage');
@@ -27,6 +37,8 @@ export async function addNewGalleryImage(formData) {
 		}
 		
 		const processedImage = await addGalleryImageDAO(completeMetadata);
+
+		revalidateCache();
 		return { success: true, data: JSON.stringify(processedImage) };
 	} catch (error) {
 		console.error(error);
@@ -44,6 +56,8 @@ export async function deleteGalleryImage(data) {
 			meaningfullyDeleted = true;
 		}
 		deleteFromVercel(data.originalUrl, data.galleriaUrl);
+
+		revalidateCache();
 		return { success: true };
 	} catch (error) {
 		console.error(error);
@@ -54,6 +68,8 @@ export async function deleteGalleryImage(data) {
 export async function updateGalleryMetadata(updatedMetadata){
 	try {
 		await updateGalleryImageData(updatedMetadata);
+
+		revalidateCache();
 		return { success: true };
 	} catch (error) {
 		console.error(error);
