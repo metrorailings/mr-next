@@ -4,10 +4,10 @@ import { list } from '@vercel/blob'
 import Image from 'next/image';
 import Link from 'next/link';
 
-import StatsSection from 'app/(public)/stats';
-import GallerySection from 'app/(public)/gallery';
-import ReviewsServer from 'app/(public)/reviewsServer';
-import ReviewSkeleton from 'app/(public)/reviewSkeleton';
+import StatsSection from 'app/(public)/Stats';
+import GallerySection from 'app/(public)/Gallery';
+import ReviewsServer from 'app/(public)/ReviewsServer';
+import ReviewSkeleton from 'app/(public)/ReviewSkeleton';
 import VideoComponent from 'components/public/VideoComponent';
 
 import { textToParagraphs } from 'lib/utils';
