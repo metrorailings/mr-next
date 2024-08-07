@@ -22,7 +22,7 @@ const GlassProductServer = async () => {
 
 	const textDir = resolve('./', 'assets/text/glass');
 	const introText = readFileSync(textDir + '/intro.txt', { encoding: 'utf-8' });
-	const stylesText = readFileSync(textDir + 'styles.txt', { encoding: 'utf-8' });
+	const stylesText = readFileSync(textDir + '/styles.txt', { encoding: 'utf-8' });
 	const channelRailingText = readFileSync(textDir + '/channelRailings.txt', { encoding: 'utf-8' });
 	const fasciaRailingText = readFileSync(textDir + '/fasciaRailings.txt', { encoding: 'utf-8' });
 	const framedRailingText = readFileSync(textDir + '/framedRailings.txt', { encoding: 'utf-8' });
