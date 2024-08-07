@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import React, { Suspense } from 'react';
 import { list } from '@vercel/blob'
 import Image from 'next/image';
@@ -19,7 +20,6 @@ import sassLogo from 'assets/images/logos/sass.svg';
 import reactLogo from 'assets/images/logos/react.png';
 import mongoDbLogo from 'assets/images/logos/mongodb.svg';
 import nextJsLogo from 'assets/images/logos/nextJS.png';
-
 import products from 'assets/text/products.js';
 
 const HomeServer = async () => {
@@ -32,7 +32,8 @@ const HomeServer = async () => {
 	});
 
 	// Grab the 'About Me' text as well
-	const aboutMeText = readFileSync('assets/text/aboutUs.txt', { encoding: 'utf-8' });
+	const textDir = resolve('./', 'assets/text')
+	const aboutMeText = readFileSync(textDir + 'aboutUs.txt', { encoding: 'utf-8' });
 	const aboutMeParagraphs = textToParagraphs(aboutMeText);
 
 	// Grab the initial pictures to show on the gallery section
