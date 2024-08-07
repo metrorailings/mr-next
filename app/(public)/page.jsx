@@ -33,7 +33,7 @@ const HomeServer = async () => {
 
 	// Grab the 'About Me' text as well
 	const textDir = resolve('./', 'assets/text')
-	const aboutMeText = readFileSync(textDir + 'aboutUs.txt', { encoding: 'utf-8' });
+	const aboutMeText = readFileSync(textDir + '/aboutUs.txt', { encoding: 'utf-8' });
 	const aboutMeParagraphs = textToParagraphs(aboutMeText);
 
 	// Grab the initial pictures to show on the gallery section
