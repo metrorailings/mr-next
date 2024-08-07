@@ -1,3 +1,5 @@
+import { resolve } from 'node:path';
+
 import classNames from 'classnames';
 
 import Header from 'components/public/Header';
@@ -13,6 +15,10 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { RobotoMono, Poppins, Raleway, Comfortaa, AvenirLight, AvenirHeavy } from 'app/fonts';
 
 export default function RootPublicLayout({ children }) {
+
+	// We need to do this so that Vercel can read files on the fly from this directory in production
+	resolve('./', 'assets/text');
+
 	return (
 		<html lang='en' className={ classNames({
 			[RobotoMono.variable]: true,
