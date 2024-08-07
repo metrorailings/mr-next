@@ -27,7 +27,7 @@ export default function RootPublicLayout({ children }) {
 				<Header />
 				{ children }
 				<Footer />
-	
+
 				<EventOrganizer />
 				<CustomToaster />
 			</body>

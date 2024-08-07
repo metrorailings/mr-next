@@ -14,6 +14,7 @@ import { getUsersByUsername } from 'lib/http/usersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
+import { resolve } from 'node:path';
 
 const QuoteServer = async ({ searchParams }) => {
 	const orderId = decryptNumber(searchParams?.oid || '');
@@ -42,7 +43,9 @@ const QuoteServer = async ({ searchParams }) => {
 	const designs = Object.keys(quote.design);
 
 	// Pull the 'Terms and Conditions' from the file system
-	const termsRawText = readFileSync( process.cwd() + '/' + quote.termsFileHandle, { encoding: 'utf-8' });
+	const textDir = resolve('./', 'assets/text/terms');
+	const fileName = quote.termsFileHandle.split('/').pop();
+	const termsRawText = readFileSync( textDir + '/' + fileName, { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>

@@ -16,6 +16,7 @@ import { retrieveCards } from 'lib/http/ordersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
+import { resolve } from 'node:path';
 
 const InvoiceServer = async ({ searchParams }) => {
 	const orderId = decryptNumber(searchParams?.oid || '');
@@ -43,7 +44,10 @@ const InvoiceServer = async ({ searchParams }) => {
 	cityStateInfo = cityStateInfo.join(',');
 
 	// Pull the 'Terms and Conditions' from the file system
-	const termsRawText = readFileSync(process.cwd() + '/' + invoice.termsFileHandle, { encoding: 'utf-8' });
+	// Pull the 'Terms and Conditions' from the file system
+	const textDir = resolve('./', 'assets/text/terms');
+	const fileName = invoice.termsFileHandle.split('/').pop();
+	const termsRawText = readFileSync( textDir + '/' + fileName, { encoding: 'utf-8' });
 
 	return (
 		<div className={ styles.pageContainer }>
