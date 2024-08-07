@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import Image from 'next/image';
 
 import { getGalleryImages } from 'lib/http/galleryDAO';
@@ -14,9 +15,10 @@ import glassRailing2 from 'assets/images/products/stainless-steel/glass-railing-
 
 const StainlessSteelProductServer = async () => {
 
-	const introText = readFileSync('assets/text/stainlessSteel/intro.txt', { encoding: 'utf-8' });
-	const customizationText = readFileSync('assets/text/stainlessSteel/customization.txt', { encoding: 'utf-8' });
-	const materialText = readFileSync('assets/text/stainlessSteel/material.txt', { encoding: 'utf-8' });
+	const textDir = resolve('./', 'assets/text/stainlessSteel');
+	const introText = readFileSync( textDir + '/intro.txt', { encoding: 'utf-8' });
+	const customizationText = readFileSync(textDir + 'assets/text/stainlessSteel/customization.txt', { encoding: 'utf-8' });
+	const materialText = readFileSync(textDir + 'assets/text/stainlessSteel/material.txt', { encoding: 'utf-8' });
 
 	const galleryPhotos = await getGalleryImages('aluminum');
 

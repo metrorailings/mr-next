@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import Image from 'next/image';
 
 import { getGalleryImages } from 'lib/http/galleryDAO';
@@ -17,10 +18,11 @@ import poolRailing from 'assets/images/products/cable/pool-cable-railing.jpg';
 
 const CableProductServer = async () => {
 
-	const introText = readFileSync('assets/text/cable/intro.txt', { encoding: 'utf-8' });
-	const colorText = readFileSync('assets/text/cable/color.txt', { encoding: 'utf-8' });
-	const customizationText = readFileSync('assets/text/cable/customization.txt', { encoding: 'utf-8' });
-	const cableDetailText = readFileSync('assets/text/cable/cable.txt', { encoding: 'utf-8' });
+	const textDir = resolve('./', 'assets/text/cable');
+	const introText = readFileSync(textDir + '/intro.txt', { encoding: 'utf-8' });
+	const colorText = readFileSync(textDir + '/color.txt', { encoding: 'utf-8' });
+	const customizationText = readFileSync(textDir + '/customization.txt', { encoding: 'utf-8' });
+	const cableDetailText = readFileSync(textDir + '/cable.txt', { encoding: 'utf-8' });
 
 	const galleryPhotos = await getGalleryImages('cable');
 

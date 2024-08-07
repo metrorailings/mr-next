@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import Image from 'next/image';
 
 import { getGalleryImages } from 'lib/http/galleryDAO';
@@ -18,13 +19,15 @@ import fasciaGlass1 from 'assets/images/products/glass/fascia-glass-1.jpeg';
 import glassPanel from 'assets/images/products/glass/glass-panel-1.jpeg';
 
 const GlassProductServer = async () => {
-	const introText = readFileSync('assets/text/glass/intro.txt', { encoding: 'utf-8' });
-	const stylesText = readFileSync('assets/text/glass/styles.txt', { encoding: 'utf-8' });
-	const channelRailingText = readFileSync('assets/text/glass/channelRailings.txt', { encoding: 'utf-8' });
-	const fasciaRailingText = readFileSync('assets/text/glass/fasciaRailings.txt', { encoding: 'utf-8' });
-	const framedRailingText = readFileSync('assets/text/glass/framedRailings.txt', { encoding: 'utf-8' });
-	const postRailingText = readFileSync('assets/text/glass/postRailings.txt', { encoding: 'utf-8' });
-	const talonRailingText = readFileSync('assets/text/glass/talonRailings.txt', { encoding: 'utf-8' });
+
+	const textDir = resolve('./', 'assets/text/glass');
+	const introText = readFileSync(textDir + '/intro.txt', { encoding: 'utf-8' });
+	const stylesText = readFileSync(textDir + 'styles.txt', { encoding: 'utf-8' });
+	const channelRailingText = readFileSync(textDir + '/channelRailings.txt', { encoding: 'utf-8' });
+	const fasciaRailingText = readFileSync(textDir + '/fasciaRailings.txt', { encoding: 'utf-8' });
+	const framedRailingText = readFileSync(textDir + '/framedRailings.txt', { encoding: 'utf-8' });
+	const postRailingText = readFileSync(textDir + '/postRailings.txt', { encoding: 'utf-8' });
+	const talonRailingText = readFileSync(textDir + '/talonRailings.txt', { encoding: 'utf-8' });
 
 	const galleryPhotos = await getGalleryImages('glass');
 
