@@ -128,7 +128,7 @@ const QuoteServer = async ({ searchParams }) => {
 
 					{ /* SUMMARY */ }
 					{ quote.text.additionalDescription ? (
-						<div className={ styles.quoteMemo } dangerouslySetInnerHTML={{ __html: quote.text.additionalDescription }} />
+						<div className={ styles.quoteMemo } dangerouslySetInnerHTML={{ __html: quote.text.additionalDescription.split('\n').join('<br />') }} />
 					) : null }
 
 					{ /* DESIGN DETAILS */ }
