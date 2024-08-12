@@ -13,6 +13,15 @@ import cableRailing2 from 'assets/images/products/stainless-steel/cable-railing-
 import glassRailing1 from 'assets/images/products/stainless-steel/glass-railing-1.jpeg';
 import glassRailing2 from 'assets/images/products/stainless-steel/glass-railing-2.jpeg';
 
+export const metadata = {
+	title: 'Stainless Steel Railings',
+	description: 'A brief summary of the stainless steel railings and products we offer',
+	robots: {
+		index: true,
+		follow: true
+	}
+};
+
 const StainlessSteelProductServer = async () => {
 
 	const textDir = resolve('./', 'assets/text/stainlessSteel');

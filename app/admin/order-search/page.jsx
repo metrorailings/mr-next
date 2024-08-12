@@ -1,5 +1,3 @@
-'use server'
-
 import { permanentRedirect } from 'next/navigation'
 
 import OrderSearchPage from "app/admin/order-search/client";

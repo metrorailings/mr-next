@@ -5,6 +5,15 @@ import LogInForm from 'app/(public)/login/LogInForm';
 import styles from 'public/styles/page/logIn.module.scss';
 import logo from 'assets/images/logos/white_logo_color_background.png';
 
+export const metadata = {
+	title: 'C-Suite',
+	description: '',
+	robots: {
+		index: false,
+		follow: false
+	}
+};
+
 const LoginServer = () => {
 
 	return (

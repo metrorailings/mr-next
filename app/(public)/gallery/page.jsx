@@ -4,6 +4,16 @@ import { getGalleryImages } from 'lib/http/galleryDAO';
 
 import styles from 'public/styles/page/gallery.module.scss';
 
+export const metadata = {
+	title: 'Gallery',
+	description: 'Portfolio of some of our loveliest railing work',
+	robots: {
+		index: true,
+		follow: true,
+		nocache: true
+	}
+};
+
 const PublicGalleryServer = async () => {
 	const galleryImages = await getGalleryImages();
 

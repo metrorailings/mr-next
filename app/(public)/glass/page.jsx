@@ -18,6 +18,15 @@ import talonGlass1 from 'assets/images/products/glass/talon-glass-1.jpeg';
 import fasciaGlass1 from 'assets/images/products/glass/fascia-glass-1.jpeg';
 import glassPanel from 'assets/images/products/glass/glass-panel-1.jpeg';
 
+export const metadata = {
+	title: 'Glass Railings',
+	description: 'A brief summary of the glass railings and products we offer',
+	robots: {
+		index: true,
+		follow: true
+	}
+};
+
 const GlassProductServer = async () => {
 
 	const textDir = resolve('./', 'assets/text/glass');

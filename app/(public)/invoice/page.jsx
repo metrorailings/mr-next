@@ -1,6 +1,5 @@
-'use server'
-
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { redirect } from 'next/navigation'
 import dayjs from 'dayjs';
 import Markdown from 'react-markdown';
@@ -16,7 +15,15 @@ import { retrieveCards } from 'lib/http/ordersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
-import { resolve } from 'node:path';
+
+export const metadata = {
+	title: 'Invoice',
+	description: '',
+	robots: {
+		index: false,
+		follow: false
+	}
+};
 
 const InvoiceServer = async ({ searchParams }) => {
 	const orderId = decryptNumber(searchParams?.oid || '');

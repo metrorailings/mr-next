@@ -13,6 +13,15 @@ import sunRailing from 'assets/images/products/aluminum/aluminum-railing-in-the-
 import deckRailing from 'assets/images/products/aluminum/deck-railing-1.jpeg';
 import exoticRailing from 'assets/images/products/aluminum/exotic-railing-1.jpeg';
 
+export const metadata = {
+	title: 'Aluminum Railings',
+	description: 'A brief summary of the aluminum railings we offer',
+	robots: {
+		index: true,
+		follow: true
+	}
+};
+
 const AluminumProductServer = async () => {
 
 	const textDir = resolve('./', 'assets/text/aluminum');

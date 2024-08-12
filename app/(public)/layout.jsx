@@ -12,6 +12,18 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 
 import { RobotoMono, Poppins, Raleway, Comfortaa, AvenirLight, AvenirHeavy } from 'app/fonts';
 
+export const metadata = {
+	title: {
+		template: 'Metro Railings | %s',
+		default: 'Metro Railings'
+	},
+	description: 'Artisan railings for NJ, NY, and much more',
+	robots: {
+		index: true,
+		follow: true
+	}
+};
+
 export default function RootPublicLayout({ children }) {
 
 	return (

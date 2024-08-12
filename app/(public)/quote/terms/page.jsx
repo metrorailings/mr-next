@@ -1,5 +1,3 @@
-'use server'
-
 import { readFileSync } from 'node:fs';
 import Markdown from 'react-markdown';
 

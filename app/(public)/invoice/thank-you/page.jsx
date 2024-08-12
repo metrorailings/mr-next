@@ -1,11 +1,18 @@
-'use server'
-
 import { getUsersByUsername } from 'lib/http/usersDAO';
 import { getOrderById } from 'lib/http/ordersDAO';
 
 import { formatUSDAmount } from 'lib/utils';
 
 import styles from 'public/styles/page/thankYou.module.scss';
+
+export const metadata = {
+	title: 'Thank You!',
+	description: '',
+	robots: {
+		index: false,
+		follow: false
+	}
+};
 
 const ThankYouServer = async ({ searchParams }) => {
 	const orderId = searchParams?.orderId || '';

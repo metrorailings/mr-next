@@ -1,6 +1,5 @@
-'use server'
-
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { redirect } from 'next/navigation'
 import Image from 'next/image';
 import dayjs from 'dayjs';
@@ -14,7 +13,15 @@ import { getUsersByUsername } from 'lib/http/usersDAO';
 
 import styles from 'public/styles/page/quote.module.scss';
 import logo from "assets/images/logos/white_logo_color_background.png";
-import { resolve } from 'node:path';
+
+export const metadata = {
+	title: 'Quote',
+	description: '',
+	robots: {
+		index: false,
+		follow: false
+	}
+};
 
 const QuoteServer = async ({ searchParams }) => {
 	const orderId = decryptNumber(searchParams?.oid || '');

@@ -15,6 +15,17 @@ export const viewport = {
 	initialScale: '0.1'
 };
 
+export const metadata = {
+	title: {
+		default: 'Metro Railings Admin Platform'
+	},
+	description: 'Administration platform for Metro Railings',
+	robots: {
+		index: false,
+		follow: false
+	}
+};
+
 export default function RootAdminLayout({ children }) {
 
 	return (

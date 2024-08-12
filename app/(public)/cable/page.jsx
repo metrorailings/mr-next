@@ -16,6 +16,15 @@ import altCableRailing from 'assets/images/products/cable/ss-cable-railing-neck-
 import deckRailing from 'assets/images/products/cable/deck-cable-railing.jpg';
 import poolRailing from 'assets/images/products/cable/pool-cable-railing.jpg';
 
+export const metadata = {
+	title: 'Cable Railings',
+	description: 'A brief summary of the cable railings we offer',
+	robots: {
+		index: true,
+		follow: true
+	}
+};
+
 const CableProductServer = async () => {
 
 	const textDir = resolve('./', 'assets/text/cable');
