@@ -9,12 +9,11 @@ const GalleryServer = async () => {
 	const galleryImages = await getGalleryImages();
 
 	return (
-		<div className={ styles.pageContainer }>
+		<>
 			<div className={ styles.pageHeader }>GALLERY MANAGEMENT</div>
 			<Gallery jsonImages={ JSON.stringify(galleryImages) } />
-		</div>
+		</>
 	);
-
 };
 
 export default GalleryServer;

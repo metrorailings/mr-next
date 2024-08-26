@@ -38,7 +38,7 @@ const StainlessSteelProductServer = async () => {
 					src={ stainlessSteelBanner }
 					alt='Stainless steel railing signature'
 					fill={ true }
-					sizes="100vw"
+					sizes='100vw'
 					className={ styles.productBannerImage }
 				/>
 				<span className={ styles.productBannerName }>Stainless Steel Railings</span>
@@ -51,7 +51,7 @@ const StainlessSteelProductServer = async () => {
 						src={ cableRailing2 }
 						alt='Stainless steel cable railing'
 						fill={ true }
-						sizes="(max-width: 768px) 75vw, 50vw"
+						sizes='(max-width: 768px) 75vw, 50vw'
 						className={ styles.productBlockImage }
 					/>
 				</span>
@@ -63,7 +63,7 @@ const StainlessSteelProductServer = async () => {
 						src={ glassRailing2 }
 						alt='Stainless steel glass railing'
 						fill={ true }
-						sizes="(max-width: 768px) 75vw, 50vw"
+						sizes='(max-width: 768px) 75vw, 50vw'
 						className={ styles.productBlockImage }
 					/>
 				</span>
@@ -76,7 +76,7 @@ const StainlessSteelProductServer = async () => {
 						src={ cableRailing1 }
 						alt='Stainless steel cable railing'
 						fill={ true }
-						sizes="(max-width: 768px) 75vw, 50vw"
+						sizes='(max-width: 768px) 75vw, 50vw'
 						className={ styles.productBlockImage }
 					/>
 				</span>
@@ -86,7 +86,7 @@ const StainlessSteelProductServer = async () => {
 						src={ glassRailing1 }
 						alt='Stainless steel glass railing'
 						fill={ true }
-						sizes="(max-width: 768px) 75vw, 50vw"
+						sizes='(max-width: 768px) 75vw, 50vw'
 						className={ styles.productBlockImage }
 					/>
 				</span>

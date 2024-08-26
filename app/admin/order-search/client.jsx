@@ -36,8 +36,6 @@ const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 	const observerTarget = useRef(null);
 	const router = useRouter();
 	const statuses = JSON.parse(jsonStatuses);
-	const statusLabels = statuses.map(status => status.label);
-	const statusValues = statuses.map(status => status.key);
 
 	const updateStatusFilter = (newStatus) => {
 		const newFilters = {
@@ -166,8 +164,8 @@ const OrderSearchPage = ({ jsonOrders, jsonStatuses }) => {
 					<div className={ styles.filterRow }>
 						<span className={ styles.filterLabel }>Status</span>
 						<OptionSet
-							labels={ statusLabels }
-							values={ statusValues }
+							labels={ statuses.map(status => status.label) }
+							values={ statuses.map(status => status.key) }
 							currentValue={ filters.status }
 							isDisabled={ false }
 							setter={ updateStatusFilter }

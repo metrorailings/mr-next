@@ -1,13 +1,14 @@
-import ReportsPage from "app/admin/reports/client";
+import ReportsPage from 'app/admin/reports/client';
 
-// import {  } from "app/api/admin/reports/DAO";
+import styles from 'public/styles/page/reports.module.scss';
 
 const ReportsServer = () => {
 
 	return (
-		<>
+		<div className={ styles.pageContainer }>
+			<div className={ styles.pageHeader }>REPORTING</div>
 			<ReportsPage />
-		</>
+		</div>
 	);
 };
 

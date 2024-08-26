@@ -62,6 +62,9 @@ export default function Header() {
 					<span className={ styles.desktopMenuLinkSlot }>
 						<Link href='/admin/gallery' className={ styles.topMenuLink }>GALLERY</Link>
 					</span>
+					<span className={ styles.desktopMenuLinkSlot }>
+						<Link href='/admin/reports' className={ styles.topMenuLink }>REPORTS</Link>
+					</span>
 				</span>
 
 				<span className={ styles.desktopIconList }>

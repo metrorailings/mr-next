@@ -2,9 +2,27 @@
 
 import { cookies } from 'next/headers';
 
-import { getOrderById, attachNewCard, attachNewPayment, attachStripeCustomerProfileData } from 'lib/http/ordersDAO';
-import { stripeAddCustomer, stripeAddCreditCard, stripeChargeCard, recordNewCardPayment, uploadPaymentImage, recordNewImagePayment } from 'lib/http/paymentsDAO';
-import { finalizeInvoice } from 'lib/http/invoicesDAO';
+import {
+	getOrderById,
+	attachNewCard,
+	attachNewPayment,
+	attachStripeCustomerProfileData 
+} from 'lib/http/ordersDAO';
+
+import {
+	stripeAddCustomer,
+	stripeAddCreditCard,
+	stripeChargeCard,
+	recordNewCardPayment,
+	uploadPaymentImage,
+	recordNewImagePayment 
+} from 'lib/http/paymentsDAO';
+
+import { 
+	finalizeInvoice
+} from 'lib/http/invoicesDAO';
+
+import { sendFinalizedOrderEmail, sendInvoicePaidEmail } from 'lib/loopMailer';
 
 export async function addCardAndPayByCard(data) {
 	const uploader = cookies().has('user') ? JSON.parse(cookies().get('user').value)?.username : 'CUSTOMER';
@@ -39,6 +57,7 @@ export async function addCardAndPayByCard(data) {
 				// If this payment follows from an invoice, update the invoice to mark it as paid
 				if (data.invoiceId) {
 					await finalizeInvoice(data.invoiceId);
+					sendInvoicePaidEmail(data.orderId, data.invoiceId);
 				}
 			}
 		}
@@ -72,6 +91,7 @@ export async function payByCard(data) {
 			// If this payment follows from an invoice, update the invoice to mark it as paid
 			if (data.invoiceId) {
 				await finalizeInvoice(data.invoiceId);
+				sendInvoicePaidEmail(data.orderId, data.invoiceId);
 			}
 		}
 	} catch (error) {

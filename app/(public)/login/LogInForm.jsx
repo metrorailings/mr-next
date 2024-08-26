@@ -38,12 +38,10 @@ const LoginForm = () => {
 	];
 
 	const handleCredentialUpdate = (event) => {
-		let newCredentials = {
+		setCredentials({
 			...credentials,
 			[event.currentTarget.name]: event.currentTarget.value
-		};
-
-		setCredentials(newCredentials);
+		});
 	};
 
 	const handleSubmit = async () => {
