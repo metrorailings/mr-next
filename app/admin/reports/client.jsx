@@ -10,7 +10,6 @@ import { serverActionCall } from 'lib/http/clientHttpRequester';
 
 import { } from '@fortawesome/free-solid-svg-icons'
 import styles from 'public/styles/page/reports.module.scss';
-import { generateInvoice } from '../../../actions/invoice';
 
 const ReportsPage = () => {
 
@@ -62,7 +61,8 @@ const ReportsPage = () => {
 		});
 	}
 
-	const generateReport = () => {
+
+	const generateReport = async () => {
 		let serverAction, errors, params;
 		if (currentReport === 'commission') {
 			errors = runValidators(commissionReportValidationFields);
@@ -77,6 +77,7 @@ const ReportsPage = () => {
 				loading: 'Generating report...',
 				error: 'Something went wrong when trying to generate a report. Please try again. If it doesn\'t work, consult Rickin.'
 			});
+			console.log(serverResponse);
 		} else {
 			toastValidationError(errors);
 		}
@@ -125,7 +126,7 @@ const ReportsPage = () => {
 			) : null }
 
 			<div>
-				<button type='button' className={ styles.test }>Generate Report</button>
+				<button type='button' className={ styles.test } onClick={ generateReport }>Generate Report</button>
 			</div>
 
 		</>
