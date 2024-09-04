@@ -4,6 +4,8 @@ import { getAllOpenOrders } from 'lib/http/ordersDAO';
 
 import styles from 'public/styles/page/dashboard.module.scss';
 
+export const revalidate = 300; // invalidate every 5 minutes
+
 const DashboardServer = async () => {
 	// Fetch all open orders
 	const orders = await getAllOpenOrders();
