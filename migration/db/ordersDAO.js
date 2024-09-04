@@ -1,6 +1,7 @@
 import dbConnect from './driver.js';
 import Orders from './order.js';
 import newOrders from './newOrder.js';
+import prodOrders from './prodOrder.js';
 
 export async function getAllOrders() {
 	await dbConnect();
@@ -22,6 +23,19 @@ export async function updateOrder(order) {
 		}, order, {
 			upsert: true
 		}).exec();
+	} catch (error) {
+		console.error(error);
+		throw new Error(error);
+	}
+}
+
+export async function getOrdersByDateRange(beginDate, endDate) {
+	await dbConnect();
+
+	try {
+		return await prodOrders.find({
+			'dates.created': { $gte: beginDate, $lte: endDate },
+		});
 	} catch (error) {
 		console.error(error);
 		throw new Error(error);
