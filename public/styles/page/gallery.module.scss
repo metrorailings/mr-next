@@ -15,6 +15,10 @@
 }
 
 .gallery-pictures {
+	margin: {
+		bottom: 125px;
+	}
+
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 }

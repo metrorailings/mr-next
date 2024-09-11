@@ -22,6 +22,9 @@ export const metadata = {
 	robots: {
 		index: true,
 		follow: true
+	},
+	alternates: {
+		canonical: 'https://www.metrorailings.com/cable'
 	}
 };
 
@@ -45,7 +48,7 @@ const CableProductServer = async () => {
 					sizes="100vw"
 					className={ styles.productBannerImage }
 				/>
-				<span className={ styles.productBannerName }>Cable Railings</span>
+				<h1 className={ styles.productBannerName }>Cable Railings</h1>
 			</div>
 
 			<div className={ styles.productBlock }>

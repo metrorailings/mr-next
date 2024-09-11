@@ -24,6 +24,9 @@ export const metadata = {
 	robots: {
 		index: true,
 		follow: true
+	},
+	alternates: {
+		canonical: 'https://www.metrorailings.com/glass'
 	}
 };
 
@@ -50,7 +53,7 @@ const GlassProductServer = async () => {
 					sizes='100vw'
 					className={ styles.productBannerImage }
 				/>
-				<span className={ styles.productBannerName }>Glass Railings</span>
+				<h1 className={ styles.productBannerName }>Glass Railings</h1>
 			</div>
 
 			<div className={ styles.productBlock }>

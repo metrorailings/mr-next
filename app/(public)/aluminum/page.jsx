@@ -19,6 +19,9 @@ export const metadata = {
 	robots: {
 		index: true,
 		follow: true
+	},
+	alternates: {
+		canonical: 'https://www.metrorailings.com/aluminum'
 	}
 };
 
@@ -41,7 +44,7 @@ const AluminumProductServer = async () => {
 					sizes="100vw"
 					className={ styles.productBannerImage }
 				/>
-				<span className={ styles.productBannerName }>Aluminum Railings</span>
+				<h1 className={ styles.productBannerName }>Aluminum Railings</h1>
 			</div>
 
 			<div className={ styles.productBlock }>

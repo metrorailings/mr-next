@@ -11,6 +11,9 @@ export const metadata = {
 		index: true,
 		follow: true,
 		nocache: true
+	},
+	alternates: {
+		canonical: 'https://www.metrorailings.com/gallery'
 	}
 };
 
@@ -19,7 +22,7 @@ const PublicGalleryServer = async () => {
 
 	return (
 		<>
-			<h3 className={ styles.pageHeader }>A SAMPLE OF OUR WORK</h3>
+			<h1 className={ styles.pageHeader }>WORK PORTFOLIO</h1>
 			<Galleria jsonImages={ JSON.stringify(galleryImages) } isPublic={ true } />
 			<div className={ styles.publicGalleryFooterOffset } />
 		</>

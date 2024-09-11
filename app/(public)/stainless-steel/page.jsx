@@ -19,6 +19,9 @@ export const metadata = {
 	robots: {
 		index: true,
 		follow: true
+	},
+	alternates: {
+		canonical: 'https://www.metrorailings.com/stainless-steel'
 	}
 };
 
@@ -29,7 +32,7 @@ const StainlessSteelProductServer = async () => {
 	const customizationText = readFileSync(textDir + '/customization.txt', { encoding: 'utf-8' });
 	const materialText = readFileSync(textDir + '/material.txt', { encoding: 'utf-8' });
 
-	const galleryPhotos = await getGalleryImages('aluminum');
+	const galleryPhotos = await getGalleryImages('stainless');
 
 	return (
 		<div className={ styles.pageContainer }>
@@ -41,7 +44,7 @@ const StainlessSteelProductServer = async () => {
 					sizes='100vw'
 					className={ styles.productBannerImage }
 				/>
-				<span className={ styles.productBannerName }>Stainless Steel Railings</span>
+				<h1 className={ styles.productBannerName }>Stainless Steel Railings</h1>
 			</div>
 
 			<div className={ styles.productBlock }>

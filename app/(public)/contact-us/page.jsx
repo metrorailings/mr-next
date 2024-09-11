@@ -8,13 +8,16 @@ export const metadata = {
 	robots: {
 		index: true,
 		follow: true
+	},
+	alternates: {
+		canonical: 'https://www.metrorailings.com/contact-us'
 	}
 };
 
 const ContactUsServer = () => {
 	return (
 		<>
-			<h3 className={ styles.pageHeader }>CONTACT US</h3>
+			<h1 className={ styles.pageHeader }>CONTACT US</h1>
 			<ContactUsForm />
 		</>
 	);

@@ -52,7 +52,7 @@ const HomeServer = async () => {
 							sizes='(max-width: 768px) 80px, (max-width: 1200px) 96px, 128px'
 						/>
 					</span>
-					<span>ETRO RAILINGS</span>
+					<h1>ETRO RAILINGS</h1>
 				</div>
 				<Suspense fallback={ <p></p> }>
 					<VideoComponent videos={ blobs }/>
